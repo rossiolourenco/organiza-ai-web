@@ -1,1 +1,33 @@
+# macOS
 .DS_Store
+
+# Java / Maven
+target/
+backend/target/
+
+# IDEs
+.idea/
+.vscode/
+*.iml
+
+# Eclipse / STS
+.classpath
+.project
+.settings/
+
+# Logs
+*.log
+
+# Arquivos temporarios
+*.tmp
+*.swp
+
+# Variaveis de ambiente e segredos
+.env
+.env.*
+backend/.env
+backend/.env.*
+
+# Configuracoes locais sensiveis
+backend/src/main/resources/application-secret.properties
+backend/src/main/resources/application-prod.properties
