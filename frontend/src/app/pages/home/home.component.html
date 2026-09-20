@@ -1,0 +1,100 @@
+<div class="page">
+
+    <header class="header">
+        <div>
+            <h1>Organiza Aí</h1>
+            <p>Organize suas tarefas de forma simples.</p>
+        </div>
+
+        <div class="header-acoes">
+            <button class="nova-tarefa" routerLink="/tarefas/nova">
+                + Nova tarefa
+            </button>
+
+            <button class="botao-sair" type="button" (click)="sair()">
+                Sair
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <div class="section-header">
+            <div>
+                <h2>Minhas tarefas</h2>
+                <span>{{ tarefas.length }} tarefa(s)</span>
+            </div>
+        </div>
+
+        <div class="filtros">
+            <div class="filtro">
+                <label for="status">Status</label>
+
+                <select id="status" [(ngModel)]="statusSelecionado" (change)="filtrarPorStatus()">
+                    <option value="">Todos</option>
+                    <option value="PENDENTE">Pendente</option>
+                    <option value="EM_ANDAMENTO">Em andamento</option>
+                    <option value="CONCLUIDA">Concluída</option>
+                </select>
+            </div>
+
+            <div class="filtro">
+                <label for="prioridade">Prioridade</label>
+
+                <select id="prioridade" [(ngModel)]="prioridadeSelecionada" (change)="filtrarPorPrioridade()">
+                    <option value="">Todas</option>
+                    <option value="BAIXA">Baixa</option>
+                    <option value="MEDIA">Média</option>
+                    <option value="ALTA">Alta</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="estado-vazio" *ngIf="tarefas.length === 0">
+            <h3>Nenhuma tarefa encontrada</h3>
+            <p>Tente alterar os filtros ou crie uma nova tarefa.</p>
+        </div>
+
+        <div class="tarefas-grid">
+
+            <article class="tarefa-card" *ngFor="let tarefa of tarefas">
+
+                <div class="card-header">
+                    <h3>{{ tarefa.titulo }}</h3>
+
+                    <span class="prioridade">
+                        {{ tarefa.prioridade }}
+                    </span>
+                </div>
+
+                <p class="descricao">
+                    {{ tarefa.descricao }}
+                </p>
+
+                <div class="card-footer">
+                    <span>
+                        {{ tarefa.status }}
+                    </span>
+
+                    <span>
+                        Prazo: {{ tarefa.dataPrazo || 'Sem prazo' }}
+                    </span>
+                </div>
+
+                <button *ngIf="tarefa.status !== 'CONCLUIDA'" type="button" (click)="concluirTarefa(tarefa.id!)">
+                    Concluir
+                </button>
+
+                <a *ngIf="tarefa.id" [routerLink]="['/tarefas/editar', tarefa.id]">
+                    Editar
+                </a>
+
+                <button type="button" (click)="excluirTarefa(tarefa.id!)">
+                    Excluir
+                </button>
+
+            </article>
+
+        </div>
+    </main>
+
+</div>

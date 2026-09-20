@@ -1,0 +1,191 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background: #f5f6f8;
+  color: #222;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 48px 24px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 48px;
+}
+
+.header h1 {
+  margin: 0 0 8px;
+  font-size: 36px;
+}
+
+.header p {
+  margin: 0;
+  color: #666;
+}
+
+.nova-tarefa {
+  border: none;
+  border-radius: 8px;
+  padding: 12px 20px;
+  background: #222;
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.nova-tarefa:hover {
+  background: #000;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.section-header h2 {
+  margin: 0 0 5px;
+  font-size: 26px;
+}
+
+.section-header span {
+  color: #777;
+  font-size: 14px;
+}
+
+.tarefas-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.tarefa-card {
+  background: #fff;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  padding: 22px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.card-header h3 {
+  margin: 0;
+  font-size: 19px;
+}
+
+.prioridade {
+  padding: 5px 9px;
+  background: #f0f0f0;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.descricao {
+  min-height: 42px;
+  margin: 18px 0 24px;
+  color: #666;
+  line-height: 1.5;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid #eee;
+  color: #555;
+  font-size: 13px;
+}
+
+@media (max-width: 700px) {
+  .page {
+    padding: 30px 16px;
+  }
+
+  .header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .nova-tarefa {
+    width: 100%;
+  }
+
+  .tarefas-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .card-footer {
+    flex-direction: column;
+  }
+}
+
+.filtros {
+  display: flex;
+  gap: 16px;
+  align-items: end;
+  margin: 24px 0;
+  flex-wrap: wrap;
+}
+
+.filtro {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.filtro label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #555;
+}
+
+.filtro select {
+  min-width: 180px;
+  padding: 10px 12px;
+  border: 1px solid #d4d4d4;
+  border-radius: 8px;
+  background: #fff;
+  font-size: 14px;
+  color: #222;
+  outline: none;
+}
+
+.filtro select:focus {
+  border-color: #222;
+}
+
+.estado-vazio {
+  margin-top: 24px;
+  padding: 40px 24px;
+  border: 1px dashed #d4d4d4;
+  border-radius: 12px;
+  text-align: center;
+  background: #fff;
+}
+
+.estado-vazio h3 {
+  margin: 0 0 8px;
+  font-size: 20px;
+}
+
+.estado-vazio p {
+  margin: 0;
+  color: #666;
+}

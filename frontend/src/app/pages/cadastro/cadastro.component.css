@@ -1,0 +1,92 @@
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+.cadastro-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f5f6f8;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.cadastro-card {
+  width: 100%;
+  max-width: 390px;
+  background: #ffffff;
+  padding: 40px;
+  border-radius: 18px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+  box-sizing: border-box;
+}
+
+.cadastro-card h1 {
+  margin: 0 0 8px;
+  text-align: center;
+  font-size: 32px;
+  color: #222222;
+}
+
+.cadastro-card > p {
+  margin: 0 0 30px;
+  text-align: center;
+  color: #666666;
+}
+
+.form-group {
+  margin-bottom: 18px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #333333;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid #d0d0d0;
+  border-radius: 8px;
+  font-size: 16px;
+  box-sizing: border-box;
+  outline: none;
+}
+
+.form-group input:focus {
+  border-color: #222222;
+}
+
+button {
+  width: 100%;
+  padding: 14px;
+  margin-top: 4px;
+  border: none;
+  border-radius: 8px;
+  background: #222222;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #000000;
+}
+
+.login-link {
+  margin-top: 24px !important;
+  margin-bottom: 0 !important;
+  text-align: center;
+  font-size: 14px;
+  color: #555555;
+}
+
+.login-link a {
+  color: #222222;
+  font-weight: 600;
+}
