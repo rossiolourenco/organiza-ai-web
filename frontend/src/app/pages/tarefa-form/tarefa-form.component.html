@@ -1,61 +1,110 @@
 <div class="pagina">
-    <div class="container">
+  <div class="container">
 
-        <div class="cabecalho">
-            <div>
-                <h1>{{ tarefaId ? 'Editar tarefa' : 'Nova tarefa' }}</h1>
-                <p>
-                    {{ tarefaId
-                    ? 'Atualize as informações da sua tarefa.'
-                    : 'Adicione uma nova tarefa à sua lista.'
-                    }}
-                </p>
-            </div>
+    <div class="cabecalho">
+      <div>
+        <h1>{{ tarefaId ? 'Editar tarefa' : 'Nova tarefa' }}</h1>
+        <p>
+          {{
+            tarefaId
+              ? 'Atualize as informações da sua tarefa.'
+              : 'Adicione uma nova tarefa à sua lista.'
+          }}
+        </p>
+      </div>
 
-            <a routerLink="/home" class="voltar">← Voltar</a>
-        </div>
-
-        <div class="card">
-            <form (ngSubmit)="salvar()">
-
-                <div class="campo">
-                    <label for="titulo">Título</label>
-                    <input id="titulo" type="text" name="titulo" [(ngModel)]="titulo" placeholder="Ex: Estudar Angular"
-                        required />
-                </div>
-
-                <div class="campo">
-                    <label for="descricao">Descrição</label>
-                    <textarea id="descricao" name="descricao" [(ngModel)]="descricao" placeholder="Descreva a tarefa"
-                        rows="4"></textarea>
-                </div>
-
-                <div class="campo">
-                    <label for="prioridade">Prioridade</label>
-                    <select id="prioridade" name="prioridade" [(ngModel)]="prioridade">
-                        <option value="BAIXA">Baixa</option>
-                        <option value="MEDIA">Média</option>
-                        <option value="ALTA">Alta</option>
-                    </select>
-                </div>
-
-                <div class="campo">
-                    <label for="dataPrazo">Prazo</label>
-                    <input id="dataPrazo" type="date" name="dataPrazo" [(ngModel)]="dataPrazo" />
-                </div>
-
-                <div class="acoes">
-                    <button type="button" class="cancelar" (click)="cancelar()">
-                        Cancelar
-                    </button>
-
-                    <button type="submit" class="salvar">
-                        {{ tarefaId ? 'Salvar alterações' : 'Criar tarefa' }}
-                    </button>
-                </div>
-
-            </form>
-        </div>
-
+      <a routerLink="/home" class="voltar">← Voltar</a>
     </div>
+
+    <div class="card">
+      <form (ngSubmit)="salvar()">
+
+        <div class="campo">
+          <label for="titulo">Título</label>
+          <input
+            id="titulo"
+            type="text"
+            name="titulo"
+            [(ngModel)]="titulo"
+            placeholder="Ex: Estudar Angular"
+            required
+          />
+        </div>
+
+        <div class="campo">
+          <label for="descricao">Descrição</label>
+          <textarea
+            id="descricao"
+            name="descricao"
+            [(ngModel)]="descricao"
+            placeholder="Descreva a tarefa"
+            rows="4"
+          ></textarea>
+        </div>
+
+        <div class="campo">
+          <label for="prioridade">Prioridade</label>
+          <select
+            id="prioridade"
+            name="prioridade"
+            [(ngModel)]="prioridade"
+          >
+            <option value="BAIXA">Baixa</option>
+            <option value="MEDIA">Média</option>
+            <option value="ALTA">Alta</option>
+          </select>
+        </div>
+
+        <div class="campo">
+          <label for="categoria">Categoria</label>
+
+          <select
+            id="categoria"
+            name="categoria"
+            [(ngModel)]="categoriaId"
+          >
+            <option [ngValue]="null">Sem categoria</option>
+
+            <option
+              *ngFor="let categoria of categorias"
+              [ngValue]="categoria.id"
+            >
+              {{ categoria.nome }}
+            </option>
+          </select>
+
+          <small *ngIf="categorias.length === 0">
+            Nenhuma categoria cadastrada.
+          </small>
+        </div>
+
+        <div class="campo">
+          <label for="dataPrazo">Prazo</label>
+
+          <input
+            id="dataPrazo"
+            type="date"
+            name="dataPrazo"
+            [(ngModel)]="dataPrazo"
+          />
+        </div>
+
+        <div class="acoes">
+          <button
+            type="button"
+            class="cancelar"
+            (click)="cancelar()"
+          >
+            Cancelar
+          </button>
+
+          <button type="submit" class="salvar">
+            {{ tarefaId ? 'Salvar alterações' : 'Criar tarefa' }}
+          </button>
+        </div>
+
+      </form>
+    </div>
+
+  </div>
 </div>

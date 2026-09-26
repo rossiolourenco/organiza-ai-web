@@ -6,34 +6,53 @@
 .cadastro-container {
   min-height: 100vh;
   display: flex;
-  justify-content: center;
   align-items: center;
-  background: #f5f6f8;
-  padding: 20px;
-  box-sizing: border-box;
+  justify-content: center;
+  padding: 24px;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(79, 70, 229, 0.08), transparent 32%),
+    radial-gradient(circle at 80% 80%, rgba(79, 70, 229, 0.06), transparent 30%),
+    var(--background);
 }
 
 .cadastro-card {
   width: 100%;
-  max-width: 390px;
-  background: #ffffff;
+  max-width: 420px;
   padding: 40px;
+  border: 1px solid var(--border);
   border-radius: 18px;
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
-  box-sizing: border-box;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 18px 55px rgba(16, 24, 40, 0.09);
+}
+
+.cadastro-card::before {
+  content: "✓";
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  margin: 0 auto 18px;
+  border-radius: 14px;
+  background: var(--primary);
+  color: #fff;
+  font-size: 23px;
+  font-weight: 800;
+  box-shadow: 0 8px 20px rgba(79, 70, 229, 0.2);
 }
 
 .cadastro-card h1 {
-  margin: 0 0 8px;
+  margin: 0 0 7px;
+  color: var(--text);
+  font-size: 30px;
   text-align: center;
-  font-size: 32px;
-  color: #222222;
+  letter-spacing: -0.6px;
 }
 
 .cadastro-card > p {
   margin: 0 0 30px;
+  color: var(--text-muted);
+  font-size: 14px;
   text-align: center;
-  color: #666666;
 }
 
 .form-group {
@@ -42,51 +61,79 @@
 
 .form-group label {
   display: block;
-  margin-bottom: 8px;
-  font-weight: 600;
-  color: #333333;
+  margin-bottom: 7px;
+  color: #344054;
+  font-size: 13px;
+  font-weight: 700;
 }
 
 .form-group input {
   width: 100%;
-  padding: 14px;
-  border: 1px solid #d0d0d0;
-  border-radius: 8px;
-  font-size: 16px;
-  box-sizing: border-box;
+  height: 45px;
+  padding: 0 13px;
+  border: 1px solid #d0d5dd;
+  border-radius: 9px;
+  background: #fff;
+  color: var(--text);
+  font-size: 14px;
   outline: none;
+  transition: 0.18s ease;
+}
+
+.form-group input::placeholder {
+  color: #98a2b3;
 }
 
 .form-group input:focus {
-  border-color: #222222;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
 }
 
-button {
+form button {
   width: 100%;
-  padding: 14px;
-  margin-top: 4px;
-  border: none;
-  border-radius: 8px;
-  background: #222222;
-  color: #ffffff;
-  font-size: 16px;
-  font-weight: 600;
+  min-height: 45px;
+  margin-top: 5px;
+  border: 1px solid var(--primary);
+  border-radius: 9px;
+  background: var(--primary);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
   cursor: pointer;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15);
+  transition: 0.18s ease;
 }
 
-button:hover {
-  background: #000000;
+form button:hover {
+  background: var(--primary-hover);
+  border-color: var(--primary-hover);
+  transform: translateY(-1px);
 }
 
 .login-link {
-  margin-top: 24px !important;
-  margin-bottom: 0 !important;
+  margin: 25px 0 0 !important;
+  color: var(--text-muted);
+  font-size: 13px;
   text-align: center;
-  font-size: 14px;
-  color: #555555;
 }
 
 .login-link a {
-  color: #222222;
-  font-weight: 600;
+  margin-left: 3px;
+  color: var(--primary);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.login-link a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 480px) {
+  .cadastro-container {
+    padding: 16px;
+  }
+
+  .cadastro-card {
+    padding: 32px 22px;
+  }
 }

@@ -11,18 +11,23 @@ import java.util.Optional;
 import br.com.organizaai.backend.model.Usuario;
 import br.com.organizaai.backend.repository.UsuarioRepository;
 
+import br.com.organizaai.backend.repository.CategoriaRepository;
+
 @Service
 public class TarefaService {
 
     private final TarefaRepository tarefaRepository;
     private final UsuarioRepository usuarioRepository;
+    private final CategoriaRepository categoriaRepository;
 
     public TarefaService(
             TarefaRepository tarefaRepository,
-            UsuarioRepository usuarioRepository) {
+            UsuarioRepository usuarioRepository,
+            CategoriaRepository categoriaRepository) {
 
         this.tarefaRepository = tarefaRepository;
         this.usuarioRepository = usuarioRepository;
+        this.categoriaRepository = categoriaRepository;
     }
 
     public List<Tarefa> listarTodas(Long usuarioId) {
@@ -44,12 +49,30 @@ public class TarefaService {
     public Optional<Tarefa> criar(Long usuarioId, Tarefa tarefa) {
 
         return usuarioRepository.findById(usuarioId)
-                .map(usuario -> {
+                .flatMap(usuario -> {
 
                     tarefa.setUsuario(usuario);
+
+                    if (tarefa.getCategoria() != null &&
+                            tarefa.getCategoria().getId() != null) {
+
+                        return categoriaRepository
+                                .findByIdAndUsuarioId(
+                                        tarefa.getCategoria().getId(),
+                                        usuarioId)
+                                .map(categoria -> {
+
+                                    tarefa.setCategoria(categoria);
+                                    tarefa.setDataAtualizacao(LocalDateTime.now());
+
+                                    return tarefaRepository.save(tarefa);
+                                });
+                    }
+
+                    tarefa.setCategoria(null);
                     tarefa.setDataAtualizacao(LocalDateTime.now());
 
-                    return tarefaRepository.save(tarefa);
+                    return Optional.of(tarefaRepository.save(tarefa));
                 });
     }
 
@@ -59,17 +82,33 @@ public class TarefaService {
             Tarefa dadosAtualizados) {
 
         return tarefaRepository.findByIdAndUsuarioId(id, usuarioId)
-                .map(tarefa -> {
+                .flatMap(tarefa -> {
 
                     tarefa.setTitulo(dadosAtualizados.getTitulo());
                     tarefa.setDescricao(dadosAtualizados.getDescricao());
                     tarefa.setPrioridade(dadosAtualizados.getPrioridade());
                     tarefa.setStatus(dadosAtualizados.getStatus());
                     tarefa.setDataPrazo(dadosAtualizados.getDataPrazo());
-                    tarefa.setCategoria(dadosAtualizados.getCategoria());
                     tarefa.setDataAtualizacao(LocalDateTime.now());
 
-                    return tarefaRepository.save(tarefa);
+                    if (dadosAtualizados.getCategoria() != null &&
+                            dadosAtualizados.getCategoria().getId() != null) {
+
+                        return categoriaRepository
+                                .findByIdAndUsuarioId(
+                                        dadosAtualizados.getCategoria().getId(),
+                                        usuarioId)
+                                .map(categoria -> {
+
+                                    tarefa.setCategoria(categoria);
+
+                                    return tarefaRepository.save(tarefa);
+                                });
+                    }
+
+                    tarefa.setCategoria(null);
+
+                    return Optional.of(tarefaRepository.save(tarefa));
                 });
     }
 

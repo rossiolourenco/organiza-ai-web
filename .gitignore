@@ -31,3 +31,4 @@ backend/.env.*
 # Configuracoes locais sensiveis
 backend/src/main/resources/application-secret.properties
 backend/src/main/resources/application-prod.properties
+**/.DS_Store

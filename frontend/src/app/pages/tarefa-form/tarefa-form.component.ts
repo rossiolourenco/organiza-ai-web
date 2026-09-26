@@ -1,8 +1,12 @@
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, Router, RouterLink } from "@angular/router";
 import { TarefaService } from "../../services/tarefa.service";
+import {
+  Categoria,
+  CategoriaService,
+} from "../../services/categoria.service";
 
 @Component({
   selector: "app-tarefa-form",
@@ -10,20 +14,29 @@ import { TarefaService } from "../../services/tarefa.service";
   templateUrl: "./tarefa-form.component.html",
   styleUrl: "./tarefa-form.component.css",
 })
-export class TarefaFormComponent {
+export class TarefaFormComponent implements OnInit {
+
   titulo: string = "";
   descricao: string = "";
   prioridade: string = "MEDIA";
   dataPrazo: string = "";
+
+  categoriaId: number | null = null;
+  categorias: Categoria[] = [];
+
   tarefaId?: number;
+  statusTarefa: string = "PENDENTE";
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private tarefaService: TarefaService,
+    private categoriaService: CategoriaService,
   ) {}
 
   ngOnInit(): void {
+    this.carregarCategorias();
+
     const id = this.route.snapshot.paramMap.get("id");
 
     if (id) {
@@ -35,6 +48,8 @@ export class TarefaFormComponent {
           this.descricao = tarefa.descricao || "";
           this.prioridade = tarefa.prioridade;
           this.dataPrazo = tarefa.dataPrazo || "";
+          this.statusTarefa = tarefa.status;
+          this.categoriaId = tarefa.categoria?.id ?? null;
         },
         error: (erro) => {
           console.error("Erro ao carregar tarefa:", erro);
@@ -43,6 +58,17 @@ export class TarefaFormComponent {
         },
       });
     }
+  }
+
+  carregarCategorias(): void {
+    this.categoriaService.listar().subscribe({
+      next: (categorias) => {
+        this.categorias = categorias;
+      },
+      error: (erro) => {
+        console.error("Erro ao carregar categorias:", erro);
+      },
+    });
   }
 
   salvar(): void {
@@ -60,11 +86,16 @@ export class TarefaFormComponent {
       titulo: this.titulo,
       descricao: this.descricao,
       prioridade: this.prioridade,
-      status: "PENDENTE",
+      status: this.tarefaId ? this.statusTarefa : "PENDENTE",
       dataPrazo: this.dataPrazo || undefined,
       usuario: {
         id: usuario.id,
       },
+      categoria: this.categoriaId
+        ? {
+            id: Number(this.categoriaId),
+          }
+        : undefined,
     };
 
     if (this.tarefaId) {
