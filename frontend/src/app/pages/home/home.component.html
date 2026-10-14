@@ -62,10 +62,21 @@
             <option value="ALTA">Alta</option>
           </select>
         </div>
+        <div class="filtro">
+          <label for="dataInicial">Prazo de</label>
+          <input id="dataInicial" type="date" [(ngModel)]="dataInicial" (change)="aplicarFiltros()" />
+        </div>
+        <div class="filtro">
+          <label for="dataFinal">Prazo até</label>
+          <input id="dataFinal" type="date" [(ngModel)]="dataFinal" (change)="aplicarFiltros()" />
+        </div>
+        <button type="button" class="limpar-filtros" (click)="limparFiltros()">Limpar</button>
       </div>
     </section>
 
-    <div class="estado-vazio" *ngIf="tarefas.length === 0">
+    <p class="erro-periodo" *ngIf="erroPeriodo">{{ erroPeriodo }}</p>
+
+    <div class="estado-vazio" *ngIf="tarefas.length === 0 && !erroPeriodo">
       <div class="empty-icon">✓</div>
       <h3>Nenhuma tarefa encontrada</h3>
       <p>Tente alterar os filtros ou crie uma nova tarefa.</p>

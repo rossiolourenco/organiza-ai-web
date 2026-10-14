@@ -73,6 +73,24 @@
             </option>
           </select>
 
+          <div class="categoria-criacao">
+            <input type="text" name="novaCategoria" [(ngModel)]="novaCategoria"
+              maxlength="100" placeholder="Nome da nova categoria" />
+            <button type="button" (click)="cadastrarCategoria()"
+              [disabled]="!novaCategoria.trim() || salvandoCategoria">
+              {{ salvandoCategoria ? 'Salvando...' : '+ Cadastrar categoria' }}
+            </button>
+          </div>
+          <div class="categorias-lista" *ngIf="categorias.length > 0">
+            <div class="categoria-item" *ngFor="let categoria of categorias">
+              <span>{{ categoria.nome }}</span>
+              <button type="button" (click)="excluirCategoria(categoria)"
+                [disabled]="excluindoCategoriaId !== null">
+                {{ excluindoCategoriaId === categoria.id ? 'Excluindo...' : 'Excluir' }}
+              </button>
+            </div>
+          </div>
+
           <small *ngIf="categorias.length === 0">
             Nenhuma categoria cadastrada.
           </small>

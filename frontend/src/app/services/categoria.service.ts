@@ -45,4 +45,12 @@ export class CategoriaService {
       categoria
     );
   }
+
+  excluir(id: number): Observable<void> {
+    const usuarioSalvo = localStorage.getItem("usuario");
+    if (!usuarioSalvo) throw new Error("Usuário não autenticado.");
+    const usuario = JSON.parse(usuarioSalvo);
+    return this.http.delete<void>(`${this.apiUrl}/${id}?usuarioId=${usuario.id}`);
+  }
+
 }

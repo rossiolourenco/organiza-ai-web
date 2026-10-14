@@ -488,3 +488,15 @@
     margin-left: 0;
   }
 }
+
+/* Filtros de intervalo de prazo */
+.tarefas-topo { align-items: stretch; flex-wrap: wrap; }
+.filtros { flex-wrap: wrap; align-items: end; }
+.filtro input[type="date"] {
+  height: 40px; min-width: 155px; padding: 0 10px;
+  border: 1px solid var(--border); border-radius: 9px;
+  background: #fff; color: var(--text); font-size: 14px;
+}
+.limpar-filtros { height: 40px; padding: 0 14px; border: 1px solid var(--border);
+  border-radius: 9px; background: #fff; cursor: pointer; }
+.erro-periodo { color: #b42318; font-weight: 600; }

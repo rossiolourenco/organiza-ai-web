@@ -12,6 +12,10 @@ import { FormsModule } from "@angular/forms";
 })
 export class HomeComponent implements OnInit {
   tarefas: Tarefa[] = [];
+  todasTarefas: Tarefa[] = [];
+  dataInicial = "";
+  dataFinal = "";
+  erroPeriodo = "";
 
   statusSelecionado: string = "";
   prioridadeSelecionada: string = "";
@@ -27,62 +31,45 @@ export class HomeComponent implements OnInit {
 
   carregarTarefas(): void {
     this.tarefaService.listarTodas().subscribe({
-      next: (tarefas) => {
-        this.tarefas = tarefas;
-        console.log("Tarefas carregadas:", tarefas);
+      next: tarefas => {
+        this.todasTarefas = tarefas;
+        this.carregarTarefas();
       },
-      error: (erro) => {
+      error: erro => {
         console.error("Erro ao carregar tarefas:", erro);
+        alert("Não foi possível carregar as tarefas.");
       },
     });
   }
-  filtrarPorStatus(): void {
-    this.aplicarFiltros();
-  }
 
-  filtrarPorPrioridade(): void {
-    this.aplicarFiltros();
-  }
+  filtrarPorStatus(): void { this.aplicarFiltros(); }
+  filtrarPorPrioridade(): void { this.aplicarFiltros(); }
 
   aplicarFiltros(): void {
-    if (this.statusSelecionado) {
-      this.tarefaService.listarPorStatus(this.statusSelecionado).subscribe({
-        next: (tarefas) => {
-          this.tarefas = this.prioridadeSelecionada
-            ? tarefas.filter(
-                (tarefa) => tarefa.prioridade === this.prioridadeSelecionada,
-              )
-            : tarefas;
-        },
-        error: (erro) => {
-          console.error("Erro ao filtrar tarefas:", erro);
-        },
-      });
-
-      return;
-    }
-
-    if (this.prioridadeSelecionada) {
-      this.tarefaService
-        .listarPorPrioridade(this.prioridadeSelecionada)
-        .subscribe({
-          next: (tarefas) => {
-            this.tarefas = tarefas;
-          },
-          error: (erro) => {
-            console.error("Erro ao filtrar tarefas:", erro);
-          },
-        });
-
-      return;
-    }
-
-    this.carregarTarefas();
+    this.erroPeriodo = this.dataInicial && this.dataFinal && this.dataInicial > this.dataFinal
+      ? "A data inicial não pode ser posterior à data final."
+      : "";
+    if (this.erroPeriodo) { this.tarefas = []; return; }
+    this.tarefas = this.todasTarefas.filter(tarefa =>
+      (!this.statusSelecionado || tarefa.status === this.statusSelecionado) &&
+      (!this.prioridadeSelecionada || tarefa.prioridade === this.prioridadeSelecionada) &&
+      (!this.dataInicial || !!tarefa.dataPrazo && tarefa.dataPrazo >= this.dataInicial) &&
+      (!this.dataFinal || !!tarefa.dataPrazo && tarefa.dataPrazo <= this.dataFinal)
+    );
   }
+
+  limparFiltros(): void {
+    this.statusSelecionado = "";
+    this.prioridadeSelecionada = "";
+    this.dataInicial = "";
+    this.dataFinal = "";
+    this.aplicarFiltros();
+  }
+
   concluirTarefa(id: number): void {
     this.tarefaService.concluir(id).subscribe({
       next: () => {
-        this.aplicarFiltros();
+        this.carregarTarefas();
       },
       error: (erro) => {
         console.error("Erro ao concluir tarefa:", erro);
@@ -99,7 +86,7 @@ export class HomeComponent implements OnInit {
 
     this.tarefaService.excluir(id).subscribe({
       next: () => {
-        this.aplicarFiltros();
+        this.carregarTarefas();
       },
       error: (erro) => {
         console.error("Erro ao excluir tarefa:", erro);

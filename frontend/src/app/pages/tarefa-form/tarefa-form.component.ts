@@ -23,6 +23,9 @@ export class TarefaFormComponent implements OnInit {
 
   categoriaId: number | null = null;
   categorias: Categoria[] = [];
+  novaCategoria = "";
+  salvandoCategoria = false;
+  excluindoCategoriaId: number | null = null;
 
   tarefaId?: number;
   statusTarefa: string = "PENDENTE";
@@ -67,6 +70,43 @@ export class TarefaFormComponent implements OnInit {
       },
       error: (erro) => {
         console.error("Erro ao carregar categorias:", erro);
+      },
+    });
+  }
+
+  cadastrarCategoria(): void {
+    const nome = this.novaCategoria.trim();
+    if (!nome || this.salvandoCategoria) return;
+    this.salvandoCategoria = true;
+    this.categoriaService.criar({ nome }).subscribe({
+      next: categoria => {
+        this.novaCategoria = "";
+        this.salvandoCategoria = false;
+        this.carregarCategorias();
+        this.categoriaId = categoria.id ?? null;
+      },
+      error: erro => {
+        this.salvandoCategoria = false;
+        console.error("Erro ao cadastrar categoria:", erro);
+        alert("Não foi possível cadastrar a categoria.");
+      },
+    });
+  }
+
+  excluirCategoria(categoria: Categoria): void {
+    if (!categoria.id || this.excluindoCategoriaId !== null) return;
+    if (!confirm(`Excluir a categoria "${categoria.nome}"? As tarefas serão mantidas sem essa categoria.`)) return;
+    this.excluindoCategoriaId = categoria.id;
+    this.categoriaService.excluir(categoria.id).subscribe({
+      next: () => {
+        if (this.categoriaId === categoria.id) this.categoriaId = null;
+        this.excluindoCategoriaId = null;
+        this.carregarCategorias();
+      },
+      error: erro => {
+        this.excluindoCategoriaId = null;
+        console.error("Erro ao excluir categoria:", erro);
+        alert("Não foi possível excluir a categoria.");
       },
     });
   }
