@@ -1,0 +1,167 @@
+<adm-page-header eyebrow="FIREWALL DEMO" title="Simulador de políticas"
+  subtitle="Crie, valide, aplique e reverta regras simuladas com persistência no banco do ambiente DEMO.">
+  <button class="btn ghost small" type="button" (click)="carregar()" [disabled]="carregando">Atualizar</button>
+  <button class="btn small" type="button" (click)="abrirNova()">Nova regra</button>
+</adm-page-header>
+
+<div class="alert-banner warning" role="status">
+  <span><strong>MODO DEMO:</strong> nenhuma regra é aplicada no sistema operacional. O agente real está desabilitado
+    e não há execução de comandos pelo painel.</span>
+</div>
+
+<adm-alert [message]="erro" tone="error" (closed)="erro = null"></adm-alert>
+<adm-alert [message]="aviso" tone="success" (closed)="aviso = null"></adm-alert>
+<adm-skeleton [rows]="5" *ngIf="carregando"></adm-skeleton>
+
+<ng-container *ngIf="!carregando && estado">
+  <div class="grid cols-4">
+    <adm-metric label="Modo" [value]="estado.modo" hint="Simulação isolada" tone="warning"></adm-metric>
+    <adm-metric label="Regras" [value]="estado.totalRegras" [hint]="estado.regrasAtivas + ' ativa(s)'"></adm-metric>
+    <adm-metric label="Estado" [value]="estado.aplicado ? 'Aplicado' : 'Não aplicado'"
+      [hint]="(estado.aplicadoEm | date:'dd/MM HH:mm') || 'Sem snapshot aplicado'"
+      [tone]="estado.aplicado ? 'success' : 'neutral'"></adm-metric>
+    <adm-metric label="Snapshot" [value]="estado.snapshotAtualId ? ('#' + estado.snapshotAtualId) : '—'"
+      hint="Rollback disponível" tone="primary"></adm-metric>
+  </div>
+
+  <div class="tag-list section-gap">
+    <button class="btn secondary small" type="button" (click)="validar()">Validar conflitos</button>
+    <button class="btn small" type="button" (click)="aplicar()" [disabled]="executando">Aplicar simulação</button>
+    <button class="btn secondary small" type="button" (click)="rollback()" [disabled]="executando">Rollback</button>
+    <button class="btn ghost small" type="button" (click)="resetar()" [disabled]="executando">Restaurar cenário DEMO</button>
+  </div>
+
+  <article class="card section-gap" *ngIf="validacao">
+    <div class="card-head">
+      <div>
+        <h2 class="card-title">Validação de conflitos</h2>
+        <p class="small muted">Regras ativas com mesmo sentido, protocolo, porta e CIDR sobreposto.</p>
+      </div>
+      <adm-status [status]="validacao.valido ? 'SUCESSO' : 'BLOQUEADO'"
+        [label]="validacao.valido ? 'Sem conflitos' : validacao.conflitos.length + ' conflito(s)'"></adm-status>
+    </div>
+    <div *ngFor="let conflito of validacao.conflitos" class="kv" style="flex-direction:column;align-items:flex-start">
+      <strong>{{ conflito.nomeA }} × {{ conflito.nomeB }}</strong>
+      <p class="small muted" style="margin:3px 0 0">{{ conflito.motivo }}</p>
+    </div>
+    <p class="small muted" *ngIf="validacao.valido">Nenhuma sobreposição com ações opostas foi encontrada.</p>
+  </article>
+
+  <adm-empty *ngIf="!regras.length" title="Nenhuma regra simulada"
+    detail="Crie uma regra ou restaure o cenário DEMO para começar."></adm-empty>
+
+  <div class="table-wrap section-gap" *ngIf="regras.length">
+    <table class="data-table">
+      <thead><tr><th>Prior.</th><th>Regra</th><th>Origem/Destino</th><th>Porta</th><th>Protocolo</th>
+        <th>Direção</th><th>Ação</th><th>Ativa</th><th>Ações</th></tr></thead>
+      <tbody>
+        <tr *ngFor="let regra of regras">
+          <td>{{ regra.prioridade }}</td>
+          <td><div class="strong">{{ regra.nome }}</div><div class="muted small">{{ regra.descricao || '—' }}</div></td>
+          <td>{{ regra.ipCidr }}</td>
+          <td>{{ regra.porta ?? 'Todas' }}</td>
+          <td>{{ regra.protocolo }}</td>
+          <td>{{ regra.direcao === 'INBOUND' ? 'Entrada' : 'Saída' }}</td>
+          <td><adm-status [status]="regra.acao"></adm-status></td>
+          <td>
+            <label class="switch" [attr.aria-label]="'Ativar regra ' + regra.nome">
+              <input type="checkbox" [checked]="regra.ativa" (change)="alternar(regra, $any($event.target).checked)">
+              <span></span>
+            </label>
+          </td>
+          <td><div class="row-actions">
+            <button class="btn ghost small" type="button" (click)="abrirEdicao(regra)">Editar</button>
+            <button class="btn ghost small" type="button" (click)="excluir(regra)">Excluir</button>
+          </div></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="grid cols-2 section-gap">
+    <article class="card">
+      <h2 class="card-title">Histórico simulado</h2>
+      <div class="table-wrap" style="max-height:320px;overflow:auto">
+        <table class="data-table" style="min-width:0">
+          <thead><tr><th>Data</th><th>Operação</th><th>Ator</th><th>Resultado</th></tr></thead>
+          <tbody>
+            <tr *ngFor="let item of historico">
+              <td>{{ item.criadoEm | date:'dd/MM HH:mm' }}</td>
+              <td><div class="strong">{{ item.operacao }}</div><div class="muted small">{{ item.detalhes }}</div></td>
+              <td>{{ item.atorEmail || 'sistema' }}</td>
+              <td><adm-status [status]="item.resultado"></adm-status></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </article>
+
+    <article class="card">
+      <h2 class="card-title">Firewall real</h2>
+      <p class="small muted">A preparação para o modo real existe apenas como arquitetura documentada.
+        O backend não executa nftables/UFW, não recebe comandos do frontend e não possui privilégios root.</p>
+      <div class="kv"><span>Modo atual</span><strong>{{ estado.modo }}</strong></div>
+      <div class="kv"><span>Agente real</span><strong>Desabilitado</strong></div>
+      <div class="kv"><span>Terminal remoto</span><strong>Não disponível</strong></div>
+      <div class="kv"><span>Porta administrativa</span><strong>Protegida por política</strong></div>
+      <p class="small muted">Consulte <code>docs/ADMIN-FIREWALL.md</code> para o desenho do agente privilegiado mínimo,
+        backup, rollback temporizado e proteção de SSH.</p>
+    </article>
+  </div>
+</ng-container>
+
+<adm-modal [open]="modal" [title]="editandoId ? 'Editar regra simulada' : 'Nova regra simulada'"
+  subtitle="Validação de IP/CIDR, porta e protocolo acontece no backend." (closed)="modal = false">
+  <form class="form-grid" (ngSubmit)="salvar()">
+    <div class="field full">
+      <label for="regraNome">Nome</label>
+      <input id="regraNome" class="input" name="regraNome" [(ngModel)]="form.nome" maxlength="100" required>
+    </div>
+    <div class="field full">
+      <label for="regraDescricao">Descrição</label>
+      <input id="regraDescricao" class="input" name="regraDescricao" [(ngModel)]="form.descricao" maxlength="300">
+    </div>
+    <div class="field">
+      <label for="regraCidr">IP ou CIDR</label>
+      <input id="regraCidr" class="input" name="regraCidr" [(ngModel)]="form.ipCidr" placeholder="10.0.0.0/8" required>
+    </div>
+    <div class="field">
+      <label for="regraPorta">Porta (vazio = todas)</label>
+      <input id="regraPorta" class="input" type="number" min="1" max="65535" name="regraPorta" [(ngModel)]="form.porta">
+    </div>
+    <div class="field">
+      <label for="regraProtocolo">Protocolo</label>
+      <select id="regraProtocolo" class="select" name="regraProtocolo" [(ngModel)]="form.protocolo">
+        <option value="TCP">TCP</option><option value="UDP">UDP</option><option value="ANY">ANY</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="regraDirecao">Direção</label>
+      <select id="regraDirecao" class="select" name="regraDirecao" [(ngModel)]="form.direcao">
+        <option value="INBOUND">Entrada</option><option value="OUTBOUND">Saída</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="regraAcao">Ação</label>
+      <select id="regraAcao" class="select" name="regraAcao" [(ngModel)]="form.acao">
+        <option value="ALLOW">Permitir</option><option value="DENY">Bloquear</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="regraPrioridade">Prioridade (1–999)</label>
+      <input id="regraPrioridade" class="input" type="number" min="1" max="999" name="regraPrioridade"
+        [(ngModel)]="form.prioridade">
+    </div>
+    <label class="checkbox-row full">
+      <input type="checkbox" name="regraAtiva" [(ngModel)]="form.ativa"> Regra ativa
+    </label>
+    <div class="modal-actions full">
+      <button class="btn ghost" type="button" (click)="modal = false" [disabled]="executando">Cancelar</button>
+      <button class="btn" type="submit" [disabled]="executando">{{ executando ? 'Salvando…' : 'Salvar regra' }}</button>
+    </div>
+  </form>
+</adm-modal>
+
+<adm-confirm [open]="!!confirmacao" [title]="confirmacao?.titulo || ''" [message]="confirmacao?.mensagem || ''"
+  [confirmLabel]="confirmacao?.rotulo || 'Confirmar'" [danger]="confirmacao?.perigo || false"
+  [busy]="executando" (confirm)="executarConfirmacao()" (cancel)="cancelarConfirmacao()"></adm-confirm>

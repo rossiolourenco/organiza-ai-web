@@ -1,0 +1,79 @@
+<adm-page-header eyebrow="OPERAÇÃO" title="Monitoramento"
+  subtitle="Métricas reais do backend, banco, JVM, disco, HTTP e firewall. Valores indisponíveis não são inventados.">
+  <label class="checkbox-row"><input type="checkbox" [checked]="auto" (change)="alternarAuto()"> Atualizar a cada 15s</label>
+  <button class="btn ghost small" type="button" (click)="carregar()" [disabled]="carregando">Atualizar agora</button>
+</adm-page-header>
+
+<adm-error [message]="erro" (retry)="carregar()"></adm-error>
+<adm-skeleton [rows]="5" *ngIf="carregando && !monitor"></adm-skeleton>
+
+<ng-container *ngIf="monitor">
+  <div class="grid cols-4">
+    <adm-metric label="Backend" [value]="monitor.backendDisponivel ? 'Online' : 'Offline'"
+      [hint]="'Uptime ' + uptime(monitor.uptimeSegundos)" [tone]="monitor.backendDisponivel ? 'success' : 'danger'"></adm-metric>
+    <adm-metric label="Banco de dados" [value]="monitor.banco.disponivel ? (numero(monitor.banco.latenciaMs, ' ms')) : 'Indisponível'"
+      [hint]="monitor.banco.detalhe || 'Sem detalhe'" [tone]="monitor.banco.disponivel ? 'success' : 'danger'"></adm-metric>
+    <adm-metric label="Requisições API" [value]="monitor.http.totalRequisicoes"
+      [hint]="monitor.http.erros4xx + ' 4xx · ' + monitor.http.erros5xx + ' 5xx'" tone="primary"></adm-metric>
+    <adm-metric label="Tempo médio" [value]="numero(monitor.http.tempoMedioMs, ' ms')" hint="Média acumulada" tone="neutral"></adm-metric>
+  </div>
+
+  <div class="grid cols-2 section-gap">
+    <article class="card">
+      <h2 class="card-title">CPU e carga</h2>
+      <div class="kv"><span>Carga do sistema</span><strong>{{ numero(monitor.cpu.cargaSistema, '%') }}</strong></div>
+      <div class="kv"><span>Carga do processo</span><strong>{{ numero(monitor.cpu.cargaProcesso, '%') }}</strong></div>
+      <div class="kv"><span>Núcleos disponíveis</span><strong>{{ monitor.cpu.nucleos }}</strong></div>
+      <div class="kv"><span>Load average</span><strong>{{ numero(monitor.cpu.loadAverage) }}</strong></div>
+      <p class="small muted">Coletado via APIs do sistema operacional/JVM. Sem execução de comandos.</p>
+    </article>
+
+    <article class="card">
+      <h2 class="card-title">Memória</h2>
+      <div class="kv"><span>Heap usado</span><strong>{{ bytes(monitor.memoria.heapUsadoBytes) }} /
+        {{ bytes(monitor.memoria.heapMaximoBytes) }}</strong></div>
+      <div class="bar"><div class="bar-fill"
+        [style.width.%]="percentual(monitor.memoria.heapUsadoBytes, monitor.memoria.heapMaximoBytes)"></div></div>
+      <div class="kv section-gap"><span>Memória do sistema</span>
+        <strong>{{ bytes(monitor.memoria.sistemaTotalBytes - monitor.memoria.sistemaLivreBytes) }} /
+          {{ bytes(monitor.memoria.sistemaTotalBytes) }}</strong></div>
+      <div class="bar"><div class="bar-fill"
+        [style.width.%]="percentual(monitor.memoria.sistemaTotalBytes - monitor.memoria.sistemaLivreBytes,
+          monitor.memoria.sistemaTotalBytes)"></div></div>
+    </article>
+  </div>
+
+  <div class="grid cols-3 section-gap">
+    <article class="card">
+      <h2 class="card-title">Disco</h2>
+      <adm-status [status]="monitor.disco.disponivel ? 'ATIVO' : 'DESATIVADO'"
+        [label]="monitor.disco.disponivel ? 'Disponível' : 'Indisponível'"></adm-status>
+      <div class="kv"><span>Total</span><strong>{{ bytes(monitor.disco.totalBytes) }}</strong></div>
+      <div class="kv"><span>Livre</span><strong>{{ bytes(monitor.disco.livreBytes) }}</strong></div>
+      <div class="bar"><div class="bar-fill success"
+        [style.width.%]="percentual(monitor.disco.livreBytes, monitor.disco.totalBytes)"></div></div>
+      <p class="small muted">{{ monitor.disco.caminho || 'Caminho indisponível' }}</p>
+    </article>
+
+    <article class="card">
+      <h2 class="card-title">Sessões e contas</h2>
+      <div class="kv"><span>Sessões ativas</span><strong>{{ monitor.sessoesAtivas }}</strong></div>
+      <div class="kv"><span>Usuários ativos</span><strong>{{ monitor.usuariosAtivos }}</strong></div>
+      <div class="kv"><span>Usuários bloqueados</span><strong>{{ monitor.usuariosBloqueados }}</strong></div>
+      <div class="kv"><span>Coletado em</span><strong>{{ monitor.coletadoEm | date:'dd/MM/yyyy HH:mm:ss' }}</strong></div>
+    </article>
+
+    <article class="card">
+      <h2 class="card-title">Firewall</h2>
+      <adm-status [status]="monitor.firewall.modo === 'DEMO' ? 'ATENCAO' : 'ATIVO'"
+        [label]="monitor.firewall.modo"></adm-status>
+      <div class="kv"><span>Estado</span><strong>{{ monitor.firewall.aplicado ? 'Aplicado (simulação)' : 'Não aplicado' }}</strong></div>
+      <div class="kv"><span>Regras ativas</span><strong>{{ monitor.firewall.regrasAtivas }}</strong></div>
+      <div class="kv"><span>Snapshot</span><strong>{{ (monitor.firewall.aplicadoEm | date:'dd/MM HH:mm') || '—' }}</strong></div>
+      <p class="small muted">O modo real permanece desabilitado nesta entrega.</p>
+    </article>
+  </div>
+
+  <p class="small muted section-gap">Este painel não executa comandos remotos. Diagnósticos são expostos somente
+    a administradores autenticados.</p>
+</ng-container>

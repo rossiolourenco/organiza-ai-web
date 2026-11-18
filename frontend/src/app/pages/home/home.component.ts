@@ -33,7 +33,7 @@ export class HomeComponent implements OnInit {
     this.tarefaService.listarTodas().subscribe({
       next: tarefas => {
         this.todasTarefas = tarefas;
-        this.carregarTarefas();
+        this.aplicarFiltros();
       },
       error: erro => {
         console.error("Erro ao carregar tarefas:", erro);
@@ -96,6 +96,7 @@ export class HomeComponent implements OnInit {
   }
   sair(): void {
     localStorage.removeItem("usuario");
+    sessionStorage.removeItem("organiza-token");
     this.router.navigate(["/login"]);
   }
 }

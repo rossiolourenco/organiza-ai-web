@@ -22,6 +22,31 @@ public class TarefaController {
         return tarefaService.listarTodas(usuarioId);
     }
 
+    @GetMapping("/lixeira")
+    public List<Tarefa> listarLixeira(@RequestParam Long usuarioId) {
+        return tarefaService.listarLixeira(usuarioId);
+    }
+
+    @PostMapping("/{id}/restaurar")
+    public ResponseEntity<Tarefa> restaurar(
+            @PathVariable Long id,
+            @RequestParam Long usuarioId) {
+
+        return tarefaService.restaurar(id, usuarioId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/{id}/definitivo")
+    public ResponseEntity<Void> excluirDefinitivo(
+            @PathVariable Long id,
+            @RequestParam Long usuarioId) {
+
+        return tarefaService.excluirDefinitivo(id, usuarioId)
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.notFound().build();
+    }
+
     @GetMapping("/status/{status}")
     public List<Tarefa> listarPorStatus(
             @PathVariable String status,

@@ -1,0 +1,87 @@
+<adm-page-header eyebrow="CONFIGURAÇÕES" title="Políticas e ambiente"
+  subtitle="Somente SUPER_ADMIN altera políticas críticas. ADMIN tem leitura; toda mudança é auditada.">
+  <adm-status [status]="podeEditar ? 'SUPER_ADMIN' : 'ADMIN'"></adm-status>
+</adm-page-header>
+
+<adm-error [message]="erro" (retry)="carregar()"></adm-error>
+<adm-alert [message]="aviso" tone="success" (closed)="aviso = null"></adm-alert>
+<adm-skeleton [rows]="4" *ngIf="carregando"></adm-skeleton>
+
+<ng-container *ngIf="!carregando && politica">
+  <form class="card" (ngSubmit)="salvar()">
+    <div class="card-head">
+      <div>
+        <h2 class="card-title">Política de autenticação</h2>
+        <p class="small muted">Aplicada a novos cadastros, redefinições e bloqueios automáticos.</p>
+      </div>
+      <adm-status [status]="podeEditar ? 'ATIVO' : 'BLOQUEADO'"
+        [label]="podeEditar ? 'Editável' : 'Somente leitura'"></adm-status>
+    </div>
+
+    <div class="form-grid">
+      <div class="field">
+        <label for="senhaMinima">Senha mínima (8–72)</label>
+        <input id="senhaMinima" class="input" type="number" min="8" max="72" name="senhaMinima"
+          [(ngModel)]="politica.senhaMinima" [disabled]="!podeEditar">
+      </div>
+      <div class="field">
+        <label for="maxTentativas">Tentativas antes do bloqueio (3–20)</label>
+        <input id="maxTentativas" class="input" type="number" min="3" max="20" name="maxTentativas"
+          [(ngModel)]="politica.maxTentativas" [disabled]="!podeEditar">
+      </div>
+      <div class="field">
+        <label for="janelaMinutos">Janela de observação (min)</label>
+        <input id="janelaMinutos" class="input" type="number" min="1" max="1440" name="janelaMinutos"
+          [(ngModel)]="politica.janelaMinutos" [disabled]="!podeEditar">
+      </div>
+      <div class="field">
+        <label for="bloqueioMinutos">Duração do bloqueio (min)</label>
+        <input id="bloqueioMinutos" class="input" type="number" min="1" max="1440" name="bloqueioMinutos"
+          [(ngModel)]="politica.bloqueioMinutos" [disabled]="!podeEditar">
+      </div>
+      <div class="field">
+        <label for="sessaoDias">Validade da sessão (dias)</label>
+        <input id="sessaoDias" class="input" type="number" min="1" max="30" name="sessaoDias"
+          [(ngModel)]="politica.sessaoDias" [disabled]="!podeEditar">
+      </div>
+      <div class="field">
+        <label>Composição exigida</label>
+        <label class="checkbox-row"><input type="checkbox" name="exigirNumero" [(ngModel)]="politica.exigirNumero"
+          [disabled]="!podeEditar"> Exigir número</label>
+        <label class="checkbox-row"><input type="checkbox" name="exigirMaiuscula"
+          [(ngModel)]="politica.exigirMaiuscula" [disabled]="!podeEditar"> Exigir maiúscula</label>
+      </div>
+    </div>
+
+    <p class="small muted">Contas administrativas sempre exigem 12+ caracteres com maiúscula, minúscula e número,
+      independentemente desta política. O último SUPER_ADMIN ativo não pode ser bloqueado, rebaixado ou anonimizado.</p>
+
+    <div class="modal-actions">
+      <button class="btn small" type="submit" [disabled]="salvando || !podeEditar">
+        {{ salvando ? 'Salvando…' : 'Salvar política' }}
+      </button>
+    </div>
+  </form>
+
+  <div class="grid cols-2 section-gap">
+    <article class="card">
+      <h2 class="card-title">Sessão administrativa</h2>
+      <div class="kv"><span>Administrador</span><strong>{{ me?.nome || session.usuario()?.nome }}</strong></div>
+      <div class="kv"><span>E-mail</span><strong>{{ me?.email || session.usuario()?.email }}</strong></div>
+      <div class="kv"><span>Papel</span><strong>{{ me?.papel || session.papel() }}</strong></div>
+      <div class="kv"><span>Permissões efetivas</span><strong>{{ me?.permissoes?.length || 0 }}</strong></div>
+      <p class="small muted">O token é enviado somente no cabeçalho Authorization. Não há cookie de sessão,
+        portanto CSRF por cookie não se aplica a esta API.</p>
+    </article>
+
+    <article class="card">
+      <h2 class="card-title">Ambiente e limites</h2>
+      <div class="kv"><span>Backend</span><strong>Spring Boot local</strong></div>
+      <div class="kv"><span>Banco</span><strong>H2 modo PostgreSQL</strong></div>
+      <div class="kv"><span>Firewall</span><strong>DEMO (sem alteração real)</strong></div>
+      <div class="kv"><span>Tema</span><strong>{{ session.isAdmin() ? 'Claro/Escuro por aparelho' : '—' }}</strong></div>
+      <p class="small muted">Documentação: ADMIN-ARCHITECTURE, ADMIN-SECURITY, ADMIN-RBAC-MATRIX,
+        ADMIN-FIREWALL, ADMIN-API, ADMIN-DATABASE, ADMIN-TEST-REPORT, ADMIN-DEPLOYMENT.</p>
+    </article>
+  </div>
+</ng-container>

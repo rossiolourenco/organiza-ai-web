@@ -141,3 +141,44 @@ form button:hover {
     padding: 32px 22px;
   }
 }
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: var(--primary);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.login-card h1 {
+  margin: 0 0 10px;
+}
+
+.subtitulo {
+  margin: 0 0 28px;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.erro {
+  margin: 0 0 14px;
+  padding: 10px 12px;
+  border: 1px solid rgba(180, 35, 24, 0.2);
+  border-radius: 10px;
+  background: var(--danger-soft);
+  color: var(--danger);
+  font-size: 13px;
+}
+
+form button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+  transform: none;
+}
+
+.rodape {
+  margin: 16px 0 0;
+  color: var(--text-muted);
+  font-size: 11px;
+  text-align: center;
+}

@@ -1,0 +1,68 @@
+<div class="admin-shell" [class.collapsed]="collapsed" [class.mobile-open]="mobileOpen">
+  <aside class="admin-sidebar">
+    <div class="admin-brand">
+      <span class="brand-mark">✓</span>
+      <div class="brand-text">
+        <strong>Organiza Aí</strong>
+        <span>Security Console</span>
+      </div>
+    </div>
+
+    <nav class="admin-nav" aria-label="Navegação administrativa">
+      <a *ngFor="let item of menu" [routerLink]="['/admin', item.path]" routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: false }" (click)="mobileOpen = false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path [attr.d]="item.icon"></path></svg>
+        <span>{{ item.label }}</span>
+      </a>
+    </nav>
+
+    <div class="admin-sidebar-footer">
+      <span class="env-dot"></span>
+      <div class="brand-text">
+        <strong>Ambiente DEMO</strong>
+        <span>H2 isolado · firewall simulado</span>
+      </div>
+    </div>
+  </aside>
+
+  <div class="admin-overlay" *ngIf="mobileOpen" (click)="mobileOpen = false"></div>
+
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <button type="button" class="icon-btn" aria-label="Alternar menu" (click)="alternarSidebar()">
+        <svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"></path></svg>
+      </button>
+
+      <div class="topbar-title">
+        <span class="eyebrow">ENTERPRISE SECURITY CONSOLE</span>
+        <strong>Gestão, segurança e operação</strong>
+      </div>
+
+      <div class="topbar-actions">
+        <span class="env-badge">DEMO · H2</span>
+        <a class="icon-btn alert-link" routerLink="/admin/seguranca" aria-label="Abrir alertas de segurança">
+          <svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"></path></svg>
+          <span class="alert-count" *ngIf="alertas > 0">{{ alertas }}</span>
+        </a>
+        <button type="button" class="icon-btn" [attr.aria-label]="theme.dark ? 'Ativar tema claro' : 'Ativar tema escuro'"
+          (click)="theme.alternar()">
+          <svg viewBox="0 0 24 24" *ngIf="!theme.dark"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"></path></svg>
+          <svg viewBox="0 0 24 24" *ngIf="theme.dark"><path d="M12 3v2M12 19v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M3 12h2M19 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0z"></path></svg>
+        </button>
+
+        <div class="user-chip">
+          <span class="avatar">{{ (me?.nome || session.usuario()?.nome || 'A').charAt(0) }}</span>
+          <div>
+            <strong>{{ me?.nome || session.usuario()?.nome }}</strong>
+            <span>{{ papel() }}</span>
+          </div>
+        </div>
+        <button type="button" class="btn ghost small" (click)="sair()">Sair</button>
+      </div>
+    </header>
+
+    <main class="admin-content">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>

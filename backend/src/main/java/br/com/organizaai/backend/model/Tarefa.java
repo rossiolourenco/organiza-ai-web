@@ -3,6 +3,11 @@ package br.com.organizaai.backend.model;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+import br.com.organizaai.backend.dto.DetalhesTarefa;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "tarefas")
@@ -40,6 +45,36 @@ public class Tarefa {
 
     @Column(name = "data_atualizacao")
     private LocalDateTime dataAtualizacao;
+
+    @Convert(converter = DetalhesConverter.class)
+    @Column(columnDefinition = "TEXT")
+    private DetalhesTarefa detalhes;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @ElementCollection
+    @CollectionTable(name = "tarefa_conclusoes", joinColumns = @JoinColumn(name = "tarefa_id"))
+    @Column(name = "concluida_em", nullable = false)
+    private List<Instant> conclusoes = new ArrayList<>();
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @Column(name = "proxima_gerada")
+    private boolean proximaGerada;
+
+    /** Exclusão lógica: mantém o registro recuperável na lixeira. */
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    @Column(name = "excluida_em")
+    private Instant excluidaEm;
+
+    public Instant getExcluidaEm() { return excluidaEm; }
+    public void setExcluidaEm(Instant value) { excluidaEm = value; }
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    public boolean isExcluida() { return excluidaEm != null; }
+
+    public DetalhesTarefa getDetalhes() { return detalhes; }
+    public void setDetalhes(DetalhesTarefa value) { detalhes = value; }
+    public List<Instant> getConclusoes() { return conclusoes; }
+    public boolean isProximaGerada() { return proximaGerada; }
+    public void setProximaGerada(boolean value) { proximaGerada = value; }
 
     public Tarefa() {
     }

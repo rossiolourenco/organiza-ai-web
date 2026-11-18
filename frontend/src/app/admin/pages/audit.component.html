@@ -1,0 +1,64 @@
+<adm-page-header eyebrow="AUDITORIA" title="Trilha administrativa"
+  subtitle="Registro persistente e somente leitura de operações críticas, com ator, resultado, IP e correlação.">
+  <adm-status status="ADMIN" label="Somente leitura"></adm-status>
+  <button class="btn ghost small" type="button" (click)="carregar()" [disabled]="carregando">Atualizar</button>
+</adm-page-header>
+
+<adm-error [message]="erro" (retry)="carregar()"></adm-error>
+
+<form class="filter-bar" (ngSubmit)="filtrar()">
+  <div class="field">
+    <label for="acaoAuditoria">Ação</label>
+    <input id="acaoAuditoria" class="input" name="acaoAuditoria" [(ngModel)]="filtros.acao"
+      placeholder="Ex.: CONTA_BLOQUEADA">
+  </div>
+  <div class="field grow">
+    <label for="atorAuditoria">Ator (e-mail)</label>
+    <input id="atorAuditoria" class="input" name="atorAuditoria" [(ngModel)]="filtros.ator"
+      placeholder="Filtrar por administrador">
+  </div>
+  <div class="field">
+    <label for="desdeAuditoria">Desde</label>
+    <input id="desdeAuditoria" class="input" type="date" name="desdeAuditoria" [(ngModel)]="filtros.desde">
+  </div>
+  <div class="field">
+    <label for="ateAuditoria">Até</label>
+    <input id="ateAuditoria" class="input" type="date" name="ateAuditoria" [(ngModel)]="filtros.ate">
+  </div>
+  <button class="btn small" type="submit">Filtrar</button>
+  <button class="btn ghost small" type="button" (click)="limpar()">Limpar</button>
+</form>
+
+<adm-skeleton [rows]="5" *ngIf="carregando"></adm-skeleton>
+<adm-empty *ngIf="!carregando && resultado && !resultado.content.length" title="Nenhum evento"
+  detail="Nenhum registro corresponde aos filtros atuais."></adm-empty>
+
+<div class="table-wrap" *ngIf="!carregando && resultado && resultado.content.length">
+  <table class="data-table">
+    <thead><tr><th>Data</th><th>Ator</th><th>Ação</th><th>Recurso</th><th>Resultado</th><th>IP</th><th></th></tr></thead>
+    <tbody>
+      <ng-container *ngFor="let evento of resultado.content">
+        <tr>
+          <td>{{ evento.criadoEm | date:'dd/MM/yy HH:mm:ss' }}</td>
+          <td><div class="strong">{{ evento.atorEmail || 'sistema' }}</div>
+            <div class="muted small">{{ evento.atorPapel || '—' }}</div></td>
+          <td class="strong">{{ evento.acao }}</td>
+          <td>{{ evento.recurso || '—' }}<span class="muted small" *ngIf="evento.recursoId"> #{{ evento.recursoId }}</span></td>
+          <td><adm-status [status]="evento.resultado"></adm-status></td>
+          <td>{{ evento.ip || '—' }}</td>
+          <td><button class="btn ghost small" type="button" (click)="alternar(evento.id)">
+            {{ expandido === evento.id ? 'Ocultar' : 'Detalhes' }}</button></td>
+        </tr>
+        <tr *ngIf="expandido === evento.id">
+          <td colspan="7">
+            <div class="kv"><span>Detalhes</span><strong>{{ evento.detalhes || '—' }}</strong></div>
+            <div class="kv"><span>Correlação</span><strong>{{ evento.correlacao || '—' }}</strong></div>
+            <div class="kv"><span>User agent</span><strong>{{ evento.userAgent || '—' }}</strong></div>
+          </td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </table>
+</div>
+<adm-pagination *ngIf="resultado" [page]="resultado.page" [totalPages]="resultado.totalPages"
+  [total]="resultado.total" (pageChange)="mudarPagina($event)"></adm-pagination>

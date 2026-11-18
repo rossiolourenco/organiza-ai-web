@@ -1,5 +1,17 @@
 # Organiza Aí Web
 
+> **Organiza Aí 3.0 — Premium Experience:** veja [entrega e validações](docs/MOBILE-3.0-ENTREGA.md),
+> [roteiro da exposição](docs/DEMONSTRACAO-MOBILE-3.0.md),
+> [inventário de arquivos](docs/ARQUIVOS-MOBILE-3.0.md) e
+> [migrações V002/V003/V004](database/migrations/README.md). O backend exige sessão Bearer; implante a
+> adaptação do Web junto dele. As seções históricas abaixo descrevem a entrega acadêmica original.
+>
+> **Admin 1.0 — Enterprise Security Console:** veja [arquitetura](docs/ADMIN-ARCHITECTURE.md),
+> [RBAC](docs/ADMIN-RBAC-MATRIX.md), [segurança](docs/ADMIN-SECURITY.md),
+> [API](docs/ADMIN-API.md), [banco](docs/ADMIN-DATABASE.md), [firewall](docs/ADMIN-FIREWALL.md),
+> [guia](docs/ADMIN-USER-GUIDE.md), [testes](docs/ADMIN-TEST-REPORT.md),
+> [exposição](docs/ADMIN-EXHIBITION-GUIDE.md) e [implantação](docs/ADMIN-DEPLOYMENT.md).
+
 Sistema Web Full Stack para gerenciamento e organização de tarefas pessoais.
 
 O **Organiza Aí** permite que usuários criem uma conta, realizem login e organizem suas tarefas por prioridade, categoria, status e prazo.

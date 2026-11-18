@@ -1,0 +1,204 @@
+<adm-page-header eyebrow="GESTÃO DE CONTAS" title="Usuários"
+  subtitle="Contas, papéis, status e sessões. Ações críticas exigem confirmação e geram auditoria.">
+  <button class="btn small" type="button" (click)="modalCriar = true">Novo usuário</button>
+</adm-page-header>
+
+<adm-alert [message]="erro" tone="error" (closed)="erro = null"></adm-alert>
+<adm-alert [message]="aviso" tone="success" (closed)="aviso = null"></adm-alert>
+
+<form class="filter-bar" (ngSubmit)="buscar()">
+  <div class="field grow">
+    <label for="busca">Buscar por nome ou e-mail</label>
+    <input id="busca" class="input" name="q" [(ngModel)]="filtros.q" placeholder="Ex.: demo@exposicao.invalid">
+  </div>
+  <div class="field">
+    <label for="status">Status</label>
+    <select id="status" class="select" name="status" [(ngModel)]="filtros.status">
+      <option value="">Todos</option>
+      <option value="ATIVO">Ativo</option>
+      <option value="BLOQUEADO">Bloqueado</option>
+      <option value="DESATIVADO">Desativado</option>
+      <option value="ANONIMIZADO">Anonimizado</option>
+    </select>
+  </div>
+  <div class="field">
+    <label for="papel">Papel</label>
+    <select id="papel" class="select" name="papel" [(ngModel)]="filtros.papel">
+      <option value="">Todos</option>
+      <option value="USER">Usuário</option>
+      <option value="ADMIN">Admin</option>
+      <option value="SUPER_ADMIN">Super admin</option>
+    </select>
+  </div>
+  <button class="btn small" type="submit" [disabled]="carregando">Filtrar</button>
+  <button class="btn ghost small" type="button" (click)="limpar()">Limpar</button>
+</form>
+
+<div class="grid cols-4" *ngIf="resultado">
+  <adm-metric label="Contas no filtro" [value]="resultado.total" hint="Resultado atual"></adm-metric>
+  <adm-metric label="Página" [value]="(resultado.page + 1) + ' / ' + (resultado.totalPages || 1)"
+    hint="Paginação"></adm-metric>
+  <adm-metric label="Seu papel" [value]="session.papel()" hint="Permissões efetivas" tone="primary"></adm-metric>
+  <adm-metric label="Sessões" value="Sob demanda" hint="Detalhes por conta" tone="neutral"></adm-metric>
+</div>
+
+<adm-skeleton [rows]="5" *ngIf="carregando"></adm-skeleton>
+<adm-empty *ngIf="!carregando && resultado && !resultado.content.length"
+  title="Nenhuma conta encontrada" detail="Ajuste a busca ou os filtros de status e papel."></adm-empty>
+
+<div class="table-wrap" *ngIf="!carregando && resultado && resultado.content.length">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Conta</th><th>Papel</th><th>Status</th><th>Último login</th><th>Sessões</th><th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let usuario of resultado.content">
+        <td>
+          <div class="strong">{{ usuario.nome }}</div>
+          <div class="muted small">{{ usuario.email }}</div>
+          <div class="muted small" *ngIf="usuario.motivoBloqueio">Motivo: {{ usuario.motivoBloqueio }}</div>
+        </td>
+        <td><adm-status [status]="usuario.papel"></adm-status></td>
+        <td><adm-status [status]="usuario.status"></adm-status></td>
+        <td>
+          <span *ngIf="usuario.ultimoLoginEm">{{ usuario.ultimoLoginEm | date:'dd/MM/yy HH:mm' }}</span>
+          <span class="muted" *ngIf="!usuario.ultimoLoginEm">Nunca</span>
+        </td>
+        <td>{{ usuario.sessoesAtivas }}</td>
+        <td>
+          <div class="row-actions">
+            <button class="btn ghost small" type="button" (click)="abrirDetalhe(usuario)">Detalhes</button>
+            <button class="btn ghost small" type="button" *ngIf="podeGerenciar(usuario) && usuario.status === 'ATIVO'"
+              (click)="alterarStatus(usuario, 'BLOQUEADO')">Bloquear</button>
+            <button class="btn ghost small" type="button" *ngIf="podeGerenciar(usuario) && usuario.status === 'BLOQUEADO'"
+              (click)="alterarStatus(usuario, 'ATIVO')">Desbloquear</button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<adm-pagination *ngIf="resultado" [page]="resultado.page" [totalPages]="resultado.totalPages"
+  [total]="resultado.total" (pageChange)="mudarPagina($event)"></adm-pagination>
+
+<!-- Detalhes -->
+<adm-modal [open]="modalDetalhe" [title]="detalhe?.usuario?.nome || 'Detalhes da conta'"
+  [subtitle]="detalhe?.usuario?.email || 'Carregando conta'" [wide]="true" (closed)="fecharDetalhe()">
+  <adm-skeleton [rows]="4" *ngIf="carregandoDetalhe"></adm-skeleton>
+
+  <ng-container *ngIf="detalhe && !carregandoDetalhe">
+    <div class="tag-list">
+      <adm-status [status]="detalhe.usuario.papel"></adm-status>
+      <adm-status [status]="detalhe.usuario.status"></adm-status>
+      <adm-status *ngIf="detalhe.usuario.deveTrocarSenha" status="BLOQUEADO" label="Troca de senha pendente"></adm-status>
+    </div>
+
+    <div class="grid cols-2">
+      <div>
+        <div class="kv"><span>ID</span><strong>#{{ detalhe.usuario.id }}</strong></div>
+        <div class="kv"><span>Criada em</span><strong>{{ detalhe.usuario.dataCriacao | date:'dd/MM/yyyy HH:mm' }}</strong></div>
+        <div class="kv"><span>Último login</span><strong>{{ (detalhe.usuario.ultimoLoginEm | date:'dd/MM/yyyy HH:mm') || 'Nunca' }}</strong></div>
+        <div class="kv"><span>Sessões ativas</span><strong>{{ detalhe.usuario.sessoesAtivas }}</strong></div>
+      </div>
+      <div>
+        <div class="kv"><span>Bloqueado até</span><strong>{{ (detalhe.usuario.bloqueadoAte | date:'dd/MM/yyyy HH:mm') || '—' }}</strong></div>
+        <div class="kv"><span>Motivo</span><strong>{{ detalhe.usuario.motivoBloqueio || '—' }}</strong></div>
+        <div class="kv"><span>Troca de senha</span><strong>{{ detalhe.usuario.deveTrocarSenha ? 'Pendente' : 'Em dia' }}</strong></div>
+        <div class="kv"><span>Auditoria</span><strong>{{ detalhe.eventosRecentes.length }} evento(s)</strong></div>
+      </div>
+    </div>
+
+    <div class="card" *ngIf="podeAlterarPapel(detalhe.usuario)">
+      <h3 class="card-title">Alterar papel</h3>
+      <div class="filter-bar" style="margin-bottom:0">
+        <div class="field grow">
+          <label for="novoPapel">Novo papel</label>
+          <select id="novoPapel" class="select" [(ngModel)]="papelSelecionado">
+            <option value="USER">Usuário</option>
+            <option value="ADMIN">Admin</option>
+            <option value="SUPER_ADMIN">Super admin</option>
+          </select>
+        </div>
+        <button class="btn small" type="button" (click)="aplicarPapel()">Aplicar papel</button>
+      </div>
+      <p class="small muted">O último SUPER_ADMIN ativo não pode ser rebaixado. A operação é auditada.</p>
+    </div>
+
+    <div class="tag-list" *ngIf="podeGerenciar(detalhe.usuario)">
+      <button class="btn ghost small" type="button" *ngIf="detalhe.usuario.status === 'ATIVO'"
+        (click)="alterarStatus(detalhe.usuario, 'BLOQUEADO')">Bloquear</button>
+      <button class="btn ghost small" type="button" *ngIf="detalhe.usuario.status === 'BLOQUEADO'"
+        (click)="alterarStatus(detalhe.usuario, 'ATIVO')">Desbloquear</button>
+      <button class="btn ghost small" type="button" *ngIf="detalhe.usuario.status !== 'DESATIVADO'"
+        (click)="alterarStatus(detalhe.usuario, 'DESATIVADO')">Desativar</button>
+      <button class="btn ghost small" type="button" *ngIf="detalhe.usuario.status === 'DESATIVADO'"
+        (click)="alterarStatus(detalhe.usuario, 'ATIVO')">Reativar</button>
+      <button class="btn ghost small" type="button" (click)="revogar(detalhe.usuario)">Revogar sessões</button>
+      <button class="btn secondary small" type="button" (click)="redefinirSenha(detalhe.usuario)">Redefinir senha</button>
+      <button class="btn danger small" type="button" (click)="anonimizar(detalhe.usuario)">Anonimizar</button>
+    </div>
+
+    <div class="grid cols-2">
+      <div>
+        <h3 class="card-title">Sessões ativas</h3>
+        <div class="kv" *ngFor="let sessaoItem of detalhe.sessoes">
+          <span>{{ sessaoItem.criadoEm | date:'dd/MM HH:mm' }} · {{ sessaoItem.ip || 'IP não registrado' }}</span>
+          <strong>expira {{ sessaoItem.expiraEm | date:'dd/MM HH:mm' }}</strong>
+        </div>
+        <p class="muted small" *ngIf="!detalhe.sessoes.length">Nenhuma sessão ativa.</p>
+      </div>
+      <div>
+        <h3 class="card-title">Eventos da conta</h3>
+        <adm-timeline [eventos]="detalhe.eventosRecentes"></adm-timeline>
+      </div>
+    </div>
+  </ng-container>
+</adm-modal>
+
+<!-- Criar conta -->
+<adm-modal [open]="modalCriar" title="Novo usuário" subtitle="Uma senha temporária será gerada e exibida uma única vez."
+  (closed)="modalCriar = false">
+  <form class="form-grid" (ngSubmit)="criar()">
+    <div class="field full">
+      <label for="novoNome">Nome</label>
+      <input id="novoNome" class="input" name="novoNome" [(ngModel)]="novo.nome" maxlength="100" required>
+    </div>
+    <div class="field full">
+      <label for="novoEmail">E-mail</label>
+      <input id="novoEmail" class="input" type="email" name="novoEmail" [(ngModel)]="novo.email" required>
+    </div>
+    <div class="field full">
+      <label for="novoPapelConta">Papel</label>
+      <select id="novoPapelConta" class="select" name="novoPapel" [(ngModel)]="novo.papel">
+        <option value="USER">Usuário</option>
+        <option value="ADMIN" *ngIf="session.isSuperAdmin()">Admin</option>
+      </select>
+      <p class="small muted">SUPER_ADMIN só é provisionado pelo bootstrap seguro do servidor.</p>
+    </div>
+    <div class="modal-actions full">
+      <button class="btn ghost" type="button" (click)="modalCriar = false" [disabled]="executando">Cancelar</button>
+      <button class="btn" type="submit" [disabled]="executando">{{ executando ? 'Criando…' : 'Criar conta' }}</button>
+    </div>
+  </form>
+</adm-modal>
+
+<!-- Senha temporária -->
+<adm-modal [open]="modalSenha" title="Senha temporária" subtitle="Visível apenas nesta sessão."
+  (closed)="fecharSenha()">
+  <ng-container *ngIf="senha">
+    <p class="small muted">Conta: <strong>{{ senha.email }}</strong></p>
+    <code class="code">{{ senha.senhaTemporaria }}</code>
+    <p class="small">{{ senha.aviso }}</p>
+    <div class="modal-actions">
+      <button class="btn secondary small" type="button" (click)="copiarSenha()">{{ copiado ? 'Copiado' : 'Copiar senha' }}</button>
+      <button class="btn small" type="button" (click)="fecharSenha()">Entendi</button>
+    </div>
+  </ng-container>
+</adm-modal>
+
+<adm-confirm [open]="!!confirmacao" [title]="confirmacao?.titulo || ''" [message]="confirmacao?.mensagem || ''"
+  [confirmLabel]="confirmacao?.rotulo || 'Confirmar'" [danger]="confirmacao?.perigo || false"
+  [busy]="executando" (confirm)="confirmar()" (cancel)="cancelarConfirmacao()"></adm-confirm>

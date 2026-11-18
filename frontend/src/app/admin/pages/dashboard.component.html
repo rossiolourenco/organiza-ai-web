@@ -1,0 +1,94 @@
+<adm-page-header eyebrow="VISÃO GERAL" title="Dashboard administrativo"
+  subtitle="Indicadores reais de contas, segurança, banco e infraestrutura do ambiente atual.">
+  <button class="btn ghost small" type="button" (click)="carregar()" [disabled]="carregando">Atualizar</button>
+  <a class="btn small" routerLink="/admin/usuarios">Gerenciar usuários</a>
+</adm-page-header>
+
+<adm-error [message]="erro" (retry)="carregar()"></adm-error>
+
+<div class="skeleton-list" *ngIf="carregando">
+  <adm-skeleton [rows]="4"></adm-skeleton>
+</div>
+
+<ng-container *ngIf="!carregando && seguranca">
+  <div class="grid cols-4">
+    <adm-metric label="Contas ativas" [value]="seguranca.contasAtivas" hint="Acesso liberado" tone="success"></adm-metric>
+    <adm-metric label="Contas bloqueadas" [value]="seguranca.contasBloqueadas"
+      hint="Exigem revisão" tone="warning"></adm-metric>
+    <adm-metric label="Sessões ativas" [value]="seguranca.sessoesAtivas" hint="Tokens válidos" tone="primary"></adm-metric>
+    <adm-metric label="Falhas 24h" [value]="seguranca.falhas24h" hint="Tentativas malsucedidas" tone="danger"></adm-metric>
+  </div>
+
+  <div class="grid cols-3 section-gap">
+    <article class="card">
+      <div class="card-head">
+        <div><h2 class="card-title">Alertas de segurança</h2><p class="small muted">Regras automáticas com dados reais.</p></div>
+        <adm-status [status]="seguranca.alertas.length ? 'ATENCAO' : 'ATIVO'"
+          [label]="seguranca.alertas.length + ' alerta(s)'"></adm-status>
+      </div>
+      <div class="tag-list" *ngIf="seguranca.alertas.length">
+        <div *ngFor="let alerta of seguranca.alertas" class="kv" style="width:100%;flex-direction:column;align-items:flex-start">
+          <div class="tag-list">
+            <adm-status [status]="alerta.nivel === 'CRITICO' ? 'DESATIVADO' : alerta.nivel === 'ATENCAO' ? 'BLOQUEADO' : 'ATIVO'"
+              [label]="alerta.nivel"></adm-status>
+            <strong>{{ alerta.titulo }}</strong>
+          </div>
+          <p class="small muted" style="margin:4px 0 0">{{ alerta.detalhe }}</p>
+        </div>
+      </div>
+      <p class="muted small" *ngIf="!seguranca.alertas.length">Nenhum alerta acionado neste momento.</p>
+      <a class="btn ghost small section-gap" routerLink="/admin/seguranca">Abrir central de segurança</a>
+    </article>
+
+    <article class="card">
+      <h2 class="card-title">Política de autenticação</h2>
+      <p class="small muted">Aplicada a novos cadastros e redefinições.</p>
+      <div class="kv"><span>Senha mínima</span><strong>{{ seguranca.politica.senhaMinima }} caracteres</strong></div>
+      <div class="kv"><span>Tentativas antes do bloqueio</span><strong>{{ seguranca.politica.maxTentativas }}</strong></div>
+      <div class="kv"><span>Janela de observação</span><strong>{{ seguranca.politica.janelaMinutos }} min</strong></div>
+      <div class="kv"><span>Duração do bloqueio</span><strong>{{ seguranca.politica.bloqueioMinutos }} min</strong></div>
+      <div class="kv"><span>Validade da sessão</span><strong>{{ seguranca.politica.sessaoDias }} dias</strong></div>
+      <a class="btn ghost small section-gap" routerLink="/admin/configuracoes">Revisar política</a>
+    </article>
+
+    <article class="card" *ngIf="monitor">
+      <div class="card-head">
+        <div><h2 class="card-title">Operação</h2><p class="small muted">Coletado {{ monitor.coletadoEm | date:'HH:mm:ss' }}</p></div>
+        <adm-status [status]="monitor.backendDisponivel ? 'ATIVO' : 'DESATIVADO'"
+          [label]="monitor.backendDisponivel ? 'Online' : 'Indisponível'"></adm-status>
+      </div>
+      <div class="kv"><span>Banco de dados</span>
+        <strong>{{ monitor.banco.disponivel ? (monitor.banco.latenciaMs + ' ms') : 'Indisponível' }}</strong>
+      </div>
+      <div class="kv"><span>Uptime</span><strong>{{ uptime(monitor.uptimeSegundos) }}</strong></div>
+      <div class="kv"><span>CPU do sistema</span>
+        <strong>{{ monitor.cpu.cargaSistema == null ? 'Indisponível' : monitor.cpu.cargaSistema + '%' }}</strong>
+      </div>
+      <div class="kv"><span>Firewall</span><strong>{{ monitor.firewall.modo }} · {{ monitor.firewall.regrasAtivas }} ativas</strong></div>
+      <div style="margin-top:10px">
+        <div class="kv"><span>Heap usado</span><strong>{{ percentual(monitor.memoria.heapUsadoBytes, monitor.memoria.heapMaximoBytes) }}%</strong></div>
+        <div class="bar"><div class="bar-fill" [style.width.%]="percentual(monitor.memoria.heapUsadoBytes, monitor.memoria.heapMaximoBytes)"></div></div>
+      </div>
+      <a class="btn ghost small section-gap" routerLink="/admin/monitoramento">Ver monitoramento</a>
+    </article>
+  </div>
+
+  <div class="grid cols-2 section-gap">
+    <article class="card">
+      <div class="card-head"><div><h2 class="card-title">Eventos recentes</h2><p class="small muted">Auditoria administrativa.</p></div>
+        <a class="btn ghost small" routerLink="/admin/auditoria">Ver tudo</a></div>
+      <adm-timeline [eventos]="seguranca.ultimosEventos"></adm-timeline>
+    </article>
+
+    <article class="card">
+      <div class="card-head"><div><h2 class="card-title">Ações rápidas</h2><p class="small muted">Atalhos para operação segura.</p></div></div>
+      <div class="grid cols-2">
+        <a class="btn secondary" routerLink="/admin/usuarios">Buscar usuário</a>
+        <a class="btn secondary" routerLink="/admin/firewall">Firewall DEMO</a>
+        <a class="btn secondary" routerLink="/admin/seguranca">Tentativas de login</a>
+        <a class="btn secondary" routerLink="/admin/configuracoes">Políticas</a>
+      </div>
+      <p class="small muted section-gap">Operações críticas exigem confirmação e são registradas com ator, IP e correlação.</p>
+    </article>
+  </div>
+</ng-container>

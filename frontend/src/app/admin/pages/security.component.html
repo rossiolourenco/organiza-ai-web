@@ -1,0 +1,91 @@
+<adm-page-header eyebrow="CENTRAL DE SEGURANÇA" title="Autenticação e eventos"
+  subtitle="Tentativas de login, bloqueios, políticas e alertas calculados sobre dados reais.">
+  <button class="btn ghost small" type="button" (click)="carregar()" [disabled]="carregando">Atualizar</button>
+  <a class="btn small" routerLink="/admin/configuracoes">Editar política</a>
+</adm-page-header>
+
+<adm-error [message]="erro" (retry)="carregar()"></adm-error>
+<adm-skeleton [rows]="5" *ngIf="carregando"></adm-skeleton>
+
+<ng-container *ngIf="!carregando && overview">
+  <div class="grid cols-4">
+    <adm-metric label="Sucessos 24h" [value]="overview.sucessos24h" hint="Logins concluídos" tone="success"></adm-metric>
+    <adm-metric label="Falhas 24h" [value]="overview.falhas24h" hint="Credenciais ou bloqueio" tone="danger"></adm-metric>
+    <adm-metric label="Contas bloqueadas" [value]="overview.contasBloqueadas" hint="Revisão necessária" tone="warning"></adm-metric>
+    <adm-metric label="Sessões ativas" [value]="overview.sessoesAtivas" hint="Validade atual" tone="primary"></adm-metric>
+  </div>
+
+  <div class="grid cols-2 section-gap">
+    <article class="card">
+      <div class="card-head"><h2 class="card-title">Alertas</h2>
+        <adm-status [status]="overview.alertas.length ? 'BLOQUEADO' : 'ATIVO'"
+          [label]="overview.alertas.length + ' ativo(s)'"></adm-status></div>
+      <div *ngFor="let alerta of overview.alertas" class="kv" style="flex-direction:column;align-items:flex-start">
+        <div class="tag-list">
+          <adm-status [status]="alerta.nivel === 'CRITICO' ? 'DESATIVADO' : alerta.nivel === 'ATENCAO' ? 'BLOQUEADO' : 'ATIVO'"
+            [label]="alerta.nivel"></adm-status>
+          <strong>{{ alerta.titulo }}</strong>
+        </div>
+        <p class="small muted" style="margin:4px 0 0">{{ alerta.detalhe }}</p>
+      </div>
+      <p class="muted small" *ngIf="!overview.alertas.length">Nenhum alerta acionado.</p>
+    </article>
+
+    <article class="card">
+      <h2 class="card-title">Política em vigor</h2>
+      <div class="kv"><span>Senha mínima</span><strong>{{ overview.politica.senhaMinima }} caracteres</strong></div>
+      <div class="kv"><span>Composição</span>
+        <strong>{{ overview.politica.exigirNumero ? 'Com número' : 'Livre' }} ·
+          {{ overview.politica.exigirMaiuscula ? 'Com maiúscula' : 'Sem exigência de caixa' }}</strong></div>
+      <div class="kv"><span>Bloqueio após</span><strong>{{ overview.politica.maxTentativas }} falhas</strong></div>
+      <div class="kv"><span>Janela</span><strong>{{ overview.politica.janelaMinutos }} min</strong></div>
+      <div class="kv"><span>Duração do bloqueio</span><strong>{{ overview.politica.bloqueioMinutos }} min</strong></div>
+      <div class="kv"><span>Sessão</span><strong>{{ overview.politica.sessaoDias }} dias</strong></div>
+      <p class="small muted">Última alteração: {{ (overview.politica.atualizadoEm | date:'dd/MM/yyyy HH:mm') || 'padrão do sistema' }}</p>
+    </article>
+  </div>
+
+  <article class="card section-gap">
+    <h2 class="card-title">Eventos recentes</h2>
+    <adm-timeline [eventos]="overview.ultimosEventos"></adm-timeline>
+  </article>
+
+  <h2 class="page-title section-gap" style="font-size:20px">Tentativas de login</h2>
+  <form class="filter-bar" (ngSubmit)="filtrar()">
+    <div class="field grow">
+      <label for="emailTentativa">E-mail</label>
+      <input id="emailTentativa" class="input" name="emailTentativa" [(ngModel)]="filtros.email"
+        placeholder="Filtrar por e-mail">
+    </div>
+    <div class="field">
+      <label for="sucessoTentativa">Resultado</label>
+      <select id="sucessoTentativa" class="select" name="sucessoTentativa" [(ngModel)]="filtros.sucesso">
+        <option value="">Todos</option>
+        <option value="true">Sucesso</option>
+        <option value="false">Falha</option>
+      </select>
+    </div>
+    <button class="btn small" type="submit">Filtrar</button>
+    <button class="btn ghost small" type="button" (click)="limpar()">Limpar</button>
+  </form>
+
+  <adm-empty *ngIf="tentativas && !tentativas.content.length" title="Nenhuma tentativa registrada"
+    detail="Nenhum login corresponde aos filtros atuais."></adm-empty>
+
+  <div class="table-wrap" *ngIf="tentativas && tentativas.content.length">
+    <table class="data-table">
+      <thead><tr><th>Data</th><th>E-mail</th><th>Resultado</th><th>Motivo</th><th>IP</th></tr></thead>
+      <tbody>
+        <tr *ngFor="let tentativa of tentativas.content">
+          <td>{{ tentativa.criadoEm | date:'dd/MM/yy HH:mm:ss' }}</td>
+          <td class="strong">{{ tentativa.email }}</td>
+          <td><adm-status [status]="tentativa.sucesso ? 'SUCESSO' : 'FALHA'"></adm-status></td>
+          <td>{{ tentativa.motivo || '—' }}</td>
+          <td>{{ tentativa.ip || '—' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <adm-pagination *ngIf="tentativas" [page]="tentativas.page" [totalPages]="tentativas.totalPages"
+    [total]="tentativas.total" (pageChange)="mudarPagina($event)"></adm-pagination>
+</ng-container>
