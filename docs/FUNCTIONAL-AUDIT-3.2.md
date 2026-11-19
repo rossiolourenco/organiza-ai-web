@@ -24,7 +24,7 @@ fase.
 | Telas/rotas Mobile | 14 |
 | Entidades JPA | 13 |
 | Perfis | USER, ADMIN, SUPER_ADMIN |
-| Suítes backend | 8 |
+| Suítes backend | 7 |
 
 ### Endpoints por área
 

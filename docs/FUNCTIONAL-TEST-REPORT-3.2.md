@@ -7,7 +7,7 @@ Data: 19/11/2026. Ambiente de homologação: backend local com H2 em memória, W
 
 | Verificação | Resultado |
 |---|---|
-| Backend — suítes | **8** |
+| Backend — suítes | **7** |
 | Backend — testes | **34 / 34** |
 | Angular — testes | **15 / 15** |
 | Mobile — testes | **50 / 50** |
