@@ -67,6 +67,7 @@ Capturas disponíveis em `docs/assets/`:
 - `uiux-3.1-web-cadastro.jpg`
 - `uiux-3.1-mobile-login.jpg`
 - `uiux-3.1-admin-dashboard.jpg`
+- `uiux-3.1-ios-simulator.png`
 
 Revisado:
 
@@ -80,6 +81,11 @@ Revisado:
 
 O novo Admin foi validado em produção após a publicação em `/opt/organiza-ai/releases/20261119-uiux`:
 login SUPER_ADMIN, dashboard, layout responsivo, ambiente PROD e ausência de erros de console.
+
+O Mobile 3.1 foi aberto no simulador iOS 18.1 (iPhone 16 Pro, Xcode 16.1 em HD externo) via Expo
+Go 54.0.7. A tela de login carregou com Safe Area correta, sem campo de servidor/IP, com mostrar
+senha e rodapé de conexão segura. Evidência em `docs/assets/uiux-3.1-ios-simulator.png`. Simulador
+não substitui teste em aparelho físico.
 
 ## 6. Integração
 
