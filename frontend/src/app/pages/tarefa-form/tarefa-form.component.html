@@ -15,6 +15,14 @@
     </a>
 
     <div class="topbar-actions">
+      <a class="icon-button" routerLink="/perfil" aria-label="Meu perfil" title="Meu perfil">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="8" r="4" />
+          <path d="M4 21a8 8 0 0 1 16 0" />
+        </svg>
+      </a>
+
       <button type="button" class="icon-button" (click)="theme.alternar()"
         [attr.aria-label]="theme.dark ? 'Ativar tema claro' : 'Ativar tema escuro'">
         {{ theme.dark ? '☀' : '☾' }}
@@ -71,6 +79,15 @@
           <label for="descricao">Descrição</label>
           <textarea id="descricao" name="descricao" [(ngModel)]="descricao"
             placeholder="Descreva a tarefa, o contexto e o que precisa ser feito." rows="5"></textarea>
+        </div>
+
+        <div class="campo" *ngIf="tarefaId">
+          <label for="status">Status</label>
+          <select id="status" name="status" [(ngModel)]="statusTarefa">
+            <option value="PENDENTE">Pendente</option>
+            <option value="EM_ANDAMENTO">Em andamento</option>
+            <option value="CONCLUIDA">Concluída</option>
+          </select>
         </div>
 
         <div class="linha">

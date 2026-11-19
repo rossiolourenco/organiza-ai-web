@@ -125,6 +125,8 @@ public class AutenticacaoService {
         if (senhaAtual == null || !encoder.matches(senhaAtual, usuario.getSenha()))
             throw new IllegalArgumentException("Senha atual incorreta.");
         politica.validarSenhaUsuario(novaSenha);
+        if (encoder.matches(novaSenha, usuario.getSenha()))
+            throw new IllegalArgumentException("A nova senha deve ser diferente da senha atual.");
         usuario.setSenha(encoder.encode(novaSenha));
         usuario.setSenhaAlteradaEm(Instant.now());
         usuario.setDeveTrocarSenha(false);

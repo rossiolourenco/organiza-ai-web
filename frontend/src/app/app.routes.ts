@@ -3,6 +3,7 @@ import { LoginComponent } from "./pages/login/login.component";
 import { CadastroComponent } from "./pages/cadastro/cadastro.component";
 import { HomeComponent } from "./pages/home/home.component";
 import { TarefaFormComponent } from "./pages/tarefa-form/tarefa-form.component";
+import { PerfilComponent } from "./pages/perfil/perfil.component";
 import { authGuard } from "./services/auth.guard";
 import { adminGuard } from "./services/admin.guard";
 import { AdminLayoutComponent } from "./admin/admin-layout.component";
@@ -37,6 +38,11 @@ export const routes: Routes = [
     path: "tarefas/editar/:id",
     canActivate: [authGuard],
     component: TarefaFormComponent,
+  },
+  {
+    path: "perfil",
+    canActivate: [authGuard],
+    component: PerfilComponent,
   },
   {
     path: "admin",

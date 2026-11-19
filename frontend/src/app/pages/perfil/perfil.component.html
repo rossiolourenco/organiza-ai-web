@@ -1,0 +1,151 @@
+<div class="app-shell">
+
+  <header class="topbar">
+    <a class="brand" routerLink="/home" aria-label="Organiza Aí — início">
+      <span class="brand-logo" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12l5 5L20 7" />
+        </svg>
+      </span>
+      <span class="brand-text">
+        <strong>Organiza Aí</strong>
+        <span>Premium Experience</span>
+      </span>
+    </a>
+
+    <div class="topbar-actions">
+      <button type="button" class="icon-button" (click)="theme.alternar()"
+        [attr.aria-label]="theme.dark ? 'Ativar tema claro' : 'Ativar tema escuro'"
+        [title]="theme.dark ? 'Tema claro' : 'Tema escuro'">
+        {{ theme.dark ? '☀' : '☾' }}
+      </button>
+      <button type="button" class="sair" (click)="sair()">Sair</button>
+    </div>
+  </header>
+
+  <main class="page">
+    <div class="page-head">
+      <a class="voltar" routerLink="/home">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M19 12H5M12 19l-7-7 7-7" />
+        </svg>
+        Voltar para tarefas
+      </a>
+      <h1>Meu perfil</h1>
+      <p>Gerencie seus dados e a segurança da sua conta.</p>
+    </div>
+
+    <div class="flash warning" *ngIf="deveTrocarSenha" role="status">
+      <span>Sua senha atual é temporária. Defina uma nova senha abaixo para proteger sua conta.</span>
+    </div>
+
+    <div class="loading-state" *ngIf="carregando" role="status">
+      <span class="spinner" aria-hidden="true"></span>
+      Carregando seu perfil…
+    </div>
+
+    <div class="flash error" *ngIf="erro && !carregando" role="alert">
+      <span>{{ erro }}</span>
+      <button type="button" class="flash-retry" (click)="carregar()">Tentar novamente</button>
+    </div>
+
+    <div class="grid" *ngIf="!carregando">
+      <section class="card identity" aria-labelledby="titulo-dados">
+        <div class="identity-head">
+          <span class="avatar" aria-hidden="true">{{ iniciais }}</span>
+          <div class="identity-text">
+            <h2 id="titulo-dados">{{ nome || 'Sua conta' }}</h2>
+            <p>{{ email }}</p>
+            <div class="badges">
+              <span class="badge role">{{ papelLabel }}</span>
+              <span class="badge" [class.ok]="status === 'ATIVO'" [class.warn]="status !== 'ATIVO'">
+                {{ status === 'ATIVO' ? 'Conta ativa' : status }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <dl class="facts">
+          <div><dt>Membro desde</dt><dd>{{ membroDesde }}</dd></div>
+          <div><dt>Sessão</dt><dd>Token seguro com expiração</dd></div>
+        </dl>
+
+        <form class="form" (ngSubmit)="salvarPerfil()">
+          <div class="field">
+            <label for="nome">Nome de exibição</label>
+            <input id="nome" name="nome" type="text" [(ngModel)]="nome" maxlength="100"
+              autocomplete="name" required />
+          </div>
+          <div class="field">
+            <label for="email">E-mail</label>
+            <input id="email" name="email" type="email" [value]="email" disabled />
+            <small>O e-mail é sua identidade de acesso e não pode ser alterado por aqui.</small>
+          </div>
+
+          <p class="feedback error" *ngIf="erroPerfil" role="alert">{{ erroPerfil }}</p>
+          <p class="feedback ok" *ngIf="avisoPerfil" role="status">{{ avisoPerfil }}</p>
+
+          <button type="submit" class="btn primary" [disabled]="salvandoPerfil">
+            {{ salvandoPerfil ? 'Salvando…' : 'Salvar nome' }}
+          </button>
+        </form>
+      </section>
+
+      <section class="card security" aria-labelledby="titulo-seguranca">
+        <div class="section-head">
+          <div>
+            <h2 id="titulo-seguranca">Segurança</h2>
+            <p>Altere sua senha com confirmação da senha atual.</p>
+          </div>
+          <button type="button" class="toggle-senha" (click)="mostrarSenhas = !mostrarSenhas"
+            [attr.aria-pressed]="mostrarSenhas"
+            [attr.aria-label]="mostrarSenhas ? 'Ocultar senhas' : 'Mostrar senhas'">
+            {{ mostrarSenhas ? 'Ocultar senhas' : 'Mostrar senhas' }}
+          </button>
+        </div>
+
+        <form class="form" (ngSubmit)="alterarSenha()">
+          <div class="field">
+            <label for="senhaAtual">Senha atual</label>
+            <input id="senhaAtual" name="senhaAtual" [type]="mostrarSenhas ? 'text' : 'password'"
+              [(ngModel)]="senhaAtual" autocomplete="current-password" maxlength="72" required />
+          </div>
+          <div class="field">
+            <label for="novaSenha">Nova senha</label>
+            <input id="novaSenha" name="novaSenha" [type]="mostrarSenhas ? 'text' : 'password'"
+              [(ngModel)]="novaSenha" autocomplete="new-password" maxlength="72" required />
+            <small>Mínimo de 8 caracteres. O servidor também aplica a política vigente (números e maiúsculas, quando exigidos).</small>
+          </div>
+          <div class="field">
+            <label for="confirmarSenha">Confirmar nova senha</label>
+            <input id="confirmarSenha" name="confirmarSenha" [type]="mostrarSenhas ? 'text' : 'password'"
+              [(ngModel)]="confirmarSenha" autocomplete="new-password" maxlength="72" required />
+          </div>
+
+          <p class="feedback error" *ngIf="erroSenha" role="alert">{{ erroSenha }}</p>
+
+          <button type="submit" class="btn primary" [disabled]="alterandoSenha">
+            {{ alterandoSenha ? 'Alterando…' : 'Alterar senha' }}
+          </button>
+        </form>
+
+        <p class="note">
+          Ao alterar a senha, todas as sessões dessa conta são revogadas. Você será levado ao login
+          para entrar novamente com a nova credencial.
+        </p>
+      </section>
+
+      <section class="card preferences" aria-labelledby="titulo-aparencia">
+        <div>
+          <h2 id="titulo-aparencia">Aparência</h2>
+          <p>Tema atual: {{ theme.dark ? 'escuro' : 'claro' }}. A preferência fica salva neste navegador.</p>
+        </div>
+        <button type="button" class="btn secondary" (click)="theme.alternar()">
+          Usar tema {{ theme.dark ? 'claro' : 'escuro' }}
+        </button>
+      </section>
+    </div>
+  </main>
+</div>

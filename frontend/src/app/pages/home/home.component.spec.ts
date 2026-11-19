@@ -40,4 +40,19 @@ describe('HomeComponent', () => {
     expect(component.tarefas.map(t => t.id)).toEqual([1]);
     http.verify();
   });
+
+  it('reabre tarefa concluída via PUT preservando os dados do cartão', () => {
+    const http = TestBed.inject(HttpTestingController);
+    http.expectOne(r => r.url.includes('/api/tarefas')).flush([
+      { id: 9, titulo: 'Reabrir', status: 'CONCLUIDA', prioridade: 'ALTA',
+        usuario: { id: 1 }, categoria: { id: 2, nome: 'Trabalho' } },
+    ]);
+    component.reabrirTarefa(component.tarefas[0]);
+    const req = http.expectOne(r => r.url.includes('/api/tarefas/9') && r.method === 'PUT');
+    expect(req.request.body.status).toBe('PENDENTE');
+    expect(req.request.body.titulo).toBe('Reabrir');
+    expect(req.request.body.categoria).toEqual({ id: 2 });
+    req.flush({ id: 9, titulo: 'Reabrir', status: 'PENDENTE', prioridade: 'ALTA' });
+    http.expectOne(r => r.url.includes('/api/tarefas')).flush([]);
+  });
 });

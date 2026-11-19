@@ -84,6 +84,10 @@ export class HomeComponent implements OnInit {
     return this.todasTarefas.filter(tarefa => tarefa.status === "CONCLUIDA").length;
   }
 
+  get deveTrocarSenha(): boolean {
+    return this.session.usuario()?.deveTrocarSenha === true;
+  }
+
   get filtrosAtivos(): boolean {
     return !!(
       this.statusSelecionado ||
@@ -144,6 +148,29 @@ export class HomeComponent implements OnInit {
       error: erro => {
         console.error("Erro ao concluir tarefa:", erro);
         this.erro = "Não foi possível concluir a tarefa. Tente novamente.";
+      },
+    });
+  }
+
+  reabrirTarefa(tarefa: Tarefa): void {
+    if (!tarefa.id) return;
+    this.erro = null;
+    this.tarefaService.atualizar(tarefa.id, {
+      titulo: tarefa.titulo,
+      descricao: tarefa.descricao,
+      prioridade: tarefa.prioridade,
+      status: "PENDENTE",
+      dataPrazo: tarefa.dataPrazo,
+      usuario: { id: tarefa.usuario?.id ?? this.session.usuario()?.id ?? 0 },
+      categoria: tarefa.categoria ? { id: tarefa.categoria.id } : undefined,
+    }).subscribe({
+      next: () => {
+        this.feedback = "Tarefa reaberta. Ela voltou para Pendente.";
+        this.carregarTarefas();
+      },
+      error: erro => {
+        console.error("Erro ao reabrir tarefa:", erro);
+        this.erro = "Não foi possível reabrir a tarefa. Tente novamente.";
       },
     });
   }

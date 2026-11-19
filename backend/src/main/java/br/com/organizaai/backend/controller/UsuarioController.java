@@ -3,6 +3,8 @@ package br.com.organizaai.backend.controller;
 import br.com.organizaai.backend.dto.AlterarSenhaRequest;
 import br.com.organizaai.backend.dto.CadastroRequest;
 import br.com.organizaai.backend.dto.LoginRequest;
+import br.com.organizaai.backend.dto.PerfilRequest;
+import br.com.organizaai.backend.dto.PerfilResponse;
 import br.com.organizaai.backend.model.Papel;
 import br.com.organizaai.backend.model.StatusConta;
 import br.com.organizaai.backend.model.Usuario;
@@ -48,6 +50,26 @@ public class UsuarioController {
     @GetMapping
     public List<Usuario> listar(HttpServletRequest request) {
         return usuarioRepository.findById((Long) request.getAttribute("usuarioAutenticado")).stream().toList();
+    }
+
+    /** Perfil do próprio usuário autenticado, com resposta sem hash de senha. */
+    @GetMapping("/perfil")
+    public PerfilResponse perfil() {
+        return PerfilResponse.de(atual.usuario());
+    }
+
+    /** Permite editar somente o nome; e-mail e papel não são alteráveis pelo próprio usuário. */
+    @PutMapping("/perfil")
+    public PerfilResponse atualizarPerfil(@Valid @RequestBody PerfilRequest dados) {
+        Usuario usuario = atual.usuario();
+        String nome = dados.nome().trim();
+        if (nome.length() < 2)
+            throw new IllegalArgumentException("O nome deve ter pelo menos 2 caracteres.");
+        usuario.setNome(nome);
+        Usuario salvo = usuarioRepository.save(usuario);
+        auditoria.registrar(salvo, "PERFIL_ATUALIZADO", "usuario", salvo.getId(), "SUCESSO",
+            "Nome atualizado pelo próprio usuário.");
+        return PerfilResponse.de(salvo);
     }
 
     @PostMapping
