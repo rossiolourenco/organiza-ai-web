@@ -6,6 +6,27 @@ Legenda: ✅ funcional e validada · 🟡 funcional com ressalvas · 🟠 incomp
 Evidências: suítes `ContaApiTests`, `MobileApiTests`, `PremiumApiTests`, `AdminApiTests`,
 testes Angular e Mobile, e cenários ponta a ponta descritos no relatório de testes.
 
+## 0. Matriz resumida (colunas obrigatórias)
+
+| Módulo | Funcionalidade | Web | Mobile | Backend | Perfil | Comportamento esperado | Estado encontrado | Problema | Prioridade | Correção | Teste | Resultado |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| Conta | Login | ✅ | ✅ | ✅ | público | Autenticar e criar sessão | Funcional | — | — | — | E2E | Aprovado |
+| Conta | Logout | ✅ | ✅ | ✅ | autenticado | Revogar sessão e limpar cliente | Funcional | — | — | — | E2E | Aprovado |
+| Conta | Alterar senha | ✅ | ✅ | ✅ | autenticado | Confirmar atual, validar política, revogar sessões | **Ausente na UI** | Interface não expunha endpoint | P1 | Perfil → Segurança | ContaApiTests + E2E | Aprovado |
+| Conta | Perfil (ver) | ✅ | ✅ | ✅ | autenticado | Exibir nome/e-mail sem hash | **Ausente na UI** | Sem tela/contrato de leitura | P1 | GET /usuarios/perfil + tela | ContaApiTests | Aprovado |
+| Conta | Perfil (editar nome) | ✅ | ✅ | ✅ | autenticado | Persistir nome e refletir na sessão | **Ausente** | Sem endpoint/tela | P1 | PUT /usuarios/perfil | ContaApiTests + E2E | Aprovado |
+| Conta | Recuperar senha | ❌ | ❌ | ❌ | público | Enviar token por e-mail | Ausente | Depende de SMTP | P2 | Não simulado | — | Pendente |
+| Tarefas | Criar | ✅ | ✅ | ✅ | dono | Persistir e listar | Funcional | — | — | — | E2E Web→Mobile | Aprovado |
+| Tarefas | Concluir | ✅ | ✅ | ✅ | dono | Status CONCLUIDA e conclusão registrada | Funcional | — | — | — | E2E Mobile→Web | Aprovado |
+| Tarefas | Reabrir | ✅ | ✅ | ✅ | dono | Voltar para PENDENTE | **Ausente na Web** | Sem ação | P2 | Botão Reabrir | E2E | Aprovado |
+| Tarefas | Status Em andamento | ✅ | ✅ | ✅ | dono | Persistir status | **Ausente na Web** | Sem select | P2 | Select no formulário | E2E | Aprovado |
+| Tarefas | Excluir | ✅ | ✅ | ✅ | dono | Exclusão lógica + lixeira | Funcional | Web sem lixeira | P2 | Paridade futura | PremiumApiTests | Aprovado com ressalva |
+| Categorias | CRUD | ✅ | ✅ | ✅ | dono | Criar/editar/excluir sem afetar terceiros | Funcional | Web sem página dedicada | P2 | Formulário Web | E2E Mobile→Web | Aprovado com ressalva |
+| Segurança | Isolamento A/B | ✅ | ✅ | ✅ | dono | A não acessa B | Funcional | — | — | — | MobileApiTests | Aprovado |
+| Admin | RBAC | ✅ | ➖ | ✅ | ADMIN/SUPER | USER não acessa Admin | Funcional | — | — | — | AdminApiTests | Aprovado |
+| Sincronização | Tarefa Web→Mobile | ✅ | ✅ | ✅ | dono | Mesmo dado nas duas plataformas | Funcional | — | — | — | E2E | Aprovado |
+| Sincronização | Categoria Mobile→Web | ✅ | ✅ | ✅ | dono | Mesma categoria nas duas | Funcional | — | — | — | E2E | Aprovado |
+
 ## 1. Autenticação e conta
 
 | Funcionalidade | Web | Mobile | Backend | Perfil | Estado | Problema | Prioridade | Correção | Teste |
