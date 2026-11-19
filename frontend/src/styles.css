@@ -69,6 +69,7 @@ textarea:focus-visible {
   --background: #f7f8fc;
   --surface: #ffffff;
   --surface-2: #f0f2f8;
+  --on-primary: #ffffff;
   --text: #172033;
   --text-muted: #667085;
   --border: #e5e7ef;
@@ -90,6 +91,7 @@ textarea:focus-visible {
   --background: #0b1020;
   --surface: #151c2e;
   --surface-2: #1c2538;
+  --on-primary: #0b1020;
   --text: #f8fafc;
   --text-muted: #94a3b8;
   --border: #2a3448;
@@ -347,4 +349,17 @@ textarea:focus-visible {
   .topbar-title { display: none; }
   .admin-topbar { padding: 8px 12px; gap: 8px; }
   .env-badge { display: none; }
+}
+
+.admin-shell.collapsed .admin-nav a { justify-content: center; padding: 0; }
+.admin-shell.collapsed .admin-sidebar-footer { justify-content: center; }
+.admin-shell.collapsed .admin-nav a svg { flex: 0 0 20px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

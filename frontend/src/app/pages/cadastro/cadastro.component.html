@@ -1,59 +1,54 @@
 <div class="cadastro-container">
+  <button type="button" class="theme-toggle" (click)="alternarTema()"
+    [attr.aria-label]="theme.dark ? 'Ativar tema claro' : 'Ativar tema escuro'">
+    {{ theme.dark ? '☀' : '☾' }}
+  </button>
 
   <div class="cadastro-card">
+    <div class="cadastro-brand">
+      <span class="brand-mark">✓</span>
+      <div>
+        <strong>Organiza Aí</strong>
+        <span>Premium Experience</span>
+      </div>
+    </div>
 
-    <h1>Criar conta</h1>
-    <p>Comece a organizar suas tarefas.</p>
+    <h1>Criar minha conta</h1>
+    <p class="subtitulo">Comece a organizar o que importa.</p>
 
     <form (ngSubmit)="cadastrar()">
-
       <div class="form-group">
         <label for="nome">Nome</label>
-        <input
-          type="text"
-          id="nome"
-          name="nome"
-          [(ngModel)]="nome"
-          placeholder="Digite seu nome"
-          required
-        >
+        <input type="text" id="nome" name="nome" [(ngModel)]="nome" placeholder="Seu nome"
+          autocomplete="name" maxlength="100" required>
       </div>
 
       <div class="form-group">
         <label for="email">E-mail</label>
-        <input
-          type="email"
-          id="email"
-          name="email"
-          [(ngModel)]="email"
-          placeholder="Digite seu e-mail"
-          required
-        >
+        <input type="email" id="email" name="email" [(ngModel)]="email" placeholder="voce@exemplo.com"
+          autocomplete="email" required>
       </div>
 
       <div class="form-group">
         <label for="senha">Senha</label>
-        <input
-          type="password"
-          id="senha"
-          name="senha"
-          [(ngModel)]="senha"
-          placeholder="Digite sua senha"
-          required
-        >
+        <div class="senha-wrap">
+          <input [type]="mostrarSenha ? 'text' : 'password'" id="senha" name="senha"
+            [(ngModel)]="senha" placeholder="Mínimo de 8 caracteres" autocomplete="new-password" required>
+          <button type="button" class="eye" (click)="mostrarSenha = !mostrarSenha"
+            [attr.aria-label]="mostrarSenha ? 'Ocultar senha' : 'Mostrar senha'">
+            {{ mostrarSenha ? '◉' : '◎' }}
+          </button>
+        </div>
       </div>
 
-      <button type="submit">
-        Criar conta
-      </button>
+      <p class="erro" *ngIf="erro" role="alert">{{ erro }}</p>
 
+      <button type="submit" class="criar" [disabled]="carregando">
+        {{ carregando ? 'Criando…' : 'Criar conta' }}
+      </button>
     </form>
 
-    <p class="login-link">
-      Já possui uma conta?
-      <a routerLink="/login">Entrar</a>
-    </p>
-
+    <p class="login-link">Já possui uma conta? <a routerLink="/login">Entrar</a></p>
+    <p class="rodape">🔒 Seus dados ficam vinculados apenas à sua conta.</p>
   </div>
-
 </div>

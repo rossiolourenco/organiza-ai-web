@@ -4,6 +4,7 @@ import { FormsModule } from "@angular/forms";
 import { RouterLink, Router } from "@angular/router";
 import { UsuarioService } from "../../services/usuario.service";
 import { SessionService } from "../../services/session.service";
+import { ThemeService } from "../../services/theme.service";
 
 @Component({
   selector: "app-login",
@@ -17,11 +18,13 @@ export class LoginComponent implements OnInit {
   erro: string | null = null;
   aviso: string | null = null;
   carregando = false;
+  mostrarSenha = false;
 
   constructor(
     private usuarioService: UsuarioService,
     private session: SessionService,
     private router: Router,
+    public theme: ThemeService,
   ) {}
 
   ngOnInit(): void {
@@ -29,12 +32,17 @@ export class LoginComponent implements OnInit {
       this.aviso = "Senha alterada. Entre novamente com a nova credencial.";
     } else if (this.router.url.includes("admin=1")) {
       this.aviso = "Área administrativa: entre com uma conta ADMIN ou SUPER_ADMIN.";
+    } else if (this.router.url.includes("cadastro=1")) {
+      this.aviso = "Conta criada com sucesso. Entre com suas credenciais.";
     }
   }
 
+  alternarTema(): void {
+    this.theme.alternar();
+  }
+
   entrar() {
-    if (this.carregando) return;
-    this.erro = null;
+    if (this.carregando) return;    this.erro = null;
     if (!this.email.trim() || !this.senha) {
       this.erro = "Informe e-mail e senha.";
       return;

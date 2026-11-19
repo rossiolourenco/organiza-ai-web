@@ -10,7 +10,8 @@
 
     <nav class="admin-nav" aria-label="Navegação administrativa">
       <a *ngFor="let item of menu" [routerLink]="['/admin', item.path]" routerLinkActive="active"
-        [routerLinkActiveOptions]="{ exact: false }" (click)="mobileOpen = false">
+        [routerLinkActiveOptions]="{ exact: false }" [attr.aria-label]="item.label"
+        [title]="collapsed ? item.label : null" (click)="mobileOpen = false">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path [attr.d]="item.icon"></path></svg>
         <span>{{ item.label }}</span>
       </a>
@@ -19,7 +20,7 @@
     <div class="admin-sidebar-footer">
       <span class="env-dot"></span>
       <div class="brand-text">
-        <strong>Ambiente DEMO</strong>
+        <strong>Ambiente PROD</strong>
         <span>PostgreSQL · firewall DEMO</span>
       </div>
     </div>

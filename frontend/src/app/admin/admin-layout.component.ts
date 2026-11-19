@@ -25,7 +25,7 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
     { path: 'auditoria', label: 'Auditoria', icon: 'M9 5h6M9 9h6M9 13h6M5 3h14v18H5z' },
     { path: 'configuracoes', label: 'Configurações', icon: 'M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM4 12h2m12 0h2M12 4v2m0 12v2' },
   ];
-  collapsed = false;
+  collapsed = typeof localStorage !== 'undefined' && localStorage.getItem('organiza-admin-sidebar') === 'collapsed';
   mobileOpen = false;
   alertas = 0;
   me: AdminMe | null = null;
@@ -53,7 +53,10 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
 
   alternarSidebar(): void {
     if (window.innerWidth < 980) this.mobileOpen = !this.mobileOpen;
-    else this.collapsed = !this.collapsed;
+    else {
+      this.collapsed = !this.collapsed;
+      localStorage.setItem('organiza-admin-sidebar', this.collapsed ? 'collapsed' : 'expanded');
+    }
   }
 
   sair(): void {

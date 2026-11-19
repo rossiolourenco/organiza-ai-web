@@ -1,49 +1,49 @@
 <div class="login-container">
+  <button type="button" class="theme-toggle" (click)="alternarTema()"
+    [attr.aria-label]="theme.dark ? 'Ativar tema claro' : 'Ativar tema escuro'">
+    {{ theme.dark ? '☀' : '☾' }}
+  </button>
+
   <div class="login-card">
-    <p class="eyebrow">ORGANIZA AÍ</p>
-    <h1>Mais clareza.<br>Mais espaço para você.</h1>
+    <div class="login-brand">
+      <span class="brand-mark">✓</span>
+      <div>
+        <strong>Organiza Aí</strong>
+        <span>Premium Experience</span>
+      </div>
+    </div>
+
+    <h1>Bem-vindo de volta</h1>
     <p class="subtitulo">Entre para continuar de onde parou.</p>
 
     <form (ngSubmit)="entrar()">
       <div class="form-group">
         <label for="email">E-mail</label>
-        <input
-          type="email"
-          id="email"
-          name="email"
-          [(ngModel)]="email"
-          placeholder="Digite seu e-mail"
-          autocomplete="email"
-          required
-        >
+        <input type="email" id="email" name="email" [(ngModel)]="email"
+          placeholder="voce@exemplo.com" autocomplete="email" required>
       </div>
 
       <div class="form-group">
         <label for="senha">Senha</label>
-        <input
-          type="password"
-          id="senha"
-          name="senha"
-          [(ngModel)]="senha"
-          placeholder="Digite sua senha"
-          autocomplete="current-password"
-          required
-        >
+        <div class="senha-wrap">
+          <input [type]="mostrarSenha ? 'text' : 'password'" id="senha" name="senha"
+            [(ngModel)]="senha" placeholder="Sua senha" autocomplete="current-password" required>
+          <button type="button" class="eye" (click)="mostrarSenha = !mostrarSenha"
+            [attr.aria-label]="mostrarSenha ? 'Ocultar senha' : 'Mostrar senha'">
+            {{ mostrarSenha ? '◉' : '◎' }}
+          </button>
+        </div>
       </div>
 
       <p class="erro" *ngIf="erro" role="alert">{{ erro }}</p>
       <p class="sucesso" *ngIf="aviso" role="status">{{ aviso }}</p>
 
-      <button type="submit" [disabled]="carregando">
+      <button type="submit" class="entrar" [disabled]="carregando">
         {{ carregando ? 'Entrando…' : 'Entrar' }}
       </button>
     </form>
 
-    <p class="cadastro">
-      Ainda não possui uma conta?
-      <a routerLink="/cadastro">Cadastre-se</a>
-    </p>
-
-    <p class="rodape">Administradores são encaminhados ao console seguro.</p>
+    <p class="cadastro">Ainda não possui uma conta? <a routerLink="/cadastro">Cadastre-se</a></p>
+    <p class="rodape">🔒 Conexão segura · administradores são levados ao console.</p>
   </div>
 </div>

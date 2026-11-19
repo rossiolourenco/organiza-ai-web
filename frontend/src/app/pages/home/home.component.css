@@ -91,12 +91,12 @@
 .botao-sair {
   border: 1px solid var(--border);
   background: var(--surface);
-  color: #475467;
+  color: var(--text-muted);
 }
 
 .botao-sair:hover {
-  background: #f9fafb;
-  border-color: #d0d5dd;
+  background: var(--surface-2);
+  border-color: var(--border);
 }
 
 .tarefas-topo {
@@ -143,7 +143,7 @@
 }
 
 .filtro label {
-  color: #475467;
+  color: var(--text-muted);
   font-size: 12px;
   font-weight: 700;
 }
@@ -154,7 +154,7 @@
   padding: 0 36px 0 12px;
   border: 1px solid var(--border);
   border-radius: 9px;
-  background: #fff;
+  background: var(--surface);
   color: var(--text);
   font-size: 14px;
   outline: none;
@@ -163,7 +163,7 @@
 }
 
 .filtro select:hover {
-  border-color: #c5cad3;
+  border-color: var(--border);
 }
 
 .filtro select:focus {
@@ -180,7 +180,6 @@
 .tarefa-card {
   display: flex;
   flex-direction: column;
-  min-height: 235px;
   padding: 22px;
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -194,18 +193,18 @@
 
 .tarefa-card:hover {
   transform: translateY(-2px);
-  border-color: #d8dce5;
+  border-color: var(--border);
   box-shadow: var(--shadow);
 }
 
 .tarefa-concluida {
-  background: #fbfcfb;
+  background: var(--surface-2);
 }
 
 .tarefa-concluida .titulo-area h3 {
-  color: #667085;
+  color: var(--text-muted);
   text-decoration: line-through;
-  text-decoration-color: #98a2b3;
+  text-decoration-color: var(--text-muted);
 }
 
 .card-header {
@@ -311,14 +310,14 @@
 
 .prazo strong {
   margin-right: 4px;
-  color: #475467;
+  color: var(--text-muted);
 }
 
 .card-acoes {
   display: flex;
   gap: 8px;
   padding-top: 16px;
-  border-top: 1px solid #eef0f3;
+  border-top: 1px solid var(--border);
 }
 
 .acao {
@@ -336,30 +335,30 @@
 }
 
 .concluir {
-  border: 1px solid #bbebca;
+  border: 1px solid var(--success);
   background: var(--success-soft);
   color: var(--success);
 }
 
 .concluir:hover {
-  background: #dcfce7;
+  background: var(--success-soft);
 }
 
 .editar {
   border: 1px solid var(--border);
-  background: #fff;
-  color: #344054;
+  background: var(--surface);
+  color: var(--text);
 }
 
 .editar:hover {
-  background: #f9fafb;
-  border-color: #d0d5dd;
+  background: var(--surface-2);
+  border-color: var(--border);
 }
 
 .excluir {
   margin-left: auto;
-  border: 1px solid #fee4e2;
-  background: #fff;
+  border: 1px solid var(--danger);
+  background: var(--surface);
   color: var(--danger);
 }
 
@@ -369,7 +368,7 @@
 
 .estado-vazio {
   padding: 60px 24px;
-  border: 1px dashed #d0d5dd;
+  border: 1px dashed var(--border);
   border-radius: var(--radius);
   background: var(--surface);
   text-align: center;
@@ -495,8 +494,8 @@
 .filtro input[type="date"] {
   height: 40px; min-width: 155px; padding: 0 10px;
   border: 1px solid var(--border); border-radius: 9px;
-  background: #fff; color: var(--text); font-size: 14px;
+  background: var(--surface-2); color: var(--text); font-size: 14px;
 }
 .limpar-filtros { height: 40px; padding: 0 14px; border: 1px solid var(--border);
-  border-radius: 9px; background: #fff; cursor: pointer; }
-.erro-periodo { color: #b42318; font-weight: 600; }
+  border-radius: 9px; background: var(--surface-2); color: var(--text); cursor: pointer; }
+.erro-periodo { color: var(--danger); font-weight: 600; }

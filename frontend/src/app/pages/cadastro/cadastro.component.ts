@@ -1,40 +1,48 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, Router } from '@angular/router';
 import { UsuarioService } from '../../services/usuario.service';
+import { ThemeService } from '../../services/theme.service';
 
 @Component({
   selector: 'app-cadastro',
-  imports: [FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './cadastro.component.html',
   styleUrl: './cadastro.component.css'
 })
 export class CadastroComponent {
-
-  nome: string = '';
-  email: string = '';
-  senha: string = '';
+  nome = '';
+  email = '';
+  senha = '';
+  carregando = false;
+  erro: string | null = null;
+  mostrarSenha = false;
 
   constructor(
     private usuarioService: UsuarioService,
-    private router: Router
+    private router: Router,
+    public theme: ThemeService,
   ) {}
 
-  cadastrar() {
-    const usuario = {
-      nome: this.nome,
-      email: this.email,
-      senha: this.senha
-    };
+  alternarTema(): void { this.theme.alternar(); }
 
-    this.usuarioService.criar(usuario).subscribe({
+  cadastrar() {
+    if (this.carregando) return;
+    this.erro = null;
+    if (!this.nome.trim() || !this.email.includes('@') || this.senha.length < 8) {
+      this.erro = 'Informe nome, e-mail válido e senha com pelo menos 8 caracteres.';
+      return;
+    }
+    this.carregando = true;
+    this.usuarioService.criar({ nome: this.nome.trim(), email: this.email.trim(), senha: this.senha }).subscribe({
       next: () => {
-        alert('Conta criada com sucesso!');
-        this.router.navigate(['/login']);
+        this.carregando = false;
+        this.router.navigate(['/login'], { queryParams: { cadastro: '1' } });
       },
       error: (erro) => {
-        console.error('Erro ao criar conta:', erro);
-        alert('Não foi possível criar a conta.');
+        this.carregando = false;
+        this.erro = erro.error?.message || 'Não foi possível criar a conta.';
       }
     });
   }
