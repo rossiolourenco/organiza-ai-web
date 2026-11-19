@@ -77,8 +77,8 @@ Revisado:
 - botão de mostrar senha;
 - mensagens inline.
 
-Não foi possível validar visualmente o novo Admin em produção porque a 3.1 **não foi publicada**;
-o build e os testes passaram. A versão atual em produção continua sendo a 3.0/Admin 1.0.
+O novo Admin foi validado em produção após a publicação em `/opt/organiza-ai/releases/20261119-uiux`:
+login SUPER_ADMIN, dashboard, layout responsivo, ambiente PROD e ausência de erros de console.
 
 ## 6. Integração
 
@@ -92,5 +92,5 @@ o build e os testes passaram. A versão atual em produção continua sendo a 3.0
 
 - Validação em aparelhos físicos.
 - Captura visual do Admin 3.1 após publicação.
-- Publicação da release 3.1 mediante autorização.
+- Publicação concluída em 19/11/2026; builds Mobile assinados continuam pendentes.
 - Redução do CSS da Home para eliminar o aviso de orçamento.

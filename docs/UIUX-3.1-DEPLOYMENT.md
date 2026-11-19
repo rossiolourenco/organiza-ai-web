@@ -2,14 +2,17 @@
 
 ## 1. Estado
 
-A release **3.1 foi construída e testada, mas não publicada**. A produção continua com o build
-anterior (3.0 + Admin 1.0). Nenhuma alteração de banco, firewall ou systemd foi feita nesta fase.
+A release **3.1 foi publicada em 19/11/2026** em `/opt/organiza-ai/releases/20261119-uiux`, com o
+`current` apontando para ela. Web/Admin foram validados em HTTPS. Nenhuma alteração de banco,
+firewall ou systemd foi feita nesta fase. Mobile teve código e bundles preparados, mas não foi
+publicado em lojas.
 
-Commits locais (não enviados ao GitHub):
+Commits publicados no GitHub:
 
-- Web/Admin: `645d309` — refinamento UI/UX 3.1.
-- Mobile: `102dd8e` — login/API 3.1.
-- Este documento e demais docs entram em commit local posterior.
+- Web/Admin: `cad066a` (release 3.1, docs e refinamento).
+- Mobile: `102dd8e` (login/API 3.1).
+
+O commit `645d309` contém a implementação Web/Admin e `cad066a` a documentação de release.
 
 ## 2. Artefatos preparados
 
