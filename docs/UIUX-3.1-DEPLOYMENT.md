@@ -2,10 +2,12 @@
 
 ## 1. Estado
 
-A release **3.1 foi publicada em 19/11/2026** em `/opt/organiza-ai/releases/20261119-uiux`, com o
-`current` apontando para ela. Web/Admin foram validados em HTTPS. Nenhuma alteração de banco,
-firewall ou systemd foi feita nesta fase. Mobile teve código e bundles preparados, mas não foi
-publicado em lojas.
+A release **3.1 foi publicada em 19/11/2026** em `/opt/organiza-ai/releases/20261119-uiux` e, na
+sequência, a release corretiva `20261119-uiux2` substituiu o frontend da área logada (Home e
+formulário de tarefas). O `current` aponta para `20261119-uiux2`. Web/Admin foram validados em
+HTTPS nos temas claro e escuro, em 514 px e 1440 px, sem erros de console e sem overflow.
+Nenhuma alteração de banco, firewall ou systemd foi feita nesta fase. Mobile teve código e bundles
+preparados, mas não foi publicado em lojas.
 
 Commits publicados no GitHub:
 
@@ -18,7 +20,7 @@ O commit `645d309` contém a implementação Web/Admin e `cad066a` a documentaç
 
 | Artefato | Caminho | Tamanho |
 |---|---|---|
-| Angular Web | `frontend/dist/frontend/browser` | ~500 KB |
+| Angular Web | `frontend/dist/frontend/browser` | ~524 KB |
 | Mobile Web | `dist/_expo/static/js/web` | 1,3 MB |
 | Android Hermes | `dist/_expo/static/js/android` | 3,1 MB |
 | iOS Hermes | `dist/_expo/static/js/ios` | 3,1 MB |
@@ -45,7 +47,7 @@ Nenhuma migration nova. Backend permanece compatível com Mobile 3.1.
 ## 4. Publicação Web/Admin (quando autorizado)
 
 ```bash
-REL=/opt/organiza-ai/releases/20261119-uiux
+REL=/opt/organiza-ai/releases/20261119-uiux2
 mkdir -p "$REL/public"
 rsync -a --delete /caminho/local/frontend/dist/frontend/browser/ "$REL/public/"
 chown -R organiza:organiza "$REL"
@@ -107,7 +109,25 @@ systemctl reload nginx
 
 ## 9. Riscos
 
-- Aviso de orçamento CSS da Home (6,45 kB).
-- Validação visual do Admin 3.1 só será possível após publicar ou montar staging.
-- Sem teste em aparelho físico.
-- Publicação e push continuam pendentes de autorização.
+- Sem teste em aparelho físico Mobile; simulador iOS validado.
+- A prévia Expo Web em `localhost:8081` continua sujeita a CORS de produção.
+- O CSS da Home cresceu para ~12,5 kB; o orçamento de `anyComponentStyle` foi ajustado para
+  14 kB (aviso) e 20 kB (erro) em `angular.json`.
+- A senha inicial do SUPER_ADMIN deve ser trocada e o arquivo temporário removido.
+
+## 10. Histórico de releases
+
+| Release | Conteúdo | Estado |
+|---|---|---|
+| `20261118` | Admin 1.0 + base 3.0 | rollback disponível |
+| `20261119-uiux` | Login/cadastro 3.1 + Admin | substituída |
+| `20261119-uiux2` | Home/Tarefas e formulário redesenhados | **atual** |
+
+Rollback imediato:
+
+```bash
+ln -sfn /opt/organiza-ai/releases/20261119-uiux /opt/organiza-ai/current
+systemctl reload nginx
+```
+
+O JAR do backend é o mesmo em todas as releases desta série; não há migração a reverter.
