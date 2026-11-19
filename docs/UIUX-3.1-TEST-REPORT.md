@@ -66,6 +66,7 @@ Capturas disponíveis em `docs/assets/`:
 - `uiux-3.1-web-login.jpg`
 - `uiux-3.1-web-cadastro.jpg`
 - `uiux-3.1-mobile-login.jpg`
+- `uiux-3.1-admin-dashboard.jpg`
 
 Revisado:
 
