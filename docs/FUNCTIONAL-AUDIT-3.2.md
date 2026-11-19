@@ -45,6 +45,10 @@ A lacuna P1 confirmada era de **interface**: o endpoint `PUT /api/usuarios/senha
 seguro e revogava sessões, mas o usuário comum não tinha como acessá-lo na Web nem no Mobile.
 Isso foi corrigido com uma área de perfil/segurança nas duas plataformas.
 
+Durante o smoke test de produção foi identificado e corrigido um defeito pré-existente de consulta
+no PostgreSQL: filtros nulos de data em auditoria/tentativas faziam o Hibernate enviar parâmetros
+sem tipo. As três consultas administrativas foram reescritas e validadas com dados reais.
+
 Também foram corrigidas lacunas funcionais da Web:
 
 - não era possível definir **Em andamento**;
@@ -66,6 +70,7 @@ Também foram corrigidas lacunas funcionais da Web:
 | F-08 | P2 | Web sem recorrência, subtarefas, notas e etiquetas no formulário | **Lacuna de paridade documentada** |
 | F-09 | P3 | Versão Mobile exibida como 1.0.0 na prévia Web | **Corrigido** |
 | F-10 | P3 | Texto “Prioridade media” sem acentuação no Mobile | **Pendente** |
+| F-11 | P1 | Auditoria e tentativas de login retornavam 500 no PostgreSQL com filtros nulos | **Corrigido** (release `func32c`) |
 
 ## 5. Decisões
 

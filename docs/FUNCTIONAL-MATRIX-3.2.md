@@ -129,7 +129,9 @@ testes Angular e Mobile, e cenários ponta a ponta descritos no relatório de te
 | Redefinir senha | ✅ | ➖ | ✅ | ADMIN+ | ✅ | — | — | — | AdminApiTests |
 | Alterar papel | ✅ | ➖ | ✅ | SUPER | ✅ | — | — | — | AdminApiTests |
 | Auditoria | ✅ | ➖ | ✅ | ADMIN+ | ✅ | — | — | — | AdminApiTests |
+| Auditoria com filtros | ✅ | ➖ | ✅ | ADMIN+ | ✅ | Bug PostgreSQL corrigido | P1 | `func32c` | AdminApiTests + produção |
 | Segurança/política | ✅ | ➖ | ✅ | ADMIN/SUPER | ✅ | — | — | — | AdminApiTests |
+| Tentativas com filtros | ✅ | ➖ | ✅ | ADMIN+ | ✅ | Bug PostgreSQL corrigido | P1 | `func32c` | AdminApiTests + produção |
 | Firewall DEMO | ✅ | ➖ | ✅ | ADMIN+ | ✅ | Sem integração real | — | — | AdminApiTests |
 | Monitoramento | ✅ | ➖ | ✅ | ADMIN+ | ✅ | — | — | — | AdminApiTests |
 | Configurações | ✅ | ➖ | ✅ | SUPER | ✅ | — | — | — | AdminApiTests |

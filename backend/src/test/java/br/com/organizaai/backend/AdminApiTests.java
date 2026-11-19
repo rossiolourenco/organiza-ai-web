@@ -288,4 +288,20 @@ class AdminApiTests {
         assertEquals(401, call("POST", "/api/usuarios/login",
             Map.of("email", user.email, "senha", senha), null).status);
     }
+
+    @Test void adminListQueriesWorkWithAndWithoutFilters() throws Exception {
+        Conta admin = login(criar(Papel.ADMIN, StatusConta.ATIVO, senha), senha);
+        String[] paths = {
+            "/api/admin/usuarios?page=0&size=10",
+            "/api/admin/usuarios?q=DEMO&page=0&size=10",
+            "/api/admin/auditoria?page=0&size=10",
+            "/api/admin/auditoria?ator=admin&page=0&size=10",
+            "/api/admin/seguranca/tentativas?page=0&size=10",
+            "/api/admin/seguranca/tentativas?email=demo&page=0&size=10",
+        };
+        for (String path : paths) {
+            var r = call("GET", path, null, admin.token);
+            assertEquals(200, r.status, path + " -> " + r.body);
+        }
+    }
 }

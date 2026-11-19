@@ -14,6 +14,7 @@ import java.time.temporal.ChronoUnit;
 
 @Service
 public class LoginAttemptService {
+    private static final Instant INICIO = Instant.EPOCH;
     private final TentativaLoginRepository repository;
     private final RequisicaoInfo requisicao;
 
@@ -52,10 +53,15 @@ public class LoginAttemptService {
 
     @Transactional(readOnly = true)
     public PaginaResponse<TentativaResponse> buscar(String email, Boolean sucesso, Instant desde, int page, int size) {
-        var pagina = repository.buscar(email == null || email.isBlank() ? null : email.trim(), sucesso, desde,
+        var pagina = repository.buscar(like(email), sucesso, desde == null ? INICIO : desde,
             PageRequest.of(Math.max(0, page), Math.min(100, Math.max(1, size)),
                 Sort.by(Sort.Direction.DESC, "criadoEm")));
         return PaginaResponse.de(pagina, t -> new TentativaResponse(t.getId(), t.getEmail(), t.isSucesso(),
             t.getIp(), t.getUserAgent(), t.getMotivo(), t.getCriadoEm()));
+    }
+
+    private String like(String valor) {
+        if (valor == null || valor.isBlank()) return null;
+        return "%" + valor.trim().toLowerCase(java.util.Locale.ROOT) + "%";
     }
 }

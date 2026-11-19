@@ -14,11 +14,11 @@ public interface AuditoriaRepository extends JpaRepository<AuditoriaEvento, Long
     @Query("""
         select a from AuditoriaEvento a
         where (:acao is null or a.acao = :acao)
-          and (:ator is null or lower(a.atorEmail) like lower(concat('%', :ator, '%')))
-          and (:desde is null or a.criadoEm >= :desde)
-          and (:ate is null or a.criadoEm <= :ate)
+          and (:atorLike is null or lower(a.atorEmail) like :atorLike)
+          and a.criadoEm >= :desde
+          and a.criadoEm <= :ate
         """)
-    Page<AuditoriaEvento> buscar(@Param("acao") String acao, @Param("ator") String ator,
+    Page<AuditoriaEvento> buscar(@Param("acao") String acao, @Param("atorLike") String atorLike,
                                  @Param("desde") Instant desde, @Param("ate") Instant ate, Pageable pageable);
 
     List<AuditoriaEvento> findTop10ByOrderByCriadoEmDesc();

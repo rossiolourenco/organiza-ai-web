@@ -54,7 +54,7 @@ public class AdminUsuarioService {
         atual.requireAdmin();
         StatusConta statusFiltro = enumOuNull(StatusConta.class, status);
         Papel papelFiltro = enumOuNull(Papel.class, papel);
-        var pagina = usuarios.buscar(q == null || q.isBlank() ? null : q.trim(), statusFiltro, papelFiltro,
+        var pagina = usuarios.buscar(like(q), statusFiltro, papelFiltro,
             PageRequest.of(Math.max(0, page), Math.min(100, Math.max(1, size)),
                 Sort.by(Sort.Direction.ASC, "id")));
         return PaginaResponse.de(pagina, this::toResponse);
@@ -264,5 +264,10 @@ public class AdminUsuarioService {
         if (valor == null || valor.isBlank()) return null;
         try { return Enum.valueOf(tipo, valor.trim().toUpperCase(Locale.ROOT)); }
         catch (Exception e) { throw new IllegalArgumentException("Filtro inválido: " + valor); }
+    }
+
+    private String like(String valor) {
+        if (valor == null || valor.isBlank()) return null;
+        return "%" + valor.trim().toLowerCase(java.util.Locale.ROOT) + "%";
     }
 }

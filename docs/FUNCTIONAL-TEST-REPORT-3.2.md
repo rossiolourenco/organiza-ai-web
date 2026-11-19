@@ -8,7 +8,7 @@ Data: 19/11/2026. Ambiente de homologação: backend local com H2 em memória, W
 | Verificação | Resultado |
 |---|---|
 | Backend — suítes | **7** |
-| Backend — testes | **34 / 34** |
+| Backend — testes | **35 / 35** |
 | Angular — testes | **15 / 15** |
 | Mobile — testes | **50 / 50** |
 | Mobile — typecheck | Sem erros |
@@ -41,6 +41,11 @@ Data: 19/11/2026. Ambiente de homologação: backend local com H2 em memória, W
 ### Angular — `HomeComponent` (+1)
 
 - reabre tarefa concluída via `PUT`, preservando título e categoria.
+
+### Backend — AdminApiTests (+1)
+
+- lista usuários, auditoria e tentativas com e sem filtros, reproduzindo o caminho que falhava
+  no PostgreSQL.
 
 ### Mobile — navegação (+1)
 
@@ -113,6 +118,30 @@ Data: 19/11/2026. Ambiente de homologação: backend local com H2 em memória, W
 | `func-3.2-mobile-seguranca.jpg` | Tela de segurança Mobile |
 | `func-3.2-mobile-senha-alterada.jpg` | Confirmação de sucesso |
 | `func-3.2-mobile-login-aviso.jpg` | Login com aviso de senha alterada |
+
+## 4.1 Produção pós-deploy (19/11/2026)
+
+Deploy executado na release `20261119-func32c`:
+
+| Verificação | Resultado |
+|---|---|
+| `/` | 200 |
+| `/admin` | 200 |
+| `/api/usuarios` sem token | 401 |
+| `/api/usuarios/perfil` sem token | 401 |
+| Login SUPER_ADMIN | 200 |
+| `/api/usuarios/perfil` autenticado | 200, sem campo `senha` |
+| Senha atual incorreta | 400, sem alteração |
+| Atualização de nome (mesmo valor) | 200 + auditoria |
+| `/api/admin/usuarios` | 200 (4 contas) |
+| `/api/admin/auditoria` | 200 (57 registros) |
+| `/api/admin/seguranca/tentativas` | 200 (15 tentativas) |
+| Console do Admin | Sem erros |
+| Perfil Web em 514 px | Sem overflow |
+
+O primeiro deploy (`func32`) expôs um bug pré-existente de PostgreSQL em consultas administrativas
+com filtros nulos. As releases `func32b` e `func32c` corrigiram, respectivamente, a construção do
+`LIKE` e a tipagem dos parâmetros de data. A versão ativa é `func32c`.
 
 ## 5. Não executado / limitações
 

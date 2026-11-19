@@ -16,10 +16,10 @@ public interface TentativaLoginRepository extends JpaRepository<TentativaLogin, 
 
     @Query("""
         select t from TentativaLogin t
-        where (:email is null or lower(t.email) like lower(concat('%', :email, '%')))
+        where (:emailLike is null or lower(t.email) like :emailLike)
           and (:sucesso is null or t.sucesso = :sucesso)
-          and (:desde is null or t.criadoEm >= :desde)
+          and t.criadoEm >= :desde
         """)
-    Page<TentativaLogin> buscar(@Param("email") String email, @Param("sucesso") Boolean sucesso,
+    Page<TentativaLogin> buscar(@Param("emailLike") String emailLike, @Param("sucesso") Boolean sucesso,
                                 @Param("desde") Instant desde, Pageable pageable);
 }

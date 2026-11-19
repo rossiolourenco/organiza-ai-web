@@ -13,9 +13,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Locale;
 
 @Service
 public class AuditoriaService {
+    private static final Instant INICIO = Instant.EPOCH;
+    private static final Instant FIM = Instant.parse("9999-12-31T23:59:59Z");
     private final AuditoriaRepository repository;
     private final RequisicaoInfo requisicao;
 
@@ -52,7 +55,7 @@ public class AuditoriaService {
     @Transactional(readOnly = true)
     public Page<AuditoriaResponse> buscar(String acao, String ator, Instant desde, Instant ate,
                                           int page, int size) {
-        var pagina = repository.buscar(vazio(acao), vazio(ator), desde, ate,
+        var pagina = repository.buscar(vazio(acao), like(ator), desde == null ? INICIO : desde, ate == null ? FIM : ate,
             PageRequest.of(Math.max(0, page), Math.min(100, Math.max(1, size)),
                 Sort.by(Sort.Direction.DESC, "criadoEm")));
         return pagina.map(this::toResponse);
@@ -77,5 +80,10 @@ public class AuditoriaService {
 
     private String vazio(String valor) {
         return valor == null || valor.isBlank() ? null : valor.trim();
+    }
+
+    private String like(String valor) {
+        String limpo = vazio(valor);
+        return limpo == null ? null : "%" + limpo.toLowerCase(Locale.ROOT) + "%";
     }
 }

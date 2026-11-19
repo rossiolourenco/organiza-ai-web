@@ -19,12 +19,12 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
     @Query("""
         select u from Usuario u
-        where (:q is null or lower(u.nome) like lower(concat('%', :q, '%'))
-               or lower(u.email) like lower(concat('%', :q, '%')))
+        where (:qLike is null or lower(u.nome) like :qLike
+               or lower(u.email) like :qLike)
           and (:status is null or u.status = :status)
           and (:papel is null or u.papel = :papel)
         """)
-    Page<Usuario> buscar(@Param("q") String q, @Param("status") StatusConta status,
+    Page<Usuario> buscar(@Param("qLike") String qLike, @Param("status") StatusConta status,
                          @Param("papel") Papel papel, Pageable pageable);
 
     long countByStatus(StatusConta status);
