@@ -1,128 +1,152 @@
-<div class="pagina">
-  <div class="container">
+<div class="app-shell">
 
-    <div class="cabecalho">
+  <header class="topbar">
+    <a class="brand" routerLink="/home" aria-label="Organiza Aí — início">
+      <span class="brand-logo" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12l5 5L20 7" />
+        </svg>
+      </span>
+      <span class="brand-text">
+        <strong>Organiza Aí</strong>
+        <span>Premium Experience</span>
+      </span>
+    </a>
+
+    <div class="topbar-actions">
+      <button type="button" class="icon-button" (click)="theme.alternar()"
+        [attr.aria-label]="theme.dark ? 'Ativar tema claro' : 'Ativar tema escuro'">
+        {{ theme.dark ? '☀' : '☾' }}
+      </button>
+      <button type="button" class="sair" (click)="sair()">Sair</button>
+    </div>
+  </header>
+
+  <main class="page">
+
+    <div class="page-head">
       <div>
+        <a class="voltar" routerLink="/home">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M19 12H5M12 19l-7-7 7-7" />
+          </svg>
+          Voltar para tarefas
+        </a>
         <h1>{{ tarefaId ? 'Editar tarefa' : 'Nova tarefa' }}</h1>
-        <p>
-          {{
-            tarefaId
-              ? 'Atualize as informações da sua tarefa.'
-              : 'Adicione uma nova tarefa à sua lista.'
-          }}
-        </p>
+        <p>{{ tarefaId ? 'Atualize as informações da sua tarefa.' : 'Adicione uma nova tarefa à sua lista.' }}</p>
       </div>
-
-      <a routerLink="/home" class="voltar">← Voltar</a>
     </div>
 
-    <div class="card">
-      <form (ngSubmit)="salvar()">
+    <div class="loading-state" *ngIf="carregando" role="status">
+      <span class="spinner" aria-hidden="true"></span>
+      Carregando tarefa…
+    </div>
+
+    <div class="flash error" *ngIf="erro" role="alert">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="9" />
+        <path d="M12 8v5M12 16h.01" />
+      </svg>
+      <span>{{ erro }}</span>
+      <button type="button" class="flash-close" aria-label="Fechar aviso" (click)="erro = null">×</button>
+    </div>
+
+    <div class="conteudo" *ngIf="!carregando">
+      <form class="card form-card" (ngSubmit)="salvar()">
+        <div class="card-head">
+          <h2>Detalhes</h2>
+          <p>Campos com * são obrigatórios.</p>
+        </div>
 
         <div class="campo">
-          <label for="titulo">Título</label>
-          <input
-            id="titulo"
-            type="text"
-            name="titulo"
-            [(ngModel)]="titulo"
-            placeholder="Ex: Estudar Angular"
-            required
-          />
+          <label for="titulo">Título *</label>
+          <input id="titulo" type="text" name="titulo" [(ngModel)]="titulo"
+            placeholder="Ex: Estudar Angular" maxlength="150" required />
         </div>
 
         <div class="campo">
           <label for="descricao">Descrição</label>
-          <textarea
-            id="descricao"
-            name="descricao"
-            [(ngModel)]="descricao"
-            placeholder="Descreva a tarefa"
-            rows="4"
-          ></textarea>
+          <textarea id="descricao" name="descricao" [(ngModel)]="descricao"
+            placeholder="Descreva a tarefa, o contexto e o que precisa ser feito." rows="5"></textarea>
         </div>
 
-        <div class="campo">
-          <label for="prioridade">Prioridade</label>
-          <select
-            id="prioridade"
-            name="prioridade"
-            [(ngModel)]="prioridade"
-          >
-            <option value="BAIXA">Baixa</option>
-            <option value="MEDIA">Média</option>
-            <option value="ALTA">Alta</option>
-          </select>
+        <div class="linha">
+          <div class="campo">
+            <label for="prioridade">Prioridade</label>
+            <select id="prioridade" name="prioridade" [(ngModel)]="prioridade">
+              <option value="BAIXA">Baixa</option>
+              <option value="MEDIA">Média</option>
+              <option value="ALTA">Alta</option>
+            </select>
+          </div>
+
+          <div class="campo">
+            <label for="dataPrazo">Prazo</label>
+            <input id="dataPrazo" type="date" name="dataPrazo" [(ngModel)]="dataPrazo" />
+          </div>
         </div>
 
         <div class="campo">
           <label for="categoria">Categoria</label>
-
-          <select
-            id="categoria"
-            name="categoria"
-            [(ngModel)]="categoriaId"
-          >
+          <select id="categoria" name="categoria" [(ngModel)]="categoriaId">
             <option [ngValue]="null">Sem categoria</option>
-
-            <option
-              *ngFor="let categoria of categorias"
-              [ngValue]="categoria.id"
-            >
+            <option *ngFor="let categoria of categorias" [ngValue]="categoria.id">
               {{ categoria.nome }}
             </option>
           </select>
-
-          <div class="categoria-criacao">
-            <input type="text" name="novaCategoria" [(ngModel)]="novaCategoria"
-              maxlength="100" placeholder="Nome da nova categoria" />
-            <button type="button" (click)="cadastrarCategoria()"
-              [disabled]="!novaCategoria.trim() || salvandoCategoria">
-              {{ salvandoCategoria ? 'Salvando...' : '+ Cadastrar categoria' }}
-            </button>
-          </div>
-          <div class="categorias-lista" *ngIf="categorias.length > 0">
-            <div class="categoria-item" *ngFor="let categoria of categorias">
-              <span>{{ categoria.nome }}</span>
-              <button type="button" (click)="excluirCategoria(categoria)"
-                [disabled]="excluindoCategoriaId !== null">
-                {{ excluindoCategoriaId === categoria.id ? 'Excluindo...' : 'Excluir' }}
-              </button>
-            </div>
-          </div>
-
-          <small *ngIf="categorias.length === 0">
-            Nenhuma categoria cadastrada.
-          </small>
-        </div>
-
-        <div class="campo">
-          <label for="dataPrazo">Prazo</label>
-
-          <input
-            id="dataPrazo"
-            type="date"
-            name="dataPrazo"
-            [(ngModel)]="dataPrazo"
-          />
         </div>
 
         <div class="acoes">
-          <button
-            type="button"
-            class="cancelar"
-            (click)="cancelar()"
-          >
+          <button type="button" class="ghost" (click)="cancelar()" [disabled]="salvando">
             Cancelar
           </button>
+          <button type="submit" class="salvar" [disabled]="salvando">
+            {{ salvando ? 'Salvando…' : (tarefaId ? 'Salvar alterações' : 'Criar tarefa') }}
+          </button>
+        </div>
+      </form>
 
-          <button type="submit" class="salvar">
-            {{ tarefaId ? 'Salvar alterações' : 'Criar tarefa' }}
+      <aside class="card side-card" aria-labelledby="titulo-categorias">
+        <div class="card-head">
+          <h2 id="titulo-categorias">Categorias</h2>
+          <p>Organize suas tarefas por contexto.</p>
+        </div>
+
+        <div class="categoria-criacao">
+          <input type="text" name="novaCategoria" [(ngModel)]="novaCategoria"
+            maxlength="100" placeholder="Nova categoria"
+            (keydown.enter)="$event.preventDefault(); cadastrarCategoria()" />
+          <button type="button" class="ghost" (click)="cadastrarCategoria()"
+            [disabled]="!novaCategoria.trim() || salvandoCategoria">
+            {{ salvandoCategoria ? '…' : 'Adicionar' }}
           </button>
         </div>
 
-      </form>
-    </div>
+        <p class="side-error" *ngIf="erroCategoria" role="alert">{{ erroCategoria }}</p>
 
-  </div>
+        <ul class="categorias-lista" *ngIf="categorias.length > 0">
+          <li class="categoria-item" *ngFor="let categoria of categorias">
+            <span class="categoria-nome">
+              <span class="dot" aria-hidden="true"></span>
+              {{ categoria.nome }}
+            </span>
+            <button type="button" class="categoria-excluir" (click)="excluirCategoria(categoria)"
+              [disabled]="excluindoCategoriaId !== null"
+              [attr.aria-label]="'Excluir categoria ' + categoria.nome">
+              {{ excluindoCategoriaId === categoria.id ? '…' : 'Excluir' }}
+            </button>
+          </li>
+        </ul>
+
+        <p class="side-empty" *ngIf="categorias.length === 0">
+          Nenhuma categoria cadastrada ainda. Crie a primeira acima.
+        </p>
+
+        <p class="side-hint">Ao excluir uma categoria, as tarefas são mantidas sem categoria.</p>
+      </aside>
+    </div>
+  </main>
 </div>

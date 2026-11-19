@@ -87,6 +87,34 @@ Go 54.0.7. A tela de login carregou com Safe Area correta, sem campo de servidor
 senha e rodapé de conexão segura. Evidência em `docs/assets/uiux-3.1-ios-simulator.png`. Simulador
 não substitui teste em aparelho físico.
 
+## 5.1 Revisão da área logada (corretiva)
+
+Após a publicação inicial, foi identificado que a Home/Tarefas e o formulário ainda usavam o
+layout legado. A publicação em si estava correta: o hash `main-VWSF7KOT.js` servido em produção
+era idêntico ao build local. Não houve rollback nem perda de funcionalidades.
+
+Correções aplicadas:
+
+- Home redesenhada com topbar, saudação, indicadores reais, filtros em card, cards de tarefa,
+  loading, erro com retry, feedback e modal de exclusão.
+- Formulário redesenhado em duas colunas, com card de categorias e ações com estado de salvamento.
+- Remoção de `alert()` dos fluxos de tarefas.
+- Marca corrigida no tema claro (conflito com o token global da sidebar).
+- Contraste do botão destrutivo corrigido no tema escuro via `:host-context`.
+- Orçamentos de CSS/bundle ajustados em `angular.json`.
+
+Validação visual:
+
+- Desktop 1440 px, temas claro e escuro: sem overflow (`scrollWidth = 1440`).
+- Mobile 514 px: sem overflow (`scrollWidth` menor que o viewport), cards em 1 coluna.
+- Criar, concluir e excluir tarefas validados em produção; dados de teste removidos ao final.
+- Nenhum erro de console.
+- 11 testes Angular e build aprovados.
+
+Capturas: `uiux-3.1-web-home-light.jpg`, `uiux-3.1-web-home-dark.jpg`,
+`uiux-3.1-web-form.jpg`, `uiux-3.1-web-home-mobile.jpg`, `uiux-3.1-web-form-mobile.jpg` e
+`uiux-3.1-web-delete-modal.jpg`.
+
 ## 6. Integração
 
 - Mobile usa `https://organizaai.evox.net.br/api` por padrão.

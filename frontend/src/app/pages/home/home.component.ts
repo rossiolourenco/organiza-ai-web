@@ -1,8 +1,10 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, HostListener, OnInit } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { Tarefa, TarefaService } from "../../services/tarefa.service";
-import { Router, RouterLink } from "@angular/router";
+import { ActivatedRoute, Router, RouterLink } from "@angular/router";
 import { FormsModule } from "@angular/forms";
+import { SessionService } from "../../services/session.service";
+import { ThemeService } from "../../services/theme.service";
 
 @Component({
   selector: "app-home",
@@ -17,27 +19,93 @@ export class HomeComponent implements OnInit {
   dataFinal = "";
   erroPeriodo = "";
 
-  statusSelecionado: string = "";
-  prioridadeSelecionada: string = "";
+  statusSelecionado = "";
+  prioridadeSelecionada = "";
+
+  carregando = true;
+  erro: string | null = null;
+  feedback: string | null = null;
+
+  tarefaParaExcluir: Tarefa | null = null;
+  excluindo = false;
+
+  nome = "você";
+  hoje = "";
 
   constructor(
     private tarefaService: TarefaService,
     private router: Router,
+    private route: ActivatedRoute,
+    private session: SessionService,
+    public theme: ThemeService,
   ) {}
 
   ngOnInit(): void {
+    this.nome = this.session.usuario()?.nome?.split(" ")[0] || "você";
+    this.hoje = new Intl.DateTimeFormat("pt-BR", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+    }).format(new Date());
+    this.hoje = this.hoje.charAt(0).toUpperCase() + this.hoje.slice(1);
+
+    const flash = sessionStorage.getItem("organiza-flash");
+    if (flash) {
+      sessionStorage.removeItem("organiza-flash");
+      this.feedback = flash;
+    }
+
+    if (this.route.snapshot.queryParamMap.get("cadastro") === "1") {
+      this.feedback = "Conta criada com sucesso. Bem-vindo ao Organiza Aí.";
+      void this.router.navigate(["/home"], { replaceUrl: true });
+    }
+
     this.carregarTarefas();
   }
 
+  @HostListener("document:keydown.escape")
+  fecharDialogo(): void {
+    if (!this.excluindo) this.tarefaParaExcluir = null;
+  }
+
+  get totalTarefas(): number {
+    return this.todasTarefas.length;
+  }
+
+  get totalPendentes(): number {
+    return this.todasTarefas.filter(tarefa => tarefa.status === "PENDENTE").length;
+  }
+
+  get totalEmAndamento(): number {
+    return this.todasTarefas.filter(tarefa => tarefa.status === "EM_ANDAMENTO").length;
+  }
+
+  get totalConcluidas(): number {
+    return this.todasTarefas.filter(tarefa => tarefa.status === "CONCLUIDA").length;
+  }
+
+  get filtrosAtivos(): boolean {
+    return !!(
+      this.statusSelecionado ||
+      this.prioridadeSelecionada ||
+      this.dataInicial ||
+      this.dataFinal
+    );
+  }
+
   carregarTarefas(): void {
+    this.carregando = true;
+    this.erro = null;
     this.tarefaService.listarTodas().subscribe({
       next: tarefas => {
         this.todasTarefas = tarefas;
         this.aplicarFiltros();
+        this.carregando = false;
       },
       error: erro => {
         console.error("Erro ao carregar tarefas:", erro);
-        alert("Não foi possível carregar as tarefas.");
+        this.erro = "Não foi possível carregar suas tarefas. Verifique a conexão e tente novamente.";
+        this.carregando = false;
       },
     });
   }
@@ -67,37 +135,45 @@ export class HomeComponent implements OnInit {
   }
 
   concluirTarefa(id: number): void {
+    this.erro = null;
     this.tarefaService.concluir(id).subscribe({
       next: () => {
+        this.feedback = "Tarefa concluída. Bom trabalho!";
         this.carregarTarefas();
       },
-      error: (erro) => {
+      error: erro => {
         console.error("Erro ao concluir tarefa:", erro);
-        alert("Não foi possível concluir a tarefa.");
+        this.erro = "Não foi possível concluir a tarefa. Tente novamente.";
       },
     });
   }
-  excluirTarefa(id: number): void {
-    const confirmar = confirm("Deseja realmente excluir esta tarefa?");
 
-    if (!confirmar) {
-      return;
-    }
+  pedirExclusao(tarefa: Tarefa): void {
+    this.tarefaParaExcluir = tarefa;
+  }
 
-    this.tarefaService.excluir(id).subscribe({
+  confirmarExclusao(): void {
+    const tarefa = this.tarefaParaExcluir;
+    if (!tarefa?.id || this.excluindo) return;
+    this.excluindo = true;
+    this.erro = null;
+    this.tarefaService.excluir(tarefa.id).subscribe({
       next: () => {
+        this.excluindo = false;
+        this.tarefaParaExcluir = null;
+        this.feedback = "Tarefa excluída.";
         this.carregarTarefas();
       },
-      error: (erro) => {
+      error: erro => {
         console.error("Erro ao excluir tarefa:", erro);
-        alert("Não foi possível excluir a tarefa.");
+        this.excluindo = false;
+        this.erro = "Não foi possível excluir a tarefa. Tente novamente.";
       },
     });
   }
+
   sair(): void {
-    localStorage.removeItem("usuario");
-    localStorage.removeItem("organiza-token");
-    sessionStorage.removeItem("organiza-token");
-    this.router.navigate(["/login"]);
+    this.session.limpar();
+    void this.router.navigate(["/login"]);
   }
 }

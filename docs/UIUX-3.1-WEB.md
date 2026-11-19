@@ -25,23 +25,39 @@ Arquivos: `login.component.ts/html/css`.
 
 Arquivos: `cadastro.component.ts/html/css`.
 
-## 3. Home / Tarefas
+## 3. Home / Tarefas (redesenho 3.1)
 
-- Cores fixas substituídas por tokens (`text-muted`, `surface-2`, `border`, `success`, `danger`).
-- Cards sem altura mínima fixa; grid equaliza linhas naturalmente.
-- Filtros com `flex-wrap` e inputs de data usando `surface-2`.
-- Ações de cartão com quebra em telas pequenas.
-- Cabeçalho e ações empilhados abaixo de 800 px.
-- Grid 2 → 1 coluna em 800 px.
-- `page` centralizada com largura máxima 1180 px.
+A área logada deixou de usar o layout legado e passou a seguir o design system:
 
-## 4. Formulário de tarefa
+- Topbar sticky com marca, alternância de tema e sair; sem duplicar navegação.
+- Saudação com primeiro nome, data atual e resumo do dia.
+- Quatro indicadores reais derivados das tarefas: total, pendentes, em andamento e concluídas.
+- Filtros em card com grid de 4 colunas no desktop e 1 coluna no mobile, labels alinhados
+  à esquerda, botão “Limpar filtros” com estado desabilitado.
+- Cards de tarefa com status (ponto + badge), prioridade, categoria, prazo e ações.
+- Cards com altura equalizada no grid; ações fixadas no rodapé do card.
+- Estado vazio distingue “nenhuma tarefa” de “nenhum resultado com filtros”.
+- Loading com spinner, erro com retry e feedback de sucesso dispensável.
+- Exclusão por modal acessível (`role="alertdialog"`, Escape e backdrop), sem `confirm()`.
+- Nenhum `alert()` no fluxo de tarefas.
+- Grid `auto-fill` de 3 colunas no desktop e 1 coluna no mobile; sem scroll horizontal.
 
-- Cores fixas substituídas por tokens.
-- Container 820 px centralizado.
-- Cabeçalho empilhado em mobile.
-- Ações em coluna abaixo de 640 px.
-- Campos com foco visível e contraste no escuro.
+Evidências: `docs/assets/uiux-3.1-web-home-light.jpg`,
+`uiux-3.1-web-home-dark.jpg`, `uiux-3.1-web-home-mobile.jpg` e
+`uiux-3.1-web-delete-modal.jpg`.
+
+## 4. Formulário de tarefa (redesenho 3.1)
+
+- Layout em duas colunas: formulário (1,55fr) e gerenciamento de categorias (1fr).
+- Card “Detalhes” com título, descrição, prioridade, prazo e categoria.
+- Card lateral com criação, listagem e exclusão de categorias, com erro inline.
+- Cabeçalho com link de retorno, título e subtítulo.
+- Ações com estado de salvamento e validação de título.
+- Erros inline com retry; sucesso via flash ao voltar para a Home.
+- Empilha em uma coluna abaixo de 900 px; ações em coluna abaixo de 640 px.
+- Sem `alert()`; a exclusão de categoria mantém a confirmação nativa nesta versão.
+
+Evidências: `docs/assets/uiux-3.1-web-form.jpg` e `uiux-3.1-web-form-mobile.jpg`.
 
 ## 5. Tema escuro
 
@@ -55,11 +71,18 @@ persiste a preferência em `localStorage`.
 |---|---|
 | > 1180 | grid completo, filtros em linha |
 | 800–1180 | header pode quebrar; filtros flexíveis |
+| < 900 | formulário e categorias em coluna |
 | < 800 | header/filtros em coluna, cards 1 coluna |
-| < 640 | formulário e ações empilhados |
+| < 640 | formulário e ações empilhados; filtros em 1 coluna |
 | < 480 | autenticação com padding reduzido |
 
-## 7. Acessibilidade
+## 7. Orçamento de build
+
+Com o novo CSS, os limites de `anyComponentStyle` foram ajustados para 14 kB (aviso) e 20 kB
+(erro), e o bundle inicial para 600 kB (aviso). Isso evita falsos negativos sem remover o
+controle de tamanho.
+
+## 8. Acessibilidade
 
 - Labels associados aos inputs.
 - Botões com `aria-label` para ações de ícone.

@@ -3,10 +3,9 @@ import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, Router, RouterLink } from "@angular/router";
 import { TarefaService } from "../../services/tarefa.service";
-import {
-  Categoria,
-  CategoriaService,
-} from "../../services/categoria.service";
+import { Categoria, CategoriaService } from "../../services/categoria.service";
+import { SessionService } from "../../services/session.service";
+import { ThemeService } from "../../services/theme.service";
 
 @Component({
   selector: "app-tarefa-form",
@@ -16,10 +15,10 @@ import {
 })
 export class TarefaFormComponent implements OnInit {
 
-  titulo: string = "";
-  descricao: string = "";
-  prioridade: string = "MEDIA";
-  dataPrazo: string = "";
+  titulo = "";
+  descricao = "";
+  prioridade = "MEDIA";
+  dataPrazo = "";
 
   categoriaId: number | null = null;
   categorias: Categoria[] = [];
@@ -28,36 +27,43 @@ export class TarefaFormComponent implements OnInit {
   excluindoCategoriaId: number | null = null;
 
   tarefaId?: number;
-  statusTarefa: string = "PENDENTE";
+  statusTarefa = "PENDENTE";
+
+  salvando = false;
+  carregando = false;
+  erro: string | null = null;
+  erroCategoria: string | null = null;
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private tarefaService: TarefaService,
     private categoriaService: CategoriaService,
+    private session: SessionService,
+    public theme: ThemeService,
   ) {}
 
   ngOnInit(): void {
     this.carregarCategorias();
 
     const id = this.route.snapshot.paramMap.get("id");
-
     if (id) {
       this.tarefaId = Number(id);
-
+      this.carregando = true;
       this.tarefaService.buscarPorId(this.tarefaId).subscribe({
-        next: (tarefa) => {
+        next: tarefa => {
           this.titulo = tarefa.titulo;
           this.descricao = tarefa.descricao || "";
           this.prioridade = tarefa.prioridade;
           this.dataPrazo = tarefa.dataPrazo || "";
           this.statusTarefa = tarefa.status;
           this.categoriaId = tarefa.categoria?.id ?? null;
+          this.carregando = false;
         },
-        error: (erro) => {
+        error: erro => {
           console.error("Erro ao carregar tarefa:", erro);
-          alert("Não foi possível carregar a tarefa.");
-          this.router.navigate(["/home"]);
+          this.carregando = false;
+          this.erro = "Não foi possível carregar esta tarefa. Volte para a lista e tente novamente.";
         },
       });
     }
@@ -65,11 +71,10 @@ export class TarefaFormComponent implements OnInit {
 
   carregarCategorias(): void {
     this.categoriaService.listar().subscribe({
-      next: (categorias) => {
-        this.categorias = categorias;
-      },
-      error: (erro) => {
+      next: categorias => { this.categorias = categorias; },
+      error: erro => {
         console.error("Erro ao carregar categorias:", erro);
+        this.erroCategoria = "Não foi possível carregar as categorias.";
       },
     });
   }
@@ -78,17 +83,18 @@ export class TarefaFormComponent implements OnInit {
     const nome = this.novaCategoria.trim();
     if (!nome || this.salvandoCategoria) return;
     this.salvandoCategoria = true;
+    this.erroCategoria = null;
     this.categoriaService.criar({ nome }).subscribe({
       next: categoria => {
         this.novaCategoria = "";
         this.salvandoCategoria = false;
-        this.carregarCategorias();
         this.categoriaId = categoria.id ?? null;
+        this.carregarCategorias();
       },
       error: erro => {
         this.salvandoCategoria = false;
         console.error("Erro ao cadastrar categoria:", erro);
-        alert("Não foi possível cadastrar a categoria.");
+        this.erroCategoria = "Não foi possível cadastrar a categoria.";
       },
     });
   }
@@ -97,6 +103,7 @@ export class TarefaFormComponent implements OnInit {
     if (!categoria.id || this.excluindoCategoriaId !== null) return;
     if (!confirm(`Excluir a categoria "${categoria.nome}"? As tarefas serão mantidas sem essa categoria.`)) return;
     this.excluindoCategoriaId = categoria.id;
+    this.erroCategoria = null;
     this.categoriaService.excluir(categoria.id).subscribe({
       next: () => {
         if (this.categoriaId === categoria.id) this.categoriaId = null;
@@ -106,66 +113,70 @@ export class TarefaFormComponent implements OnInit {
       error: erro => {
         this.excluindoCategoriaId = null;
         console.error("Erro ao excluir categoria:", erro);
-        alert("Não foi possível excluir a categoria.");
+        this.erroCategoria = "Não foi possível excluir a categoria.";
       },
     });
   }
 
   salvar(): void {
-    const usuarioSalvo = localStorage.getItem("usuario");
+    this.erro = null;
+    if (!this.titulo.trim()) {
+      this.erro = "Informe um título para a tarefa.";
+      return;
+    }
+    if (this.salvando) return;
 
-    if (!usuarioSalvo) {
-      alert("Usuário não autenticado.");
-      this.router.navigate(["/login"]);
+    const usuario = this.session.usuario();
+    if (!usuario) {
+      this.erro = "Sua sessão expirou. Entre novamente.";
+      void this.router.navigate(["/login"]);
       return;
     }
 
-    const usuario = JSON.parse(usuarioSalvo);
-
     const tarefa = {
-      titulo: this.titulo,
+      titulo: this.titulo.trim(),
       descricao: this.descricao,
       prioridade: this.prioridade,
       status: this.tarefaId ? this.statusTarefa : "PENDENTE",
       dataPrazo: this.dataPrazo || undefined,
-      usuario: {
-        id: usuario.id,
-      },
-      categoria: this.categoriaId
-        ? {
-            id: Number(this.categoriaId),
-          }
-        : undefined,
+      usuario: { id: usuario.id },
+      categoria: this.categoriaId ? { id: Number(this.categoriaId) } : undefined,
     };
+
+    this.salvando = true;
 
     if (this.tarefaId) {
       this.tarefaService.atualizar(this.tarefaId, tarefa).subscribe({
-        next: () => {
-          alert("Tarefa atualizada com sucesso!");
-          this.router.navigate(["/home"]);
-        },
-        error: (erro) => {
-          console.error("Erro ao atualizar tarefa:", erro);
-          alert("Não foi possível atualizar a tarefa.");
-        },
+        next: () => this.concluir("Tarefa atualizada com sucesso."),
+        error: erro => this.falhar(erro, "Não foi possível atualizar a tarefa."),
       });
-
       return;
     }
 
     this.tarefaService.criar(tarefa).subscribe({
-      next: () => {
-        alert("Tarefa criada com sucesso!");
-        this.router.navigate(["/home"]);
-      },
-      error: (erro) => {
-        console.error("Erro ao criar tarefa:", erro);
-        alert("Não foi possível criar a tarefa.");
-      },
+      next: () => this.concluir("Tarefa criada com sucesso."),
+      error: erro => this.falhar(erro, "Não foi possível criar a tarefa."),
     });
   }
 
+  private concluir(mensagem: string): void {
+    this.salvando = false;
+    sessionStorage.setItem("organiza-flash", mensagem);
+    void this.router.navigate(["/home"]);
+  }
+
+  private falhar(erro: unknown, mensagem: string): void {
+    console.error(mensagem, erro);
+    this.salvando = false;
+    this.erro = mensagem;
+  }
+
   cancelar(): void {
-    this.router.navigate(["/home"]);
+    void this.router.navigate(["/home"]);
+  }
+
+  sair(): void {
+    this.session.limpar();
+    void this.router.navigate(["/login"]);
   }
 }
