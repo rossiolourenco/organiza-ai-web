@@ -47,9 +47,9 @@ Comando na VM:
 mvn -B test -Dspring.profiles.active=local
 ```
 
-Resultado: **26 testes, 0 falhas**:
+Resultado: **27 testes, 0 falhas**:
 
-- 7 `AdminApiTests`
+- 8 `AdminApiTests`
 - 10 `MobileApiTests`
 - 7 `PremiumApiTests`
 - 1 `MigrationTests`
@@ -94,7 +94,7 @@ Serviço: `active/enabled`, porta `127.0.0.1:8080`, porta 8080 externa fechada.
 | USER acessa `/admin` | 403 (testado em suíte) |
 | Revogação de sessão | token invalidado |
 | Autoelevação/autobloqueio | 400 (suíte) |
-| Último SUPER_ADMIN | protegido (suíte) |
+| Último SUPER_ADMIN | protegido, inclusive contra rate limit automático (suíte) |
 
 ## 8. Funcional Web/Mobile/API
 

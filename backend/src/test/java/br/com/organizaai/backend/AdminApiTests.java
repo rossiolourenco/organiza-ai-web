@@ -245,6 +245,19 @@ class AdminApiTests {
         assertTrue(historico.body.size() >= 4);
     }
 
+    @Test void lastSuperAdminIsNotBlockedByAutomaticRateLimit() throws Exception {
+        Conta superAdmin = login(criar(Papel.SUPER_ADMIN, StatusConta.ATIVO, senha), senha);
+        for (int i = 1; i <= 4; i++) {
+            assertEquals(401, call("POST", "/api/usuarios/login",
+                Map.of("email", superAdmin.email, "senha", "errada"), null).status);
+        }
+        assertEquals(429, call("POST", "/api/usuarios/login",
+            Map.of("email", superAdmin.email, "senha", "errada"), null).status);
+        Usuario preservado = usuarios.findById(superAdmin.id).orElseThrow();
+        assertEquals(StatusConta.ATIVO, preservado.getStatus());
+        assertNull(preservado.getBloqueadoAte());
+    }
+
     @Test void monitoringUsesRealMetricsAndIsAdminOnly() throws Exception {
         Conta superAdmin = login(criar(Papel.SUPER_ADMIN, StatusConta.ATIVO, senha), senha);
         Conta user = login(criar(Papel.USER, StatusConta.ATIVO, senha), senha);

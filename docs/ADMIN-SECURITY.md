@@ -23,7 +23,8 @@
 
 - Tentativas falhas são contadas por e-mail na janela configurada (padrão 15 min).
 - Ao atingir o limite (padrão 5), a conta é marcada `BLOQUEADO` por N minutos (padrão 15),
-  todas as sessões são revogadas e um evento é auditado.
+  todas as sessões são revogadas e um evento é auditado. Exceção: o último SUPER_ADMIN ativo
+  não é bloqueado pelo rate limit; recebe 429, mas mantém status `ATIVO`.
 - Enquanto o limite está excedido, o login retorna 429 sem revelar se a senha está correta.
 - Depois do prazo, o próximo login reativa automaticamente a conta e tenta autenticar.
 - Bloqueios manuais não expiram automaticamente.

@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { RouterLink, Router } from "@angular/router";
 import { UsuarioService } from "../../services/usuario.service";
@@ -11,7 +11,7 @@ import { SessionService } from "../../services/session.service";
   templateUrl: "./login.component.html",
   styleUrl: "./login.component.css",
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   email = "";
   senha = "";
   erro: string | null = null;
@@ -22,9 +22,13 @@ export class LoginComponent {
     private usuarioService: UsuarioService,
     private session: SessionService,
     private router: Router,
-  ) {
+  ) {}
+
+  ngOnInit(): void {
     if (this.router.url.includes("senha=alterada")) {
       this.aviso = "Senha alterada. Entre novamente com a nova credencial.";
+    } else if (this.router.url.includes("admin=1")) {
+      this.aviso = "Área administrativa: entre com uma conta ADMIN ou SUPER_ADMIN.";
     }
   }
 

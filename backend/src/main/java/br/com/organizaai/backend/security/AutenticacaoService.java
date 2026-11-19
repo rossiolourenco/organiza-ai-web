@@ -76,6 +76,16 @@ public class AutenticacaoService {
                 "Credenciais inválidas.");
             long total = tentativas.falhasRecentes(email, regra.getJanelaMinutos());
             if (total >= regra.getMaxTentativas()) {
+                boolean ultimoSuperAdmin = usuario.getPapel() == Papel.SUPER_ADMIN
+                    && usuarios.countByPapelAndStatusAndIdNot(Papel.SUPER_ADMIN, StatusConta.ATIVO,
+                        usuario.getId()) == 0;
+                if (ultimoSuperAdmin) {
+                    // O último SUPER_ADMIN não pode ser bloqueado, nem por rate limiting.
+                    tentativas.registrar(email, false, "RATE_LIMIT_SUPER_ADMIN");
+                    auditoria.registrar(usuario, "LOGIN_RATE_LIMIT_SUPER_ADMIN", "usuario", usuario.getId(),
+                        "BLOQUEADO", "Limite de tentativas atingido; status mantido ATIVO por proteção do último SUPER_ADMIN.");
+                    return erro(429, "Muitas tentativas. Aguarde alguns minutos e tente novamente.");
+                }
                 usuario.setStatus(StatusConta.BLOQUEADO);
                 usuario.setBloqueadoAte(Instant.now().plus(regra.getBloqueioMinutos(), ChronoUnit.MINUTES));
                 usuario.setMotivoBloqueio("Bloqueio automático por tentativas de login");
