@@ -13,7 +13,7 @@ export class SessionService {
   }
 
   token(): string | null {
-    return sessionStorage.getItem('organiza-token');
+    return localStorage.getItem('organiza-token') || sessionStorage.getItem('organiza-token');
   }
 
   papel(): Papel {
@@ -34,6 +34,7 @@ export class SessionService {
   }
 
   limpar(): void {
+    localStorage.removeItem('organiza-token');
     sessionStorage.removeItem('organiza-token');
     localStorage.removeItem(this.usuarioKey);
   }

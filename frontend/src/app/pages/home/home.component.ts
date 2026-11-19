@@ -96,6 +96,7 @@ export class HomeComponent implements OnInit {
   }
   sair(): void {
     localStorage.removeItem("usuario");
+    localStorage.removeItem("organiza-token");
     sessionStorage.removeItem("organiza-token");
     this.router.navigate(["/login"]);
   }

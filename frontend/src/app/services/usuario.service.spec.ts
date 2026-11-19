@@ -10,7 +10,7 @@ describe('UsuarioService', () => {
   let service: UsuarioService;
 
   beforeEach(() => {
-    sessionStorage.removeItem('organiza-token');
+    localStorage.removeItem('organiza-token'); sessionStorage.removeItem('organiza-token');
     TestBed.configureTestingModule({ providers: [
       provideHttpClient(withInterceptors([authInterceptor])), provideHttpClientTesting(), provideRouter([])
     ] });
@@ -20,7 +20,10 @@ describe('UsuarioService', () => {
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
-  afterEach(() => sessionStorage.removeItem('organiza-token'));
+  afterEach(() => {
+    localStorage.removeItem('organiza-token');
+    sessionStorage.removeItem('organiza-token');
+  });
 
   it('keeps the login shape while separating the credential and authenticating API calls', () => {
     const http = TestBed.inject(HttpTestingController);

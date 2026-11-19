@@ -30,7 +30,8 @@ export class UsuarioService {
       email,
       senha,
     }).pipe(map(({ token, ...usuario }) => {
-      sessionStorage.setItem('organiza-token', token);
+      localStorage.setItem('organiza-token', token);
+      sessionStorage.removeItem('organiza-token');
       return usuario;
     }));
   }
