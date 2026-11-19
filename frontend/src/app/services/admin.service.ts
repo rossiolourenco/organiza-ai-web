@@ -129,4 +129,8 @@ export class AdminService {
   monitoramento(): Observable<Monitor> {
     return this.http.get<Monitor>(`${this.base}/monitoramento/overview`);
   }
+
+  alterarSenha(senhaAtual: string, novaSenha: string): Observable<void> {
+    return this.http.put<void>(`${API_BASE}/usuarios/senha`, { senhaAtual, novaSenha });
+  }
 }

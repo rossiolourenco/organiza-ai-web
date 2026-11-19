@@ -15,13 +15,18 @@ export class LoginComponent {
   email = "";
   senha = "";
   erro: string | null = null;
+  aviso: string | null = null;
   carregando = false;
 
   constructor(
     private usuarioService: UsuarioService,
     private session: SessionService,
     private router: Router,
-  ) {}
+  ) {
+    if (this.router.url.includes("senha=alterada")) {
+      this.aviso = "Senha alterada. Entre novamente com a nova credencial.";
+    }
+  }
 
   entrar() {
     if (this.carregando) return;

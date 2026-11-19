@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AdminService } from '../../services/admin.service';
 import { SessionService } from '../../services/session.service';
@@ -25,9 +26,14 @@ export class AdminSettingsComponent implements OnInit, OnDestroy {
   erro: string | null = null;
   aviso: string | null = null;
   podeEditar = false;
+  senhaAtual = '';
+  novaSenha = '';
+  confirmarSenha = '';
+  trocando = false;
+  erroSenha: string | null = null;
   private sub = new Subscription();
 
-  constructor(private admin: AdminService, public session: SessionService) {}
+  constructor(private admin: AdminService, public session: SessionService, private router: Router) {}
 
   ngOnInit(): void {
     this.podeEditar = this.session.isSuperAdmin();
@@ -55,6 +61,25 @@ export class AdminSettingsComponent implements OnInit, OnDestroy {
         this.aviso = 'Política de segurança atualizada e auditada.';
       },
       error: (erro) => { this.salvando = false; this.erro = erro.error?.message || 'Falha ao salvar política.'; },
+    }));
+  }
+
+  alterarSenha(): void {
+    this.erroSenha = null;
+    if (!this.senhaAtual || !this.novaSenha) { this.erroSenha = 'Informe a senha atual e a nova senha.'; return; }
+    if (this.novaSenha.length < 8) { this.erroSenha = 'A nova senha deve ter pelo menos 8 caracteres.'; return; }
+    if (this.novaSenha !== this.confirmarSenha) { this.erroSenha = 'A confirmação não confere.'; return; }
+    this.trocando = true;
+    this.sub.add(this.admin.alterarSenha(this.senhaAtual, this.novaSenha).subscribe({
+      next: () => {
+        this.trocando = false;
+        this.session.limpar();
+        this.router.navigate(['/login'], { queryParams: { senha: 'alterada' } });
+      },
+      error: (erro) => {
+        this.trocando = false;
+        this.erroSenha = erro.error?.message || 'Não foi possível alterar a senha.';
+      },
     }));
   }
 }

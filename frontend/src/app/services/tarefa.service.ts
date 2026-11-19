@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
+import { API_BASE } from "./api.config";
 
 export interface Tarefa {
   id?: number;
@@ -26,7 +27,7 @@ export interface Tarefa {
   providedIn: "root",
 })
 export class TarefaService {
-  private readonly apiUrl = "http://localhost:8080/api/tarefas";
+  private readonly apiUrl = `${API_BASE}/tarefas`;
 
   constructor(private http: HttpClient) {}
 

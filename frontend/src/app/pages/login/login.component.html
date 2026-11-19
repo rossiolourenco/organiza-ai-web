@@ -32,6 +32,7 @@
       </div>
 
       <p class="erro" *ngIf="erro" role="alert">{{ erro }}</p>
+      <p class="sucesso" *ngIf="aviso" role="status">{{ aviso }}</p>
 
       <button type="submit" [disabled]="carregando">
         {{ carregando ? 'Entrando…' : 'Entrar' }}

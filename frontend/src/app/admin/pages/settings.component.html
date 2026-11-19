@@ -77,11 +77,37 @@
     <article class="card">
       <h2 class="card-title">Ambiente e limites</h2>
       <div class="kv"><span>Backend</span><strong>Spring Boot local</strong></div>
-      <div class="kv"><span>Banco</span><strong>H2 modo PostgreSQL</strong></div>
+      <div class="kv"><span>Banco</span><strong>PostgreSQL 17</strong></div>
       <div class="kv"><span>Firewall</span><strong>DEMO (sem alteração real)</strong></div>
       <div class="kv"><span>Tema</span><strong>{{ session.isAdmin() ? 'Claro/Escuro por aparelho' : '—' }}</strong></div>
       <p class="small muted">Documentação: ADMIN-ARCHITECTURE, ADMIN-SECURITY, ADMIN-RBAC-MATRIX,
         ADMIN-FIREWALL, ADMIN-API, ADMIN-DATABASE, ADMIN-TEST-REPORT, ADMIN-DEPLOYMENT.</p>
     </article>
   </div>
+
+  <article class="card section-gap">
+    <h2 class="card-title">Alterar minha senha</h2>
+    <p class="small muted">A troca revoga todas as sessões e exige novo login.</p>
+    <div class="form-grid">
+      <div class="field">
+        <label for="senhaAtual">Senha atual</label>
+        <input id="senhaAtual" class="input" type="password" name="senhaAtual" autocomplete="current-password"
+          [(ngModel)]="senhaAtual">
+      </div>
+      <div class="field">
+        <label for="novaSenha">Nova senha</label>
+        <input id="novaSenha" class="input" type="password" name="novaSenha" autocomplete="new-password"
+          [(ngModel)]="novaSenha">
+      </div>
+      <div class="field">
+        <label for="confirmarSenha">Confirmar nova senha</label>
+        <input id="confirmarSenha" class="input" type="password" name="confirmarSenha" autocomplete="new-password"
+          [(ngModel)]="confirmarSenha">
+      </div>
+    </div>
+    <p class="small" style="color:var(--danger)" *ngIf="erroSenha" role="alert">{{ erroSenha }}</p>
+    <button class="btn small" type="button" [disabled]="trocando" (click)="alterarSenha()">
+      {{ trocando ? 'Alterando…' : 'Alterar senha' }}
+    </button>
+  </article>
 </ng-container>

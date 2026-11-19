@@ -182,3 +182,13 @@ form button:disabled {
   font-size: 11px;
   text-align: center;
 }
+
+.sucesso {
+  margin: 0 0 14px;
+  padding: 10px 12px;
+  border: 1px solid rgba(21, 128, 61, 0.22);
+  border-radius: 10px;
+  background: var(--success-soft);
+  color: var(--success);
+  font-size: 13px;
+}
