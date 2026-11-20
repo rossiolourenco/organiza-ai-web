@@ -1,5 +1,9 @@
 # Web × Mobile × API — Matriz de Paridade (3.3 RC)
 
+> **Atualização 3.3.1:** a matriz vigente é `FUNCTIONAL-PARITY-3.3.1.md`. A Web passou a oferecer
+> dashboard, planejamento, revisão, foco, hábitos, categorias e lixeira; as lacunas abaixo foram
+> encerradas.
+
 Legenda: **✅ implementado** · **◐ parcial** · **— não implementado** · **API** = endpoint
 existente no backend compartilhado.
 

@@ -24,6 +24,15 @@
 - **Validação 3.2:** `docs/VALIDATION-REPORT.md`
 - **Roadmap 3.3:** `docs/ROADMAP-3.3.md`
 
+### Paridade funcional 3.3.1
+
+- **Matriz de paridade:** `docs/FUNCTIONAL-PARITY-3.3.1.md`
+- **Consumidores da API:** `docs/API-CONSUMER-MATRIX.md`
+- **Web Premium:** `docs/WEB-PREMIUM-3.3.1.md`
+- **Mobile:** `../organiza-ai/docs/MOBILE-PARITY-3.3.1.md`
+- **Testes cruzados:** `docs/CROSS-PLATFORM-TESTS.md`
+- **Release:** `docs/RELEASE-3.3.1-RC.md`
+
 ### Release Candidate 3.3
 
 - **Release:** `docs/RELEASE-3.3-RC.md`

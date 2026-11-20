@@ -11,6 +11,13 @@ Base: 3.2 em produção; dev-standards integrado; CI em `.github/workflows/ci.ym
 - Testes e documentação junto com o código.
 - Não remover funcionalidades; não trocar stack sem ADR.
 
+## Paridade 3.3.1 — concluída
+
+- Web passou a cobrir todas as funcionalidades de negócio do backend: shell com sidebar, dashboard,
+  planejamento, revisão, foco, hábitos, categorias e lixeira.
+- Mobile ganhou revalidação ao retomar o app.
+- Matriz: `docs/FUNCTIONAL-PARITY-3.3.1.md`. Nenhuma lacuna `WEB_MISSING`/`MOBILE_MISSING`.
+
 ## Status de execução (RC 3.3)
 
 **Concluído neste RC:**
