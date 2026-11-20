@@ -63,14 +63,14 @@ Gerados por `scripts/build-release.sh` em `dist-release/3.3.1-rc.1/` (fora do Gi
 
 | Artefato | SHA-256 |
 |---|---|
-| `organiza-ai-web-3.3.1-rc.1.tar.gz` | `7a2adf58d6606e7769fc4fda977f66b35448d190726944a91bded2158ac3e96f` |
-| `organiza-ai-backend-3.3.1-rc.1.jar` | `668af2b4ca02c524b708d9a0c38487f1756884611b5a1245b02431cac33d9e86` |
-| `organiza-ai-database-3.3.1-rc.1.tar.gz` | `1490268df662a0051c9b146ca5e768ef9ceb906d5641622565a49fc9937734eb` |
+| `organiza-ai-web-3.3.1-rc.2.tar.gz` | `a5d6ceff0bffbdd7777386458174f704fa82c1f4ba42febd0b4ce1d830394f70` |
+| `organiza-ai-backend-3.3.1-rc.2.jar` | `a0af67b462305de672cd23562e2e8e4d794a74f6d979be92a7bb715d9edaa8c3` |
+| `organiza-ai-database-3.3.1-rc.2.tar.gz` | `1457801ec481df42e134f098532e33a8eaef81ae57ca2d126a87e9a0e1a4c1c3` |
 
-Mobile: `organiza-ai-mobile-3.3.1-rc.1.tar.gz` =
-`c2d89437cc4f866db5eba7240b64237214ff7593b0c5ca08bdaee6de133cb9a6`.
+Mobile: `organiza-ai-mobile-3.3.1-rc.2.tar.gz` =
+`6f4a9316d6e95a2377e74bc7f4d28d7568b1d23fa92ebaf41170854c765dc99e`.
 
-O JAR é construído com `mvn clean package` e validado por `Implementation-Version: 3.3.1-RC1`.
+O JAR é construído com `mvn clean package` e validado por `Implementation-Version: 3.3.1-RC2`.
 
 ## 7. Publicação
 
