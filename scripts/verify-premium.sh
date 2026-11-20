@@ -64,6 +64,7 @@ fi
 # Componentes premium, rotas e contrato do Admin.
 [ -f frontend/src/app/pages/perfil/perfil.component.ts ] || fail "PerfilComponent ausente"
 [ -f frontend/src/app/pages/home/home.component.ts ] || fail "HomeComponent ausente"
+[ -f frontend/src/app/pages/home/home.premium.spec.ts ] || fail "teste estrutural da Home Premium ausente"
 [ -f frontend/src/app/admin/admin-layout.component.ts ] || fail "Admin ausente"
 [ -f frontend/src/app/services/admin.guard.ts ] || fail "adminGuard ausente"
 [ -f frontend/src/app/services/admin.guard.spec.ts ] || fail "teste do adminGuard ausente"
