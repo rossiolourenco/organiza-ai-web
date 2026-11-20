@@ -25,8 +25,14 @@
 Web: `web-angular`, `web-backend`, `web-postgres`, `web-admin`.
 Mobile: `mobile-quality`, `mobile-bundle`.
 
-A `main` exige PR, checks verdes (`strict`), e bloqueia force push/exclusão. O merge do PR do RC
+A `main` exige PR, os quatro checks do Web (incluindo `web-postgres`, já incluído na proteção),
+`strict: true`, `enforce_admins: true`, e bloqueia force push/exclusão. O merge do PR do RC
 **não** está autorizado nesta rodada.
+
+CI do RC (verdes):
+
+- Web: https://github.com/rossiolourenco/organiza-ai-web/actions/runs/44764549186
+- Mobile: https://github.com/rossiolourenco/organiza-ai/actions/runs/44764548796
 
 ## 3. Artefatos e checksums
 
@@ -100,6 +106,5 @@ e verificação em `PRODUCTION-DEPLOYMENT.md` §2.
 | Teste em aparelho físico | Hardware |
 | Checks obrigatórios `web-postgres` na `main` | Adicionar o contexto à proteção após o primeiro run verde do PR |
 
-> **Ação recomendada antes do merge:** incluir `web-postgres` na lista de checks obrigatórios da
-> `main` (hoje exige `web-angular`, `web-backend`, `web-admin`). Enquanto o job não estiver na
-> proteção, ele roda no PR mas não bloqueia o merge.
+> **Proteção atualizada:** `web-postgres` foi incluído nos checks obrigatórios da `main` após o
+> primeiro run verde. O merge do PR passa a exigir os quatro checks do Web.

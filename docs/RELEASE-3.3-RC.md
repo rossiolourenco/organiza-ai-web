@@ -69,7 +69,7 @@ Os checksums publicados em `docs/RELEASE-HANDOFF.md` são os do build homologado
 1. `bash scripts/verify-premium.sh --release` verde (Web) — inclui PostgreSQL real.
 2. `bash scripts/verify-premium.sh` verde (Mobile).
 3. CI remoto verde em `web-angular`, `web-backend`, `web-postgres`, `web-admin`,
-   `mobile-quality`, `mobile-bundle`.
+   `mobile-quality`, `mobile-bundle` — **confirmado** (runs 44764549186 e 44764548796).
 4. Nenhuma vulnerabilidade crítica/alta conhecida sem mitigação documentada.
 5. Migrations aditivas validadas em PostgreSQL 17.
 6. Backup, deploy, rollback e smoke tests documentados e executáveis.
