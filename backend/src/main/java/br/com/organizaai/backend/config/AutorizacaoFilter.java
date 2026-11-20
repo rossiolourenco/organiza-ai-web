@@ -71,6 +71,8 @@ public class AutorizacaoFilter extends OncePerRequestFilter {
         response.setHeader("X-Frame-Options", "DENY");
         response.setHeader("Referrer-Policy", "no-referrer");
         response.setHeader("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
+        // A API só devolve JSON; negar qualquer carregamento reduz superfície de XSS.
+        response.setHeader("Content-Security-Policy", "default-src 'none'; frame-ancestors 'none'");
         response.setHeader("Cache-Control", "no-store");
     }
 
