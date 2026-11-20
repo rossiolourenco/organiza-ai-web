@@ -47,7 +47,12 @@ ls -l /opt/organiza-ai/current/public/main-*.js
 readlink -f /opt/organiza-ai/current
 ```
 
-O hash deve ser diferente do bundle da 3.2 (`main-NXMTECUN.js`) e corresponder à release ativada.
+O hash do bundle deve ser **igual ao do artefato homologado**
+(`dist-release/3.3.0-rc.1/organiza-ai-web-3.3.0-rc.1.tar.gz` → `index.html`).
+
+> O 3.3 RC não alterou o código do frontend, portanto o hash esperado é o mesmo da 3.2
+> (`main-NXMTECUN.js`). Isso **não** é sinal de deploy antigo: confira o `readlink` da release, a
+> versão do `backend.jar` e o `VERSION` da release. O backend é o artefato que muda de fato.
 
 ## 4. Funcional — navegador
 
