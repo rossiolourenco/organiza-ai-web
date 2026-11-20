@@ -60,6 +60,26 @@ jobs:
       - name: Backend gate
         run: bash scripts/verify-premium.sh --backend
 
+  web-postgres:
+    name: web-postgres
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - name: Setup Java
+        uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+          cache-dependency-path: backend/pom.xml
+      - name: Confirma Docker disponível
+        run: docker info --format '{{.ServerVersion}}'
+      - name: PostgreSQL real (Testcontainers)
+        run: bash scripts/verify-premium.sh --postgres
+
   web-admin:
     name: web-admin
     runs-on: ubuntu-latest
