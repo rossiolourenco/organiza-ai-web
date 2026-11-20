@@ -40,6 +40,9 @@ linguagem, framework ou banco.
 - `spring.jpa.show-sql=false` por padrão (produção não registra SQL/parâmetros).
 - O frontend ainda não possui script de lint/Prettier; dívida P2.
 - A API atual não tem versionamento por path (`/v1`); dívida P2 de contrato.
+- 3.3.1: Web com shell (sidebar/bottom nav) e telas de dashboard, planejamento, revisão, foco,
+  hábitos, categorias e lixeira; paridade funcional com o Mobile documentada em
+  `docs/FUNCTIONAL-PARITY-3.3.1.md`.
 - Versão do release centralizada em `VERSION`, validada contra `frontend/package.json` e
   `backend/pom.xml` pelo gate.
 

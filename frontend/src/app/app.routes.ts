@@ -1,11 +1,22 @@
 import { Routes } from "@angular/router";
+
 import { LoginComponent } from "./pages/login/login.component";
 import { CadastroComponent } from "./pages/cadastro/cadastro.component";
 import { HomeComponent } from "./pages/home/home.component";
 import { TarefaFormComponent } from "./pages/tarefa-form/tarefa-form.component";
 import { PerfilComponent } from "./pages/perfil/perfil.component";
+import { DashboardComponent } from "./pages/dashboard/dashboard.component";
+import { PlanejamentoComponent } from "./pages/planejamento/planejamento.component";
+import { RevisaoComponent } from "./pages/revisao/revisao.component";
+import { FocoComponent } from "./pages/foco/foco.component";
+import { HabitosComponent } from "./pages/habitos/habitos.component";
+import { CategoriasComponent } from "./pages/categorias/categorias.component";
+import { LixeiraComponent } from "./pages/lixeira/lixeira.component";
+import { AppShellComponent } from "./shell/app-shell.component";
+
 import { authGuard } from "./services/auth.guard";
 import { adminGuard } from "./services/admin.guard";
+
 import { AdminLayoutComponent } from "./admin/admin-layout.component";
 import { AdminDashboardComponent } from "./admin/pages/dashboard.component";
 import { AdminUsersComponent } from "./admin/pages/users.component";
@@ -25,26 +36,6 @@ export const routes: Routes = [
     component: CadastroComponent,
   },
   {
-    path: "home",
-    canActivate: [authGuard],
-    component: HomeComponent,
-  },
-  {
-    path: "tarefas/nova",
-    canActivate: [authGuard],
-    component: TarefaFormComponent,
-  },
-  {
-    path: "tarefas/editar/:id",
-    canActivate: [authGuard],
-    component: TarefaFormComponent,
-  },
-  {
-    path: "perfil",
-    canActivate: [authGuard],
-    component: PerfilComponent,
-  },
-  {
     path: "admin",
     canActivate: [adminGuard],
     component: AdminLayoutComponent,
@@ -61,7 +52,25 @@ export const routes: Routes = [
   },
   {
     path: "",
+    canActivate: [authGuard],
+    component: AppShellComponent,
+    children: [
+      { path: "", pathMatch: "full", redirectTo: "home" },
+      { path: "home", component: DashboardComponent },
+      { path: "tarefas", component: HomeComponent },
+      { path: "tarefas/nova", component: TarefaFormComponent },
+      { path: "tarefas/editar/:id", component: TarefaFormComponent },
+      { path: "planejamento", component: PlanejamentoComponent },
+      { path: "revisao", component: RevisaoComponent },
+      { path: "foco", component: FocoComponent },
+      { path: "habitos", component: HabitosComponent },
+      { path: "categorias", component: CategoriasComponent },
+      { path: "lixeira", component: LixeiraComponent },
+      { path: "perfil", component: PerfilComponent },
+    ],
+  },
+  {
+    path: "**",
     redirectTo: "login",
-    pathMatch: "full",
   },
 ];

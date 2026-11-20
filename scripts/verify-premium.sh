@@ -65,6 +65,28 @@ fi
 [ -f frontend/src/app/pages/perfil/perfil.component.ts ] || fail "PerfilComponent ausente"
 [ -f frontend/src/app/pages/home/home.component.ts ] || fail "HomeComponent ausente"
 [ -f frontend/src/app/pages/home/home.premium.spec.ts ] || fail "teste estrutural da Home Premium ausente"
+
+# Paridade funcional 3.3.1: componentes, testes e matriz obrigatórios.
+[ -f docs/FUNCTIONAL-PARITY-3.3.1.md ] || fail "matriz de paridade 3.3.1 ausente"
+[ -f frontend/src/app/shell/app-shell.component.spec.ts ] || fail "teste do shell ausente"
+[ -f frontend/src/app/services/productivity.spec.ts ] || fail "teste de produtividade ausente"
+for componente in \
+  shell/app-shell.component.ts \
+  pages/dashboard/dashboard.component.ts \
+  pages/planejamento/planejamento.component.ts \
+  pages/revisao/revisao.component.ts \
+  pages/foco/foco.component.ts \
+  pages/habitos/habitos.component.ts \
+  pages/categorias/categorias.component.ts \
+  pages/lixeira/lixeira.component.ts; do
+  [ -f "frontend/src/app/$componente" ] || fail "componente 3.3.1 ausente: $componente"
+done
+grep -q 'path: "habitos"' frontend/src/app/app.routes.ts || fail "rota /habitos ausente"
+grep -q 'path: "lixeira"' frontend/src/app/app.routes.ts || fail "rota /lixeira ausente"
+grep -q 'path: "planejamento"' frontend/src/app/app.routes.ts || fail "rota /planejamento ausente"
+[ -f database/migrations/V005__planejamento_foco.sql ] || fail "migration V005 ausente"
+[ -f backend/src/main/java/br/com/organizaai/backend/controller/ProdutividadeController.java ] || fail "controller de produtividade ausente"
+ok "paridade funcional 3.3.1 presente"
 [ -f frontend/src/app/admin/admin-layout.component.ts ] || fail "Admin ausente"
 [ -f frontend/src/app/services/admin.guard.ts ] || fail "adminGuard ausente"
 [ -f frontend/src/app/services/admin.guard.spec.ts ] || fail "teste do adminGuard ausente"

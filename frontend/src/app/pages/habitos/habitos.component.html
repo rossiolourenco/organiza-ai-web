@@ -1,0 +1,126 @@
+<main class="admin-content">
+  <div class="page-head">
+    <div>
+      <span class="eyebrow">HÁBITOS</span>
+      <h1 class="page-title">Hábitos</h1>
+      <p class="page-sub">Construa consistência: marque o dia, acompanhe a sequência e ajuste a meta semanal.</p>
+    </div>
+    <div class="page-actions">
+      <button type="button" class="btn ghost" (click)="carregar()" [disabled]="carregando">Atualizar</button>
+    </div>
+  </div>
+
+  <div class="card flash" *ngIf="feedback" role="status">{{ feedback }}</div>
+  <div class="card flash danger" *ngIf="erro" role="alert">{{ erro }}</div>
+
+  <section class="grid cols-3 resumo" aria-label="Resumo de hábitos">
+    <article class="card metric">
+      <span class="metric-label">Hábitos ativos</span>
+      <strong class="metric-value">{{ ativos }}</strong>
+      <span class="metric-hint">Em acompanhamento</span>
+    </article>
+    <article class="card metric">
+      <span class="metric-label">Feitos hoje</span>
+      <strong class="metric-value">{{ feitosHoje }}</strong>
+      <span class="metric-hint">De {{ habitos.length }} hábito(s)</span>
+    </article>
+    <article class="card metric">
+      <span class="metric-label">Hoje</span>
+      <strong class="metric-value">{{ hoje | date: "dd/MM" }}</strong>
+      <span class="metric-hint">Data civil local</span>
+    </article>
+  </section>
+
+  <section class="grid cols-2">
+    <article class="card" aria-label="Novo hábito">
+      <div class="card-head">
+        <div>
+          <span class="eyebrow">{{ editandoId ? "EDITAR" : "NOVO" }}</span>
+          <h2 class="card-title">{{ editandoId ? "Editar hábito" : "Criar hábito" }}</h2>
+        </div>
+      </div>
+      <form (ngSubmit)="salvar()" class="form-grid">
+        <label class="field full">
+          <span>Nome</span>
+          <input class="input" name="nome" [(ngModel)]="form.nome" maxlength="100" placeholder="Ex.: Beber água" required />
+        </label>
+        <label class="field full">
+          <span>Descrição (opcional)</span>
+          <input class="input" name="descricao" [(ngModel)]="form.descricao" maxlength="500" placeholder="Detalhe o hábito" />
+        </label>
+        <label class="field">
+          <span>Frequência</span>
+          <select class="select" name="frequencia" [(ngModel)]="form.frequencia">
+            <option value="DIARIA">Diária</option>
+            <option value="SEMANAL">Semanal</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>Meta semanal (1 a 7)</span>
+          <input class="input" type="number" name="meta" min="1" max="7" [(ngModel)]="form.metaSemanal" />
+        </label>
+        <label class="field">
+          <span>Cor</span>
+          <input class="input" type="color" name="cor" [(ngModel)]="form.cor" />
+        </label>
+        <div class="field full acoes">
+          <button type="submit" class="btn" [disabled]="salvando">
+            {{ salvando ? "Salvando…" : editandoId ? "Salvar alterações" : "Criar hábito" }}
+          </button>
+          <button type="button" class="btn ghost" *ngIf="editandoId" (click)="cancelarEdicao()">Cancelar</button>
+        </div>
+      </form>
+    </article>
+
+    <article class="card" aria-label="Hábitos cadastrados">
+      <div class="card-head">
+        <div>
+          <span class="eyebrow">ACOMPANHAMENTO</span>
+          <h2 class="card-title">Seus hábitos</h2>
+        </div>
+      </div>
+
+      <div class="loading" *ngIf="carregando">Carregando hábitos…</div>
+      <p class="small muted" *ngIf="!carregando && habitos.length === 0">
+        Nenhum hábito ainda. Crie o primeiro ao lado.
+      </p>
+
+      <ul class="habito-list" *ngIf="!carregando">
+        <li *ngFor="let habito of habitos" [style.--habito-cor]="habito.cor || '#4F46E5'">
+          <div class="habito-top">
+            <span class="habito-dot" aria-hidden="true"></span>
+            <div class="habito-info">
+              <strong>{{ habito.nome }}</strong>
+              <span class="small muted">
+                {{ habito.frequencia === "DIARIA" ? "Diário" : "Semanal" }} · meta {{ habito.metaSemanal }}x
+                · {{ semana(habito) }} na semana
+              </span>
+            </div>
+            <span class="badge" [class.success]="sequencia(habito) > 0">
+              {{ sequencia(habito) }} dia(s)
+            </span>
+          </div>
+
+          <div class="week-dots" aria-label="Últimos 7 dias">
+            <span *ngFor="let dia of dias(habito)" class="dot" [class.done]="dia.feito"
+              [class.today]="dia.data === hoje" [attr.title]="dia.label">{{ dia.label }}</span>
+          </div>
+
+          <div class="habito-actions">
+            <button type="button" class="btn small" [class.ghost]="feitoHoje(habito)" (click)="alternarHoje(habito)">
+              {{ feitoHoje(habito) ? "Desmarcar hoje" : "Marcar hoje" }}
+            </button>
+            <button type="button" class="btn ghost small" (click)="editar(habito)">Editar</button>
+            <ng-container *ngIf="confirmandoExclusao !== habito.id; else confirmar">
+              <button type="button" class="btn ghost small" (click)="pedirExclusao(habito)">Excluir</button>
+            </ng-container>
+            <ng-template #confirmar>
+              <button type="button" class="btn danger small" (click)="excluir(habito)">Confirmar exclusão</button>
+              <button type="button" class="btn ghost small" (click)="cancelarExclusao()">Cancelar</button>
+            </ng-template>
+          </div>
+        </li>
+      </ul>
+    </article>
+  </section>
+</main>

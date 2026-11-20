@@ -1,0 +1,56 @@
+<main class="admin-content">
+  <div class="page-head">
+    <div>
+      <span class="eyebrow">LIXEIRA</span>
+      <h1 class="page-title">Lixeira</h1>
+      <p class="page-sub">Tarefas excluídas ficam aqui e podem ser restauradas. A exclusão definitiva remove o histórico.</p>
+    </div>
+    <div class="page-actions">
+      <button type="button" class="btn ghost" (click)="carregar()" [disabled]="carregando">Atualizar</button>
+      <a class="btn secondary" routerLink="/tarefas">Voltar às tarefas</a>
+    </div>
+  </div>
+
+  <div class="card flash" *ngIf="feedback" role="status">{{ feedback }}</div>
+  <div class="card flash danger" *ngIf="erro" role="alert">{{ erro }}</div>
+
+  <section class="card" aria-label="Itens na lixeira">
+    <div class="card-head">
+      <div>
+        <span class="eyebrow">ITENS REMOVIDOS</span>
+        <h2 class="card-title">{{ tarefas.length }} tarefa(s) na lixeira</h2>
+      </div>
+    </div>
+
+    <div class="loading" *ngIf="carregando">Carregando lixeira…</div>
+    <p class="small muted" *ngIf="!carregando && tarefas.length === 0">
+      A lixeira está vazia. Tarefas excluídas aparecem aqui para restauração.
+    </p>
+
+    <ul class="trash-list" *ngIf="!carregando">
+      <li *ngFor="let tarefa of tarefas">
+        <div class="trash-info">
+          <strong>{{ tarefa.titulo }}</strong>
+          <span class="small muted">
+            {{ tarefa.dataPrazo || "Sem prazo" }}
+            <ng-container *ngIf="tarefa.categoria"> · {{ tarefa.categoria.nome }}</ng-container>
+            · {{ tarefa.prioridade }}
+          </span>
+        </div>
+        <div class="trash-actions">
+          <button type="button" class="btn small" (click)="restaurar(tarefa)" [disabled]="processando === tarefa.id">
+            {{ processando === tarefa.id ? "Restaurando…" : "Restaurar" }}
+          </button>
+          <ng-container *ngIf="confirmandoExclusao !== tarefa.id; else confirmar">
+            <button type="button" class="btn ghost small" (click)="pedirExclusao(tarefa)">Excluir definitivo</button>
+          </ng-container>
+          <ng-template #confirmar>
+            <button type="button" class="btn danger small" (click)="excluirDefinitivo(tarefa)"
+              [disabled]="processando === tarefa.id">Confirmar exclusão</button>
+            <button type="button" class="btn ghost small" (click)="cancelarExclusao()">Cancelar</button>
+          </ng-template>
+        </div>
+      </li>
+    </ul>
+  </section>
+</main>

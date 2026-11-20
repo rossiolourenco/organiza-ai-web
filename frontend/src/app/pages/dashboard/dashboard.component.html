@@ -1,0 +1,147 @@
+<main class="page">
+  <section class="welcome">
+    <div>
+      <span class="eyebrow">PAINEL PESSOAL</span>
+      <h1>Olá, {{ nome }}.</h1>
+      <p class="welcome-sub">Que bom ter você por aqui. {{ hoje }}.</p>
+    </div>
+    <a class="primary-action" routerLink="/tarefas/nova">+ Nova tarefa</a>
+  </section>
+
+  <div class="card flash warning" *ngIf="erro" role="alert">
+    {{ erro }}
+    <button type="button" class="btn ghost small" (click)="carregar()">Tentar novamente</button>
+  </div>
+
+  <section class="hero card" aria-label="Seu dia">
+    <div class="hero-copy">
+      <span class="eyebrow">UM PASSO DE CADA VEZ</span>
+      <h2>Seu dia, com mais intenção.</h2>
+      <p *ngIf="progresso.total === 0">Sua agenda de hoje está livre. Que tal planejar o próximo passo?</p>
+      <p *ngIf="progresso.total > 0">
+        {{ progresso.feitas }} de {{ progresso.total }} tarefas com prazo hoje estão concluídas.
+      </p>
+      <div class="hero-actions">
+        <a class="primary-action" routerLink="/planejamento">Planejar meu dia</a>
+        <a class="ghost-action" routerLink="/foco">▷ Focar agora</a>
+      </div>
+    </div>
+    <div class="ring" role="img" [attr.aria-label]="'Progresso de hoje: ' + progresso.pct + '%'"
+      [style.background]="'conic-gradient(var(--primary) ' + progresso.pct + '%, var(--border) 0)'">
+      <div class="ring-inner">
+        <strong>{{ progresso.pct }}%</strong>
+        <span>hoje</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="grid cols-4 metrics" aria-label="Indicadores">
+    <article class="card metric">
+      <span class="metric-label">Em aberto</span>
+      <strong class="metric-value">{{ abertas }}</strong>
+      <span class="metric-hint">Tarefas para concluir</span>
+    </article>
+    <article class="card metric">
+      <span class="metric-label">Concluídas</span>
+      <strong class="metric-value">{{ concluidas }}</strong>
+      <span class="metric-hint">Total já finalizado</span>
+    </article>
+    <article class="card metric" [class.metric-danger]="atrasadas > 0">
+      <span class="metric-label">Atrasadas</span>
+      <strong class="metric-value">{{ atrasadas }}</strong>
+      <span class="metric-hint">Precisam de atenção</span>
+    </article>
+    <article class="card metric">
+      <span class="metric-label">Foco hoje</span>
+      <strong class="metric-value">{{ focoHoje }} min</strong>
+      <span class="metric-hint">Sincronizado na conta</span>
+    </article>
+  </section>
+
+  <section class="grid cols-2">
+    <article class="card" aria-label="Próxima melhor ação">
+      <div class="card-head">
+        <div>
+          <span class="eyebrow">PRÓXIMA MELHOR AÇÃO</span>
+          <h3 class="card-title">O que fazer agora</h3>
+        </div>
+        <a routerLink="/planejamento" class="small muted">Ver plano</a>
+      </div>
+      <ng-container *ngIf="proxima as acao; else semAcao">
+        <p class="next-title">{{ acao.tarefa.titulo }}</p>
+        <p class="small muted">{{ acao.motivo }}</p>
+        <div class="next-actions">
+          <button type="button" class="btn small" (click)="concluir(acao.tarefa)"
+            [disabled]="concluindo === acao.tarefa.id">
+            {{ concluindo === acao.tarefa.id ? "Concluindo…" : "Concluir" }}
+          </button>
+          <a class="btn ghost small" routerLink="/tarefas">Abrir tarefas</a>
+        </div>
+      </ng-container>
+      <ng-template #semAcao>
+        <p class="next-title">Tudo em ordem por aqui.</p>
+        <p class="small muted">Nenhuma tarefa pendente. Aproveite para planejar a semana.</p>
+      </ng-template>
+    </article>
+
+    <article class="card" aria-label="Tarefas de hoje">
+      <div class="card-head">
+        <div>
+          <span class="eyebrow">HOJE</span>
+          <h3 class="card-title">Tarefas com prazo hoje</h3>
+        </div>
+        <a routerLink="/tarefas" class="small muted">Ver todas</a>
+      </div>
+      <div class="loading" *ngIf="carregando">Carregando…</div>
+      <p class="small muted" *ngIf="!carregando && hojeTarefas.length === 0">Nenhuma tarefa com prazo hoje.</p>
+      <ul class="today-list" *ngIf="!carregando && hojeTarefas.length > 0">
+        <li *ngFor="let tarefa of hojeTarefas">
+          <span class="status-dot" [class.done]="tarefa.status === 'CONCLUIDA'"></span>
+          <span class="today-title" [class.done]="tarefa.status === 'CONCLUIDA'">{{ tarefa.titulo }}</span>
+          <span class="badge" [class.success]="tarefa.status === 'CONCLUIDA'"
+            [class.warning]="tarefa.prioridade === 'ALTA' && tarefa.status !== 'CONCLUIDA'">
+            {{ tarefa.status === "CONCLUIDA" ? "Concluída" : tarefa.prioridade }}
+          </span>
+          <button type="button" class="btn ghost small" *ngIf="tarefa.status !== 'CONCLUIDA'"
+            (click)="concluir(tarefa)" [disabled]="concluindo === tarefa.id">Concluir</button>
+        </li>
+      </ul>
+    </article>
+  </section>
+
+  <section class="grid cols-2">
+    <article class="card" aria-label="Semana">
+      <div class="card-head">
+        <div>
+          <span class="eyebrow">RITMO</span>
+          <h3 class="card-title">Concluídas na semana</h3>
+        </div>
+        <a routerLink="/revisao" class="small muted">Revisar</a>
+      </div>
+      <div class="week-chart">
+        <div class="week-bar" *ngFor="let dia of semana">
+          <div class="bar-track">
+            <div class="bar-fill" [style.height.%]="(dia.total / maxSemana) * 100"></div>
+          </div>
+          <span class="bar-value">{{ dia.total }}</span>
+          <span class="bar-label">{{ dia.data | date: "EEE" }}</span>
+        </div>
+      </div>
+    </article>
+
+    <article class="card" aria-label="Atalhos">
+      <div class="card-head">
+        <div>
+          <span class="eyebrow">ATALHOS</span>
+          <h3 class="card-title">Explorar</h3>
+        </div>
+      </div>
+      <div class="shortcuts">
+        <a routerLink="/habitos" class="shortcut">Hábitos</a>
+        <a routerLink="/categorias" class="shortcut">Categorias</a>
+        <a routerLink="/lixeira" class="shortcut">Lixeira</a>
+        <a routerLink="/revisao" class="shortcut">Revisão</a>
+      </div>
+    </article>
+  </section>
+</main>

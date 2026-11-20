@@ -17,6 +17,7 @@ class MigrationTests {
             statement.execute(Files.readString(Path.of("../database/migrations/V002__mobile_produtividade.sql")));
             statement.execute(Files.readString(Path.of("../database/migrations/V003__premium_produtividade.sql")));
             statement.execute(Files.readString(Path.of("../database/migrations/V004__admin_rbac_seguranca_firewall.sql")));
+            statement.execute(Files.readString(Path.of("../database/migrations/V005__planejamento_foco.sql")));
             statement.execute("INSERT INTO habitos(nome,usuario_id,frequencia,meta_semanal) VALUES ('DEMO Hábito',1,'DIARIA',7)");
             statement.execute("INSERT INTO habito_registros(habito_id,data) VALUES (1,'2026-11-17')");
             try (ResultSet rows = statement.executeQuery(
@@ -37,12 +38,17 @@ class MigrationTests {
             statement.execute("INSERT INTO firewall_regras(nome,ip_cidr,porta,protocolo,direcao,acao) " +
                 "VALUES ('DEMO SSH','10.0.0.0/8',22,'TCP','INBOUND','ALLOW')");
             statement.execute("INSERT INTO auditoria_admin(acao,resultado) VALUES ('DEMO_TESTE','SUCESSO')");
+            statement.execute("INSERT INTO planejamentos(usuario_id,data,itens) VALUES (1,'2026-11-20','[{\"tarefaId\":1,\"ordem\":0,\"minutosEstimados\":30}]')");
+            statement.execute("INSERT INTO sessoes_foco(usuario_id,tarefa_id,minutos,data) VALUES (1,1,25,'2026-11-20')");
             try (ResultSet rows = statement.executeQuery(
-                    "SELECT f.nome, a.acao, p.senha_minima FROM firewall_regras f, auditoria_admin a, politicas_seguranca p")) {
+                    "SELECT f.nome, a.acao, p.senha_minima, pl.itens, sf.minutos " +
+                    "FROM firewall_regras f, auditoria_admin a, politicas_seguranca p, planejamentos pl, sessoes_foco sf")) {
                 assertTrue(rows.next());
                 assertEquals("DEMO SSH", rows.getString(1));
                 assertEquals("DEMO_TESTE", rows.getString(2));
                 assertEquals(8, rows.getInt(3));
+                assertTrue(rows.getString(4).contains("tarefaId"));
+                assertEquals(25, rows.getInt(5));
             }
             statement.execute("DELETE FROM categorias WHERE id=1");
             try (ResultSet rows = statement.executeQuery("SELECT titulo,categoria_id,detalhes,proxima_gerada FROM tarefas")) {

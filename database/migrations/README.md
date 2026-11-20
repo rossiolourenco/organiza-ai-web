@@ -105,3 +105,11 @@ O bootstrap só age se não existir SUPER_ADMIN ativo. Remova a senha do ambient
 
 Mantenha as estruturas aditivas. A reversão de aplicação deve restaurar backend/Web anteriores
 coordenados; não há script destrutivo de rollback de V004.
+
+## V005 — planejamento e foco centralizados (3.3.1)
+
+- `planejamentos`: plano diário por usuário (`UNIQUE usuario_id+data`), itens em JSON, controle
+  otimista por `versao` (409 em edição concorrente).
+- `sessoes_foco`: sessões de foco concluídas, com vínculo opcional a `tarefas` (`ON DELETE SET NULL`).
+- Aditiva e idempotente (`IF NOT EXISTS`). Não aplicada em produção nesta rodada.
+- Consumida por `GET/PUT /api/produtividade/planejamento` e `GET/POST /api/produtividade/foco`.
