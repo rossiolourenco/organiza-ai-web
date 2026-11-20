@@ -54,7 +54,9 @@ class PostgresIntegrationTests {
         .withCopyFileToContainer(script("migrations/V003__premium_produtividade.sql"),
             "/docker-entrypoint-initdb.d/03-v003.sql")
         .withCopyFileToContainer(script("migrations/V004__admin_rbac_seguranca_firewall.sql"),
-            "/docker-entrypoint-initdb.d/04-v004.sql");
+            "/docker-entrypoint-initdb.d/04-v004.sql")
+        .withCopyFileToContainer(script("migrations/V005__planejamento_foco.sql"),
+            "/docker-entrypoint-initdb.d/05-v005.sql");
 
     @Value("${local.server.port}")
     int port;
@@ -213,7 +215,8 @@ class PostgresIntegrationTests {
 
         for (String tabela : List.of("usuarios", "categorias", "tarefas", "sessoes", "tarefa_conclusoes",
             "habitos", "habito_registros", "tentativas_login", "auditoria_admin", "firewall_regras",
-            "firewall_historico", "firewall_snapshots", "firewall_estado", "politicas_seguranca")) {
+            "firewall_historico", "firewall_snapshots", "firewall_estado", "politicas_seguranca",
+            "planejamentos", "sessoes_foco")) {
             assertEquals(1, jdbc.queryForObject(
                 "SELECT count(*) FROM information_schema.tables WHERE table_schema = 'public' AND table_name = ?",
                 Integer.class, tabela), "tabela ausente após migrations: " + tabela);
@@ -242,6 +245,72 @@ class PostgresIntegrationTests {
             Integer.class, usuarioId));
         assertEquals(0, jdbc.queryForObject("SELECT count(*) FROM habitos WHERE usuario_id = ?",
             Integer.class, usuarioId));
+    }
+
+    @Test
+    void planejamentoEFocoPersistemEntreRequisicoes() throws Exception {
+        var a = conta("Senha-teste-2026");
+
+        var tarefa = call("POST", "/tarefas?usuarioId=" + a.id,
+            Map.of("titulo", "Foco persistente", "prioridade", "MEDIA", "status", "PENDENTE",
+                "dataPrazo", "2026-11-21"), a.token);
+        long tarefaId = tarefa.body.get("id").asLong();
+
+        // Planejamento: criar e reler.
+        var salvar = call("PUT", "/produtividade/planejamento", Map.of(
+            "data", "2026-11-20",
+            "itens", List.of(Map.of("tarefaId", tarefaId, "ordem", 0, "minutosEstimados", 30)),
+            "versao", 0), a.token);
+        assertEquals(200, salvar.status);
+        assertEquals(1L, salvar.body.get("versao").asLong());
+
+        var ler = call("GET", "/produtividade/planejamento?data=2026-11-20", null, a.token);
+        assertEquals(200, ler.status);
+        assertEquals(1, ler.body.get("itens").size());
+        assertEquals(tarefaId, ler.body.get("itens").get(0).get("tarefaId").asLong());
+
+        // Controle otimista: versão antiga gera 409.
+        var conflito = call("PUT", "/produtividade/planejamento", Map.of(
+            "data", "2026-11-20",
+            "itens", List.of(Map.of("tarefaId", tarefaId, "ordem", 0, "minutosEstimados", 45)),
+            "versao", 0), a.token);
+        assertEquals(409, conflito.status);
+
+        // Atualização com a versão correta.
+        var atualizar = call("PUT", "/produtividade/planejamento", Map.of(
+            "data", "2026-11-20",
+            "itens", List.of(Map.of("tarefaId", tarefaId, "ordem", 0, "minutosEstimados", 45)),
+            "versao", 1), a.token);
+        assertEquals(200, atualizar.status);
+        assertEquals(2L, atualizar.body.get("versao").asLong());
+
+        // Foco: registrar e resumir.
+        var sessao = call("POST", "/produtividade/foco",
+            Map.of("minutos", 25, "tarefaId", tarefaId, "data", "2026-11-20"), a.token);
+        assertEquals(200, sessao.status);
+        assertEquals(25, sessao.body.get("minutos").asInt());
+
+        var listaFoco = call("GET", "/produtividade/foco?data=2026-11-20", null, a.token);
+        assertEquals(200, listaFoco.status);
+        assertEquals(1, listaFoco.body.size());
+
+        var resumo = call("GET", "/produtividade/foco/resumo?inicio=2026-11-16&fim=2026-11-22", null, a.token);
+        assertEquals(200, resumo.status);
+        assertEquals(25, resumo.body.get("minutos").asInt());
+        assertEquals(1, resumo.body.get("sessoes").asInt());
+
+        // Isolamento: outro usuário não vê o plano nem o foco do primeiro.
+        var b = conta("Senha-teste-2026");
+        var planoB = call("GET", "/produtividade/planejamento?data=2026-11-20", null, b.token);
+        assertEquals(200, planoB.status);
+        assertEquals(0, planoB.body.get("itens").size());
+        var focoB = call("GET", "/produtividade/foco?data=2026-11-20", null, b.token);
+        assertEquals(0, focoB.body.size());
+
+        // IDOR: registrar foco apontando tarefa de outro usuário deve falhar.
+        var idor = call("POST", "/produtividade/foco",
+            Map.of("minutos", 25, "tarefaId", tarefaId, "data", "2026-11-20"), b.token);
+        assertEquals(400, idor.status);
     }
 
     private static MountableFile script(String relative) {
