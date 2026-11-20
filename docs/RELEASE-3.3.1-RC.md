@@ -1,8 +1,8 @@
 # Organiza Aí 3.3.1 — Release Candidate
 
-- **Versão:** `3.3.1-rc.1` (`VERSION`)
-- **Backend:** `3.3.1-RC1` · **Web/Admin:** `3.3.1-rc.1`
-- **Mobile:** `3.3.1-rc.1` (app/loja `3.3.1`, build 34)
+- **Versão:** `3.3.1-rc.2` (`VERSION`)
+- **Backend:** `3.3.1-RC2` · **Web/Admin:** `3.3.1-rc.2`
+- **Mobile:** `3.3.1-rc.2` (app/loja `3.3.1`, build 34)
 - **Base publicada:** 3.3.0-rc.1 (`48154ee`)
 - **Branches:** `feature/3.3.1-functional-parity-web` · `feature/3.3.1-functional-parity-mobile`
 - **Status:** RC preparado; **sem merge e sem deploy**
@@ -26,7 +26,9 @@ revalidação ao retomar o app.
 - Versão 3.3.1.
 
 ### Backend
-- Nenhum endpoint novo, nenhum contrato alterado, nenhuma migration.
+- 5 endpoints novos em `/api/produtividade/*` (planejamento e foco) com controle otimista por versão.
+- Migration aditiva `V005__planejamento_foco.sql` (não aplicada em produção).
+- Nenhum contrato existente alterado.
 
 ## 3. Matriz de paridade
 
@@ -47,9 +49,10 @@ Ver `FUNCTIONAL-PARITY-3.3.1.md`: 30 recursos `PARITY_OK`, 0 `WEB_MISSING`, 0 `M
 
 ## 5. Riscos e limitações
 
-- Planejamento e foco são preferências **por dispositivo** (mesma decisão do Mobile); não sincronizam
-  entre aparelhos.
-- Notificações continuam exclusivas do Mobile.
+- Cronômetro em execução é estado transitório local; **sessões concluídas e plano diário são
+  centralizados** no backend.
+- Sessão concluída offline é enviada na próxima execução do app.
+- Notificações continuam exclusivas do Mobile (sem backend de notificações).
 - Admin continua exclusivo da Web.
 - Homologação manual em dois dispositivos pendente (`CROSS-PLATFORM-TESTS.md` §6).
 - Sem build assinado/teste físico do Mobile.

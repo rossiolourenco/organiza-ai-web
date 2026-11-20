@@ -62,10 +62,10 @@ Legenda: **PARITY_OK** · **WEB_MISSING** · **MOBILE_MISSING** · **PARTIAL** �
 | Dashboard/indicadores | derivado de `/api/tarefas` | `/home` | aba Home | dono | `dashboard` (browser) + Jest | PARITY_OK |
 | Progresso do dia | derivado | `/home` | Home | dono | `productivity.spec.ts`, Jest | PARITY_OK |
 | Próxima melhor ação | derivado | `/home` | Home | dono | `productivity.spec.ts`, Jest | PARITY_OK |
-| Planejamento diário | derivado + storage local | `/planejamento` | aba Planejamento | dono | `productivity.spec.ts`, Jest | PARITY_OK (preferência do dispositivo) |
+| Planejamento diário | `/api/produtividade/planejamento` | `/planejamento` | aba Planejamento | dono | Postgres IT, `ProdutividadeApiTests`, `productivity.spec.ts`, Jest | PARITY_OK |
 | Revisão semanal | derivado | `/revisao` | `/revisao` | dono | `productivity.spec.ts`, Jest | PARITY_OK |
-| Foco/Pomodoro | storage local | `/foco` | aba Foco + `/concentracao` | dono | `productivity.spec.ts`, Jest | PARITY_OK (preferência do dispositivo) |
-| Notificações/lembretes | — (local) | — | `expo-notifications` | dono | Jest/config | NOT_APPLICABLE (Web não tem notificação nativa; decisão de plataforma) |
+| Foco/Pomodoro | `/api/produtividade/foco` (sessões concluídas) | `/foco` | aba Foco | dono | Postgres IT, `ProdutividadeApiTests`, `focus-sync.test.ts`, Jest | PARITY_OK (cronômetro local; histórico no backend) |
+| Notificações/lembretes | — (sem backend) | — | `expo-notifications` (local) | dono | Jest/config | NOT_APPLICABLE (notificação nativa; sem backend de notificações) |
 
 ## 6. Administração (restrita à Web)
 
@@ -83,11 +83,13 @@ Legenda: **PARITY_OK** · **WEB_MISSING** · **MOBILE_MISSING** · **PARTIAL** �
 | Status | Quantidade |
 |---|---|
 | PARITY_OK | 30 |
-| NOT_APPLICABLE | 5 (endpoints redundantes/filtro local + notificações) |
+| NOT_APPLICABLE | 5 (filtro local/endpoints redundantes + notificações nativas) |
 | ROLE_RESTRICTED | 6 grupos administrativos (26 endpoints) |
 | WEB_MISSING | **0** |
 | MOBILE_MISSING | **0** |
 | PARTIAL | **0** |
 | BACKEND_GAP | **0** |
+
+Planejamento e histórico de foco agora são **dados de negócio centralizados** (níveis 2 e 3 de paridade).
 
 Nenhuma funcionalidade de negócio destinada ao usuário ficou ausente em uma das plataformas.

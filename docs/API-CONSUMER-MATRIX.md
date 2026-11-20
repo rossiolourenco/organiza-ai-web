@@ -1,7 +1,7 @@
 # Matriz de consumidores da API — 3.3.1
 
 - **Fonte:** controllers Spring Boot (`backend/src/main/java/.../controller`)
-- **Total:** 54 endpoints (28 de negócio/autenticação + 26 administrativos)
+- **Total:** 59 endpoints (33 de negócio/autenticação + 26 administrativos)
 - **Data:** 2026-11-20
 
 ## 1. Conta e autenticação (7)
@@ -52,7 +52,20 @@
 | POST | `/api/habitos/{id}/registros` | Habito | `RegistroHabitoRequest` | `Habito` | Bearer + escopo | ✅ | ✅ |
 | DELETE | `/api/habitos/{id}/registros` | Habito | query `data` | `Habito` | Bearer + escopo | ✅ | ✅ |
 
-## 5. Administração (26) — apenas Web, RBAC
+## 5. Produtividade (5) — sincronização entre dispositivos
+
+| Método | Endpoint | Controller | DTO entrada | DTO saída | Auth | Web | Mobile |
+|---|---|---|---|---|---|---|---|
+| GET | `/api/produtividade/planejamento` | Produtividade | query `data` | `PlanejamentoResponse` | Bearer (sessão) | ✅ | ✅ |
+| PUT | `/api/produtividade/planejamento` | Produtividade | `PlanejamentoRequest` | `PlanejamentoResponse` | Bearer (sessão) | ✅ | ✅ |
+| GET | `/api/produtividade/foco` | Produtividade | query `data` | `SessaoFocoResponse[]` | Bearer (sessão) | ✅ | ✅ |
+| POST | `/api/produtividade/foco` | Produtividade | `SessaoFocoRequest` | `SessaoFocoResponse` | Bearer (sessão) | ✅ | ✅ |
+| GET | `/api/produtividade/foco/resumo` | Produtividade | query `inicio`,`fim` | `FocoResumoResponse` | Bearer (sessão) | ✅ | — |
+
+> Os endpoints de produtividade derivam o usuário da sessão (não usam `usuarioId` na query), o que
+> impede IDOR; a posse da tarefa vinculada é validada no serviço.
+
+## 6. Administração (26) — apenas Web, RBAC
 
 | Método | Endpoint | Controller | Web | Mobile |
 |---|---|---|---|---|
@@ -83,10 +96,10 @@
 | POST | `/api/admin/usuarios/{id}/redefinir-senha` | AdminUsuario | ✅ | — |
 | DELETE | `/api/admin/usuarios/{id}` | AdminUsuario | ✅ | — |
 
-## 6. Observações de contrato
+## 7. Observações de contrato
 
 - Todos os endpoints de negócio exigem `Authorization: Bearer` e escopo por `usuarioId` (403/404 para
   recurso de terceiro). Endpoints administrativos exigem papel `ADMIN`/`SUPER_ADMIN`.
 - `/api/usuarios` (GET), `/api/tarefas/{id}`, `/status` e `/prioridade` não têm consumidor direto:
   as listas já trazem os dados e os filtros são locais. Mantidos por compatibilidade.
-- Nenhum endpoint novo foi criado no 3.3.1 e nenhum contrato existente mudou.
+- O 3.3.1 adiciona 5 endpoints de produtividade (planejamento e foco) sem alterar contratos existentes.

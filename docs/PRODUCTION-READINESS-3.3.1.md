@@ -6,10 +6,10 @@
 |---|---|---|---|
 | 1 | Endpoints inventariados | `API-CONSUMER-MATRIX.md` (54) | ✅ |
 | 2 | Funcionalidades de usuário nas duas plataformas | `FUNCTIONAL-PARITY-3.3.1.md` (0 lacunas) | ✅ |
-| 3 | Mesmas regras de negócio | backend único; nenhuma regra duplicada | ✅ |
-| 4 | Dados compartilhados no backend | CRUD via API; só preferências ficam locais | ✅ |
+| 3 | Planejamento persistir entre dispositivos | `/api/produtividade/planejamento` (Postgres IT + API tests) | ✅ |
+| 4 | Histórico de foco persistir entre dispositivos | `/api/produtividade/foco` (Postgres IT + API tests + focus-sync) | ✅ |
 | 5 | Dashboard Web alinhado ao Premium Mobile | `docs/assets/3.3.1-web-dashboard.jpg` | ✅ |
-| 6 | Sincronização entre clientes | `CROSS-PLATFORM-TESTS.md` (API ↔ Web; Mobile reload) | ◐ (UI 2 dispositivos pendente) |
+| 6 | Sincronização entre clientes | `DATA-SYNCHRONIZATION-3.3.1.md`; API↔Web comprovada; Mobile via teste de mescla | ◐ (UI 2 dispositivos pendente) |
 | 7 | Auth e RBAC preservados | backend inalterado + testes | ✅ |
 | 8 | Admin sem regressão | 19 testes Angular incluem adminGuard; rotas mantidas | ✅ |
 | 9 | Testes | 39 Web + 38 backend + 53 Mobile | ✅ |

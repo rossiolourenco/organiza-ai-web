@@ -19,6 +19,11 @@
 | 9 | Marcar hábito hoje | UI → `POST /api/habitos/{id}/registros` | ✅ badge 1 dia e botão “Desmarcar” |
 | 10 | Dashboard refletir dados de outro cliente | `POST /api/tarefas` → `/home` | ✅ “Próxima melhor ação” e “Hoje” |
 | 11 | Retomada do app Mobile | `AppState -> active` com throttle | ✅ `RevalidateOnActive` + teste unitário |
+| 12 | Planejamento persistir entre clientes | `PUT` + `GET /api/produtividade/planejamento` | ✅ Postgres IT + `ProdutividadeApiTests` |
+| 13 | Controle otimista de plano (409) | versão antiga no `PUT` | ✅ 409 + recarga |
+| 14 | Foco persistir entre clientes | `POST` + `GET /api/produtividade/foco` e resumo | ✅ Postgres IT + `ProdutividadeApiTests` |
+| 15 | Mescla de sessões locais e remotas | `mergeFocusSessions` | ✅ `tests/focus-sync.test.ts` |
+| 16 | Isolamento de plano/foco entre usuários | GET de outro usuário | ✅ Postgres IT (vazio) + IDOR de tarefa 400 |
 | 12 | Expiração de sessão | token inválido → 401 | ✅ clientes limpam sessão (backend + `Api`) |
 
 ## 2. Estado observado na API após os cenários

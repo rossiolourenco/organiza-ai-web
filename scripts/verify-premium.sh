@@ -84,6 +84,8 @@ done
 grep -q 'path: "habitos"' frontend/src/app/app.routes.ts || fail "rota /habitos ausente"
 grep -q 'path: "lixeira"' frontend/src/app/app.routes.ts || fail "rota /lixeira ausente"
 grep -q 'path: "planejamento"' frontend/src/app/app.routes.ts || fail "rota /planejamento ausente"
+[ -f database/migrations/V005__planejamento_foco.sql ] || fail "migration V005 ausente"
+[ -f backend/src/main/java/br/com/organizaai/backend/controller/ProdutividadeController.java ] || fail "controller de produtividade ausente"
 ok "paridade funcional 3.3.1 presente"
 [ -f frontend/src/app/admin/admin-layout.component.ts ] || fail "Admin ausente"
 [ -f frontend/src/app/services/admin.guard.ts ] || fail "adminGuard ausente"

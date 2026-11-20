@@ -2,7 +2,8 @@
 
 ## 1. Banco
 
-Nenhuma alteração de schema. Rollback de banco **não é necessário**; manter os dados.
+A migration `V005` é aditiva. Em rollback de aplicação, as tabelas `planejamentos` e `sessoes_foco`
+podem permanecer (o backend anterior as ignora). Não há rollback destrutivo de dados.
 
 ## 2. Aplicação
 
