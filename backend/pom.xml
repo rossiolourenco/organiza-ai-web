@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>br.com.organizaai</groupId>
 	<artifactId>backend</artifactId>
-	<version>3.3.0-RC1</version>
+	<version>3.3.1-RC1</version>
 	<name>OrganizaAiBackend</name>
 	<description/>
 	<url/>
