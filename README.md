@@ -22,6 +22,7 @@
 - **Execução local:** `docs/LOCAL-EXECUTION.md`
 - **Gate de regressão:** `bash scripts/verify-premium.sh`
 - **Validação 3.2:** `docs/VALIDATION-REPORT.md`
+- **Roadmap 3.3:** `docs/ROADMAP-3.3.md`
 
 A versão atual é **3.2** (Web/Admin + Mobile), com perfil/segurança e API centralizada. As seções
 históricas abaixo permanecem como registro da entrega acadêmica.
