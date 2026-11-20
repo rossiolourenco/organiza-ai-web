@@ -88,3 +88,10 @@ Não edite as regras diretamente na cópia do projeto. Adaptações vão em `STA
 - O framework não tem tag/versão semântica; o fingerprint é a referência.
 - A cópia é manual, portanto a atualização exige diff/revisão.
 - A integração não altera o comportamento da aplicação.
+
+## 7. Consolidação
+
+- Commit: `0a32f36`
+- Branch: `chore/dev-standards-3.2`
+- PR: https://github.com/rossiolourenco/organiza-ai-web/pull/1
+- Merge/deploy: não executados; aguardando revisão.

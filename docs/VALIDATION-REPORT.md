@@ -83,10 +83,10 @@ estava regredido.
 - Sem teste E2E de navegador automatizado; validação visual manual.
 - Sem alteração de banco/produção.
 - A cópia acadêmica foi preservada, não removida/renomeada.
-- Nenhum commit/push foi feito.
+- Consolidação: commit **0a32f36** na branch `chore/dev-standards-3.2`; PR [#1](https://github.com/rossiolourenco/organiza-ai-web/pull/1) aberto. Nenhum deploy foi feito.
 
 ## 8. Conclusão
 
 A integração do dev-standards está funcional e carregada nos dois repositórios. Web/Admin e Mobile
 3.2 foram executados pelos caminhos oficiais, com testes e gates verdes. A divergência visual não é
-uma regressão de código: é proveniente de cópia/cache antigos. Nenhuma publicação foi feita.
+uma regressão de código: é proveniente de cópia/cache antigos. A integração foi consolidada no GitHub via PR; nenhuma publicação em produção foi feita.
