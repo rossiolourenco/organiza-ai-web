@@ -1,0 +1,72 @@
+<div class="admin-shell user-shell" [class.collapsed]="collapsed">
+  <aside class="admin-sidebar user-sidebar" aria-label="Navegação principal">
+    <div class="admin-brand">
+      <span class="brand-mark" aria-hidden="true">✓</span>
+      <span class="brand-text">
+        <strong>Organiza Aí</strong>
+        <span>Premium Experience</span>
+      </span>
+      <button type="button" class="sidebar-toggle" (click)="alternarSidebar()"
+        [attr.aria-label]="collapsed ? 'Expandir menu' : 'Recolher menu'"
+        [title]="collapsed ? 'Expandir menu' : 'Recolher menu'">≡</button>
+    </div>
+
+    <nav class="admin-nav">
+      @for (item of menu; track item.path) {
+        <a [routerLink]="item.path" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: item.path === '/home' }"
+          [attr.title]="item.label">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path [attr.d]="item.icon" /></svg>
+          <span>{{ item.label }}</span>
+        </a>
+      }
+      @if (admin) {
+        <a routerLink="/admin" title="Console administrativo">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>
+          <span>Admin</span>
+        </a>
+      }
+    </nav>
+
+    <div class="admin-sidebar-footer user-sidebar-footer">
+      <button type="button" class="footer-action" (click)="theme.alternar()"
+        [attr.aria-label]="theme.dark ? 'Ativar tema claro' : 'Ativar tema escuro'"
+        [title]="theme.dark ? 'Tema claro' : 'Tema escuro'">{{ theme.dark ? "☀" : "☾" }}</button>
+      <a routerLink="/perfil" class="footer-action" aria-label="Meu perfil" title="Meu perfil">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21a8 8 0 0 1 16 0" /></svg>
+      </a>
+      <button type="button" class="footer-action" (click)="sair()" aria-label="Sair" title="Sair">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" /></svg>
+      </button>
+    </div>
+  </aside>
+
+  <div class="admin-main user-main">
+    <header class="admin-topbar user-topbar">
+      <div class="topbar-title">
+        <strong>{{ nome }}</strong>
+        <span class="eyebrow">{{ papel }}</span>
+      </div>
+      <div class="topbar-actions">
+        <button type="button" class="icon-btn" (click)="theme.alternar()"
+          [attr.aria-label]="theme.dark ? 'Ativar tema claro' : 'Ativar tema escuro'"
+          [title]="theme.dark ? 'Tema claro' : 'Tema escuro'">{{ theme.dark ? "☀" : "☾" }}</button>
+        <a class="icon-btn" routerLink="/perfil" aria-label="Meu perfil" title="Meu perfil">
+          <svg viewBox="0 0 24 24"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21a8 8 0 0 1 16 0" /></svg>
+        </a>
+        <button type="button" class="icon-btn" (click)="sair()" aria-label="Sair" title="Sair">
+          <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" /></svg>
+        </button>
+      </div>
+    </header>
+    <router-outlet />
+  </div>
+
+  <nav class="user-bottom-nav" aria-label="Navegação rápida">
+    @for (item of mobileMenu; track item.path) {
+      <a [routerLink]="item.path" routerLinkActive="active">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path [attr.d]="item.icon" /></svg>
+        <span>{{ item.label }}</span>
+      </a>
+    }
+  </nav>
+</div>

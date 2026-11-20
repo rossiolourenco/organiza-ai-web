@@ -1,0 +1,135 @@
+:host {
+  display: block;
+}
+
+.user-shell {
+  min-height: 100vh;
+}
+
+.user-main {
+  min-width: 0;
+}
+
+.user-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.user-topbar .icon-btn svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.sidebar-toggle {
+  margin-left: auto;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: transparent;
+  color: var(--sidebar-text);
+  cursor: pointer;
+  font-size: 15px;
+  line-height: 1;
+}
+
+.sidebar-toggle:hover {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.user-sidebar-footer {
+  gap: 8px;
+}
+
+.footer-action {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: transparent;
+  color: var(--sidebar-text);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.footer-action:hover {
+  color: #fff;
+  border-color: var(--primary);
+}
+
+.footer-action svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.user-bottom-nav {
+  display: none;
+}
+
+@media (max-width: 979px) {
+  .user-sidebar {
+    display: none;
+  }
+
+  .user-main {
+    padding-bottom: 72px;
+  }
+
+  .user-bottom-nav {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 45;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 2px;
+    padding: 6px 6px calc(6px + env(safe-area-inset-bottom));
+    background: color-mix(in srgb, var(--surface) 94%, transparent);
+    border-top: 1px solid var(--border);
+    backdrop-filter: blur(12px);
+  }
+
+  .user-bottom-nav a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    padding: 5px 2px;
+    border-radius: 10px;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 10px;
+    font-weight: 700;
+  }
+
+  .user-bottom-nav a svg {
+    width: 19px;
+    height: 19px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.9;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .user-bottom-nav a.active {
+    color: var(--primary);
+    background: var(--primary-soft);
+  }
+}
