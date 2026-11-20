@@ -47,9 +47,11 @@ public class UsuarioController {
         this.auditoria = auditoria;
     }
 
+    /** Lista apenas o próprio usuário autenticado; entidade JPA nunca é serializada na borda. */
     @GetMapping
-    public List<Usuario> listar(HttpServletRequest request) {
-        return usuarioRepository.findById((Long) request.getAttribute("usuarioAutenticado")).stream().toList();
+    public List<PerfilResponse> listar(HttpServletRequest request) {
+        return usuarioRepository.findById((Long) request.getAttribute("usuarioAutenticado"))
+            .map(PerfilResponse::de).stream().toList();
     }
 
     /** Perfil do próprio usuário autenticado, com resposta sem hash de senha. */
@@ -73,7 +75,7 @@ public class UsuarioController {
     }
 
     @PostMapping
-    public ResponseEntity<Usuario> criar(@Valid @RequestBody CadastroRequest dados) {
+    public ResponseEntity<PerfilResponse> criar(@Valid @RequestBody CadastroRequest dados) {
         politica.validarSenhaUsuario(dados.senha());
         Usuario usuario = new Usuario();
         usuario.setNome(dados.nome().trim());
@@ -85,7 +87,7 @@ public class UsuarioController {
         Usuario salvo = usuarioRepository.save(usuario);
         auditoria.registrar(salvo.getId(), salvo.getEmail(), Papel.USER, "CONTA_CADASTRADA",
             "usuario", salvo.getId(), "SUCESSO", "Cadastro público de usuário.");
-        return ResponseEntity.ok(salvo);
+        return ResponseEntity.ok(PerfilResponse.de(salvo));
     }
 
     @PostMapping("/login")

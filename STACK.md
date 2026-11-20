@@ -3,7 +3,8 @@
 - **Projeto:** Organiza Aí Web + Admin 1.0
 - **Data da decisão:** 2026-11-20
 - **Responsável:** decisão do usuário no prompt 3.2 (projeto existente)
-- **Situação:** projeto já em desenvolvimento; stack detectada e preservada
+- **Situação:** projeto em desenvolvimento; stack detectada e preservada. Release Candidate 3.3
+  (`3.3.0-rc.1`) em preparação para publicação.
 
 ## Stack
 
@@ -15,7 +16,7 @@
 | API | REST sob `/api` | contrato atual do Web e Mobile |
 | Autenticação | Bearer token opaco, hash SHA-256 no banco, BCrypt para senha | implementação existente |
 | Infraestrutura | VM Debian 13, Nginx, HTTPS, systemd | produção atual |
-| Testes | JUnit 5 + Spring Boot Test; Karma/Jasmine no Angular | suíte existente |
+| Testes | JUnit 5 + Spring Boot Test + **Testcontainers/PostgreSQL 17**; Karma/Jasmine no Angular | suíte existente; paridade real de banco no CI |
 | Admin | Angular com RBAC USER/ADMIN/SUPER_ADMIN e firewall DEMO | Admin 1.0 |
 
 ## Alternativas consideradas
@@ -31,11 +32,16 @@ linguagem, framework ou banco.
 ## Observações
 
 - O Mobile compartilha o mesmo backend e a mesma API.
-- Testes de backend usam H2; a paridade com PostgreSQL é uma dívida P2 registrada no relatório de
-  conformidade.
+- Testes rápidos de backend usam H2; a paridade com PostgreSQL é validada por
+  `PostgresIntegrationTests` (Testcontainers + PostgreSQL 17 + `ddl-auto=validate`) no CI
+  (`web-postgres`). A dívida de paridade foi encerrada no RC 3.3.
+- O 3.3 RC não altera o schema: nenhuma migration nova. As migrations V002–V004 continuam
+  manuais e são validadas em PostgreSQL real.
+- `spring.jpa.show-sql=false` por padrão (produção não registra SQL/parâmetros).
 - O frontend ainda não possui script de lint/Prettier; dívida P2.
 - A API atual não tem versionamento por path (`/v1`); dívida P2 de contrato.
-- Não há alteração de banco nesta intervenção.
+- Versão do release centralizada em `VERSION`, validada contra `frontend/package.json` e
+  `backend/pom.xml` pelo gate.
 
 ## Referências
 

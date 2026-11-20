@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>br.com.organizaai</groupId>
 	<artifactId>backend</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>3.3.0-RC1</version>
 	<name>OrganizaAiBackend</name>
 	<description/>
 	<url/>
@@ -68,6 +68,22 @@
 		<groupId>com.h2database</groupId>
 		<artifactId>h2</artifactId>
 		<scope>runtime</scope>
+	</dependency>
+
+	<dependency>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-testcontainers</artifactId>
+		<scope>test</scope>
+	</dependency>
+	<dependency>
+		<groupId>org.testcontainers</groupId>
+		<artifactId>testcontainers-postgresql</artifactId>
+		<scope>test</scope>
+	</dependency>
+	<dependency>
+		<groupId>org.testcontainers</groupId>
+		<artifactId>testcontainers-junit-jupiter</artifactId>
+		<scope>test</scope>
 	</dependency>
 
 	<dependency>

@@ -24,8 +24,22 @@
 - **Validação 3.2:** `docs/VALIDATION-REPORT.md`
 - **Roadmap 3.3:** `docs/ROADMAP-3.3.md`
 
-A versão atual é **3.2** (Web/Admin + Mobile), com perfil/segurança e API centralizada. As seções
-históricas abaixo permanecem como registro da entrega acadêmica.
+### Release Candidate 3.3
+
+- **Release:** `docs/RELEASE-3.3-RC.md`
+- **Prontidão:** `docs/PRODUCTION-READINESS.md`
+- **Segurança:** `docs/SECURITY-REVIEW.md`
+- **Aceitação funcional:** `docs/FUNCTIONAL-ACCEPTANCE.md`
+- **Paridade Web/Mobile:** `docs/WEB-MOBILE-PARITY.md`
+- **Banco:** `docs/DATABASE-MIGRATION-PLAN.md`
+- **Deploy:** `docs/PRODUCTION-DEPLOYMENT.md`
+- **Rollback:** `docs/ROLLBACK-PLAN.md`
+- **Pós-deploy:** `docs/POST-DEPLOY-VALIDATION.md`
+- **Handoff:** `docs/RELEASE-HANDOFF.md`
+- **Artefatos:** `bash scripts/build-release.sh` (gera `dist-release/`, fora do Git)
+
+A versão atual é **3.2** em produção, com o **3.3 Release Candidate** preparado e não publicado.
+As seções históricas abaixo permanecem como registro da entrega acadêmica.
 
 ---
 
