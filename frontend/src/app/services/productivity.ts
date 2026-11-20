@@ -20,18 +20,6 @@ export function weekStart(date: string): string {
   return addDays(date, -offset);
 }
 
-export interface DayPlan {
-  data: string;
-  tarefaIds: number[];
-  minutos: number;
-  aceitoEm: string;
-}
-
-export interface FocusSession {
-  inicio: string;
-  minutos: number;
-}
-
 export interface NextAction {
   tarefa: Tarefa;
   motivo: string;
@@ -51,14 +39,12 @@ export function nextBestAction(tarefas: Tarefa[], hoje: string = dayKey()): Next
 
   const atrasadas = abertas.filter((t) => !!t.dataPrazo && t.dataPrazo < hoje);
   if (atrasadas.length) {
-    const tarefa = ordenar(atrasadas)[0];
-    return { tarefa, motivo: "Está atrasada — resolva primeiro para liberar o restante." };
+    return { tarefa: ordenar(atrasadas)[0], motivo: "Está atrasada — resolva primeiro para liberar o restante." };
   }
 
   const hojeTasks = abertas.filter((t) => t.dataPrazo === hoje);
   if (hojeTasks.length) {
-    const tarefa = ordenar(hojeTasks)[0];
-    return { tarefa, motivo: "Vence hoje. Um passo agora evita correr no fim do dia." };
+    return { tarefa: ordenar(hojeTasks)[0], motivo: "Vence hoje. Um passo agora evita correr no fim do dia." };
   }
 
   const semPrazo = abertas.filter((t) => !t.dataPrazo);
@@ -82,8 +68,7 @@ export function weeklyCompleted(tarefas: Tarefa[], hoje: string = dayKey()): { d
 
 export function completionRate(tarefas: Tarefa[]): number {
   if (!tarefas.length) return 0;
-  const concluidas = tarefas.filter((t) => t.status === "CONCLUIDA").length;
-  return Math.round((concluidas / tarefas.length) * 100);
+  return Math.round((tarefas.filter((t) => t.status === "CONCLUIDA").length / tarefas.length) * 100);
 }
 
 export function todayProgress(tarefas: Tarefa[], hoje: string = dayKey()): { total: number; feitas: number; pct: number } {
@@ -103,61 +88,4 @@ export function habitStreak(datas: string[], hoje: string = dayKey()): number {
     cursor = addDays(cursor, -1);
   }
   return sequencia;
-}
-
-function chave(prefixo: string, usuarioId: number, data: string): string {
-  return `organiza-${prefixo}:${usuarioId}:${data}`;
-}
-
-function ler<T>(chaveStorage: string): T | null {
-  try {
-    const bruto = localStorage.getItem(chaveStorage);
-    return bruto ? (JSON.parse(bruto) as T) : null;
-  } catch {
-    return null;
-  }
-}
-
-function gravar(chaveStorage: string, valor: unknown): void {
-  try {
-    localStorage.setItem(chaveStorage, JSON.stringify(valor));
-  } catch {
-    // Armazenamento indisponível: o app continua funcional na sessão atual.
-  }
-}
-
-/**
- * Planejamento e foco são preferências do dispositivo (mesma decisão do Mobile).
- * Não são dados de negócio compartilhados; por isso ficam no armazenamento local,
- * sempre indexados por usuário + data para não vazar entre contas.
- */
-export function loadPlan(usuarioId: number, data: string = dayKey()): DayPlan | null {
-  return ler<DayPlan>(chave("plan", usuarioId, data));
-}
-
-export function savePlan(usuarioId: number, plano: DayPlan): void {
-  gravar(chave("plan", usuarioId, plano.data), plano);
-}
-
-export function clearPlan(usuarioId: number, data: string = dayKey()): void {
-  try {
-    localStorage.removeItem(chave("plan", usuarioId, data));
-  } catch {
-    // ignora
-  }
-}
-
-export function loadFocusSessions(usuarioId: number, data: string = dayKey()): FocusSession[] {
-  return ler<FocusSession[]>(chave("focus", usuarioId, data)) || [];
-}
-
-export function addFocusSession(usuarioId: number, minutos: number, data: string = dayKey()): FocusSession[] {
-  const sessoes = loadFocusSessions(usuarioId, data);
-  sessoes.push({ inicio: new Date().toISOString(), minutos });
-  gravar(chave("focus", usuarioId, data), sessoes);
-  return sessoes;
-}
-
-export function focusMinutes(usuarioId: number, data: string = dayKey()): number {
-  return loadFocusSessions(usuarioId, data).reduce((total, s) => total + s.minutos, 0);
 }

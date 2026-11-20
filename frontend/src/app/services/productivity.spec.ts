@@ -3,30 +3,18 @@ import {
   addDays,
   completionRate,
   dayKey,
-  focusMinutes,
   habitStreak,
-  loadPlan,
-  loadFocusSessions,
   nextBestAction,
-  savePlan,
   todayProgress,
   weeklyCompleted,
   weekStart,
 } from "./productivity";
 
 function tarefa(parcial: Partial<Tarefa>): Tarefa {
-  return {
-    id: 1,
-    titulo: "Tarefa",
-    prioridade: "MEDIA",
-    status: "PENDENTE",
-    ...parcial,
-  };
+  return { id: 1, titulo: "Tarefa", prioridade: "MEDIA", status: "PENDENTE", ...parcial };
 }
 
 describe("productivity", () => {
-  beforeEach(() => localStorage.clear());
-
   it("calcula a data civil local sem deslocar UTC", () => {
     expect(dayKey(new Date(2026, 10, 20, 23, 30))).toBe("2026-11-20");
     expect(addDays("2026-11-20", 1)).toBe("2026-11-21");
@@ -34,7 +22,7 @@ describe("productivity", () => {
   });
 
   it("inicia a semana na segunda-feira", () => {
-    expect(weekStart("2026-11-20")).toBe("2026-11-16"); // sexta → segunda
+    expect(weekStart("2026-11-20")).toBe("2026-11-16");
     expect(weekStart("2026-11-16")).toBe("2026-11-16");
   });
 
@@ -55,7 +43,7 @@ describe("productivity", () => {
   });
 
   it("não sugere tarefa quando tudo está concluído", () => {
-    expect(nextBestAction([tarefa({ status: "CONCLUIDA" })] , "2026-11-20")).toBeNull();
+    expect(nextBestAction([tarefa({ status: "CONCLUIDA" })], "2026-11-20")).toBeNull();
   });
 
   it("calcula progresso do dia e taxa geral", () => {
@@ -86,18 +74,5 @@ describe("productivity", () => {
     expect(habitStreak(datas, "2026-11-20")).toBe(3);
     expect(habitStreak(["2026-11-19", "2026-11-18"], "2026-11-20")).toBe(2);
     expect(habitStreak([], "2026-11-20")).toBe(0);
-  });
-
-  it("persiste plano e sessões de foco por usuário e dia", () => {
-    savePlan(7, { data: "2026-11-20", tarefaIds: [1, 2], minutos: 60, aceitoEm: "x" });
-    expect(loadPlan(7, "2026-11-20")?.tarefaIds).toEqual([1, 2]);
-    expect(loadPlan(8, "2026-11-20")).toBeNull();
-
-    localStorage.setItem("organiza-focus:7:2026-11-20", JSON.stringify([
-      { inicio: "2026-11-20T10:00:00Z", minutos: 25 },
-      { inicio: "2026-11-20T11:00:00Z", minutos: 25 },
-    ]));
-    expect(focusMinutes(7, "2026-11-20")).toBe(50);
-    expect(loadFocusSessions(7, "2026-11-20").length).toBe(2);
   });
 });

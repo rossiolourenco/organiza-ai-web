@@ -3,15 +3,8 @@ import { Component, OnInit } from "@angular/core";
 import { RouterLink } from "@angular/router";
 
 import { Tarefa, TarefaService } from "../../services/tarefa.service";
-import { SessionService } from "../../services/session.service";
-import {
-  DayPlan,
-  addDays,
-  clearPlan,
-  dayKey,
-  loadPlan,
-  savePlan,
-} from "../../services/productivity";
+import { Planejamento, PlanejamentoItem, ProdutividadeService } from "../../services/produtividade.service";
+import { addDays, dayKey } from "../../services/productivity";
 
 @Component({
   selector: "app-planejamento",
@@ -23,27 +16,22 @@ import {
 export class PlanejamentoComponent implements OnInit {
   tarefas: Tarefa[] = [];
   carregando = true;
+  salvando = false;
   erro: string | null = null;
   feedback: string | null = null;
-  plano: DayPlan | null = null;
+  plano: Planejamento | null = null;
   selecionadas = new Set<number>();
   readonly hoje = dayKey();
   readonly limite = addDays(dayKey(), 7);
-  readonly disponibilidade = 480; // 8h por dia, mesma referência do Mobile
+  readonly disponibilidade = 480;
 
   constructor(
     private tarefasService: TarefaService,
-    private session: SessionService,
+    private produtividade: ProdutividadeService,
   ) {}
 
   ngOnInit(): void {
-    this.plano = loadPlan(this.usuarioId());
-    this.plano?.tarefaIds.forEach((id) => this.selecionadas.add(id));
     this.carregar();
-  }
-
-  private usuarioId(): number {
-    return this.session.usuario()?.id ?? 0;
   }
 
   carregar(): void {
@@ -53,10 +41,23 @@ export class PlanejamentoComponent implements OnInit {
       next: (tarefas) => {
         this.tarefas = tarefas;
         this.carregando = false;
+        this.carregarPlano();
       },
       error: () => {
         this.erro = "Não foi possível carregar as tarefas.";
         this.carregando = false;
+      },
+    });
+  }
+
+  private carregarPlano(): void {
+    this.produtividade.obterPlanejamento(this.hoje).subscribe({
+      next: (plano) => {
+        this.plano = plano;
+        this.selecionadas = new Set((plano.itens || []).map((item) => item.tarefaId));
+      },
+      error: () => {
+        this.erro = "Não foi possível carregar o plano salvo.";
       },
     });
   }
@@ -75,8 +76,12 @@ export class PlanejamentoComponent implements OnInit {
   }
 
   get planoAtivo(): Tarefa[] {
-    const ids = this.plano?.tarefaIds ?? [];
-    return this.tarefas.filter((t) => t.id && ids.includes(t.id));
+    const ids = new Set((this.plano?.itens || []).map((item) => item.tarefaId));
+    return this.tarefas.filter((t) => t.id && ids.has(t.id));
+  }
+
+  get minutosPlano(): number {
+    return (this.plano?.itens || []).reduce((total, item) => total + item.minutosEstimados, 0);
   }
 
   duracao(tarefa: Tarefa): number {
@@ -91,23 +96,58 @@ export class PlanejamentoComponent implements OnInit {
   }
 
   aceitar(): void {
-    const ids = Array.from(this.selecionadas);
-    const plano: DayPlan = {
-      data: this.hoje,
-      tarefaIds: ids,
-      minutos: this.minutosSelecionados,
-      aceitoEm: new Date().toISOString(),
-    };
-    savePlan(this.usuarioId(), plano);
-    this.plano = plano;
-    this.feedback = `Plano de hoje salvo com ${ids.length} tarefa(s) e ${plano.minutos} min estimados.`;
+    if (this.salvando) return;
+    this.salvando = true;
+    this.erro = null;
+    this.feedback = null;
+
+    const itens: PlanejamentoItem[] = this.candidatas
+      .filter((t) => t.id && this.selecionadas.has(t.id))
+      .map((t, ordem) => ({ tarefaId: t.id!, ordem, minutosEstimados: this.duracao(t) }));
+
+    this.produtividade
+      .salvarPlanejamento({ data: this.hoje, itens, versao: this.plano?.versao ?? 0 })
+      .subscribe({
+        next: (plano) => {
+          this.salvando = false;
+          this.plano = plano;
+          this.selecionadas = new Set(plano.itens.map((item) => item.tarefaId));
+          this.feedback = `Plano de hoje salvo com ${itens.length} tarefa(s) e ${this.minutosSelecionados} min estimados.`;
+        },
+        error: (erro) => {
+          this.salvando = false;
+          if (erro.status === 409) {
+            this.erro = "O plano foi alterado em outro dispositivo. Recarregue e tente novamente.";
+            this.carregarPlano();
+          } else {
+            this.erro = "Não foi possível salvar o plano.";
+          }
+        },
+      });
   }
 
   limpar(): void {
-    clearPlan(this.usuarioId(), this.hoje);
-    this.plano = null;
-    this.selecionadas.clear();
-    this.feedback = "Plano de hoje removido.";
+    if (this.salvando) return;
+    this.salvando = true;
+    this.erro = null;
+    this.feedback = null;
+    this.produtividade
+      .salvarPlanejamento({ data: this.hoje, itens: [], versao: this.plano?.versao ?? 0 })
+      .subscribe({
+        next: (plano) => {
+          this.salvando = false;
+          this.plano = plano;
+          this.selecionadas.clear();
+          this.feedback = "Plano de hoje removido.";
+        },
+        error: (erro) => {
+          this.salvando = false;
+          this.erro = erro.status === 409
+            ? "O plano foi alterado em outro dispositivo. Recarregue e tente novamente."
+            : "Não foi possível remover o plano.";
+          this.carregarPlano();
+        },
+      });
   }
 
   concluir(tarefa: Tarefa): void {

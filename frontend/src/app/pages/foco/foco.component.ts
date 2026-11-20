@@ -4,13 +4,8 @@ import { FormsModule } from "@angular/forms";
 import { RouterLink } from "@angular/router";
 
 import { Tarefa, TarefaService } from "../../services/tarefa.service";
-import { SessionService } from "../../services/session.service";
-import {
-  FocusSession,
-  addFocusSession,
-  dayKey,
-  loadFocusSessions,
-} from "../../services/productivity";
+import { SessaoFoco, ProdutividadeService } from "../../services/produtividade.service";
+import { dayKey } from "../../services/productivity";
 
 type Modo = "FOCO" | "PAUSA";
 
@@ -29,7 +24,7 @@ export class FocoComponent implements OnInit, OnDestroy {
   restante = this.focoSegundos;
   rodando = false;
   ciclos = 0;
-  sessoes: FocusSession[] = [];
+  sessoes: SessaoFoco[] = [];
   tarefas: Tarefa[] = [];
   tarefaSelecionada: number | null = null;
 
@@ -37,7 +32,7 @@ export class FocoComponent implements OnInit, OnDestroy {
 
   constructor(
     private tarefasService: TarefaService,
-    private session: SessionService,
+    private produtividade: ProdutividadeService,
   ) {}
 
   ngOnInit(): void {
@@ -113,9 +108,17 @@ export class FocoComponent implements OnInit, OnDestroy {
 
   private finalizarCiclo(): void {
     if (this.modo === "FOCO") {
-      addFocusSession(this.session.usuario()?.id ?? 0, 25, dayKey());
-      this.ciclos++;
-      this.carregarSessoes();
+      this.produtividade
+        .registrarFoco({ minutos: 25, tarefaId: this.tarefaSelecionada, data: dayKey() })
+        .subscribe({
+          next: () => {
+            this.ciclos++;
+            this.carregarSessoes();
+          },
+          error: () => {
+            this.ciclos++;
+          },
+        });
       this.modo = "PAUSA";
     } else {
       this.modo = "FOCO";
@@ -124,7 +127,14 @@ export class FocoComponent implements OnInit, OnDestroy {
   }
 
   private carregarSessoes(): void {
-    this.sessoes = loadFocusSessions(this.session.usuario()?.id ?? 0, dayKey());
+    this.produtividade.sessoesFoco(dayKey()).subscribe({
+      next: (sessoes) => {
+        this.sessoes = sessoes;
+      },
+      error: () => {
+        this.sessoes = [];
+      },
+    });
   }
 
   private pararIntervalo(): void {

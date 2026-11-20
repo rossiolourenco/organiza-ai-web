@@ -4,9 +4,9 @@ import { RouterLink } from "@angular/router";
 
 import { Tarefa, TarefaService } from "../../services/tarefa.service";
 import { SessionService } from "../../services/session.service";
+import { ProdutividadeService } from "../../services/produtividade.service";
 import {
   dayKey,
-  focusMinutes,
   nextBestAction,
   todayProgress,
   weeklyCompleted,
@@ -34,6 +34,7 @@ export class DashboardComponent implements OnInit {
   constructor(
     private tarefasService: TarefaService,
     private session: SessionService,
+    private produtividade: ProdutividadeService,
   ) {}
 
   ngOnInit(): void {
@@ -45,12 +46,12 @@ export class DashboardComponent implements OnInit {
       .format(new Date());
     this.hoje = this.hoje.charAt(0).toUpperCase() + this.hoje.slice(1);
     this.carregar();
+    this.carregarFoco();
   }
 
   carregar(): void {
     this.carregando = true;
     this.erro = null;
-    this.focoHoje = focusMinutes(this.session.usuario()?.id ?? 0);
     this.tarefasService.listarTodas().subscribe({
       next: (tarefas) => {
         this.tarefas = tarefas;
@@ -59,6 +60,17 @@ export class DashboardComponent implements OnInit {
       error: () => {
         this.erro = "Não foi possível carregar seu painel. Tente novamente.";
         this.carregando = false;
+      },
+    });
+  }
+
+  private carregarFoco(): void {
+    this.produtividade.resumoFoco(this.hojeKey, this.hojeKey).subscribe({
+      next: (resumo) => {
+        this.focoHoje = resumo.minutos;
+      },
+      error: () => {
+        this.focoHoje = 0;
       },
     });
   }

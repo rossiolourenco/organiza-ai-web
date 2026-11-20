@@ -3,7 +3,7 @@
     <div>
       <span class="eyebrow">PLANEJAMENTO</span>
       <h1 class="page-title">Planejar meu dia</h1>
-      <p class="page-sub">Escolha o que entra hoje. A seleção fica salva neste dispositivo, por conta e por dia.</p>
+      <p class="page-sub">Escolha o que entra hoje. A seleção fica salva na sua conta e sincroniza entre dispositivos.</p>
     </div>
     <div class="page-actions">
       <a class="btn ghost" routerLink="/foco">Focar agora</a>
@@ -31,7 +31,7 @@
     <article class="card metric" [class.metric-warning]="minutosSelecionados > disponibilidade">
       <span class="metric-label">Plano do dia</span>
       <strong class="metric-value">{{ plano ? "Ativo" : "Não definido" }}</strong>
-      <span class="metric-hint">{{ plano ? "Salvo neste dispositivo" : "Monte sua seleção" }}</span>
+      <span class="metric-hint">{{ plano ? "Sincronizado na conta" : "Monte sua seleção" }}</span>
     </article>
   </section>
 
@@ -78,7 +78,7 @@
     <div class="card-head">
       <div>
         <span class="eyebrow">SEU PLANO DE HOJE</span>
-        <h2 class="card-title">{{ planoAtivo.length }} tarefa(s) · {{ formatarMinutos(plano?.minutos || 0) }}</h2>
+        <h2 class="card-title">{{ planoAtivo.length }} tarefa(s) · {{ formatarMinutos(minutosPlano) }}</h2>
       </div>
     </div>
     <ul class="plan-list">
