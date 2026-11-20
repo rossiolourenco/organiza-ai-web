@@ -25,7 +25,7 @@ Data: 2026-11-20.
 | Verificação | Resultado |
 |---|---|
 | Angular build | Sucesso |
-| Angular testes | **15/15** |
+| Angular testes | **19/19** (inclui 4 testes do adminGuard) |
 | Backend testes | **35/35** em 7 suítes |
 | Mobile typecheck | Sucesso |
 | Mobile lint | Sucesso |
@@ -81,6 +81,7 @@ estava regredido.
 - Sem teste em aparelho físico iOS/Android nesta execução.
 - Sem build assinado para lojas.
 - Sem teste E2E de navegador automatizado; validação visual manual.
+- CI GitHub Actions configurado; o resultado remoto é registrado no PR/relatório final.
 - Sem alteração de banco/produção.
 - A cópia acadêmica foi preservada, não removida/renomeada.
 - Consolidação: commit **0a32f36** na branch `chore/dev-standards-3.2`; PR [#1](https://github.com/rossiolourenco/organiza-ai-web/pull/1) aberto. Nenhum deploy foi feito.

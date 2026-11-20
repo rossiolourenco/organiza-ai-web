@@ -49,3 +49,15 @@ checkout → setup Java 21/Node → npm ci → mvn verify → ng build → ng te
 
 Adicionar ao CI quando o repositório tiver pipeline. O gate já é compatível com execução local e
 com um job de CI que tenha Chrome/Java/Node.
+
+## 5. GitHub Actions
+
+O workflow `CI Web` executa em PR/push para `main` e sob demanda:
+
+- `web-angular` — gate `bash scripts/verify-premium.sh --frontend`;
+- `web-backend` — gate `bash scripts/verify-premium.sh --backend`;
+- `web-admin` — gate `bash scripts/verify-premium.sh --admin`.
+
+Os gates usam o manifesto `dev-standards/MANIFEST.sha256` e o `FINGERPRINT`, portanto funcionam
+sem caminhos absolutos no runner. A branch `main` deve exigir esses três checks, PR e bloquear
+force push/exclusão.

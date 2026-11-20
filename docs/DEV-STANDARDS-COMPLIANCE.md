@@ -7,13 +7,13 @@ Data: 2026-11-20. Classificação: **Conforme**, **Parcialmente conforme**, **N�
 
 | Camada | Classificação | Evidência |
 |---|---|---|
-| Angular/TypeScript | Parcialmente conforme | `strict`, componentes/rotas, testes 15/15; falta lint/Prettier |
+| Angular/TypeScript | Parcialmente conforme | `strict`, componentes/rotas, testes 19/19 (inclui adminGuard); falta lint/Prettier |
 | Spring Boot/Java | Parcialmente conforme | camadas, DTOs de perfil/senha, testes 35/35; há entidades expostas e H2 |
 | PostgreSQL | Conforme | migrations versionadas, índices, constraints; teste usa H2 |
 | API REST | Parcialmente conforme | recursos e status coerentes; envelope de erro e versionamento a evoluir |
 | Segurança | Parcialmente conforme | BCrypt, sessões revogáveis, RBAC, HTTPS/HSTS/CSP; token Web em localStorage |
 | Admin/RBAC | Conforme | RBAC, auditoria, firewall DEMO explícito, testes |
-| Testes | Conforme com ressalvas | 35 backend, 15 Angular; falta Testcontainers |
+| Testes | Conforme com ressalvas | 35 backend, 19 Angular (inclui adminGuard); falta Testcontainers |
 | Documentação | Conforme | docs 3.2, ADR, integração, conformidade, workflow |
 | Versionamento | Conforme | branches `chore/`, Conventional Commits, SemVer documentado |
 

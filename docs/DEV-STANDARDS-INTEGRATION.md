@@ -95,3 +95,15 @@ Não edite as regras diretamente na cópia do projeto. Adaptações vão em `STA
 - Branch: `chore/dev-standards-3.2`
 - PR: https://github.com/rossiolourenco/organiza-ai-web/pull/1
 - Merge/deploy: não executados; aguardando revisão.
+
+## 8. CI/CD
+
+- Workflow: `.github/workflows/ci.yml` (`CI Web`).
+- Triggers: PR para `main`, push em `main` e `workflow_dispatch`.
+- Jobs: `web-angular`, `web-backend`, `web-admin`.
+- Permissões: `contents: read`; checkout com `persist-credentials: false`.
+- Actions fixadas por SHA: `actions/checkout`, `actions/setup-node`, `actions/setup-java`.
+- `web-angular`: Node 22, `npm ci`, TypeScript, build, Karma/ChromeHeadless, assets e gate `--frontend`.
+- `web-backend`: Java 21, testes Maven e package via gate `--backend`.
+- `web-admin`: teste focado de `adminGuard`/RBAC via gate `--admin`.
+- Checks obrigatórios planejados para `main`: `web-angular`, `web-backend`, `web-admin`.
