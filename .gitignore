@@ -32,3 +32,6 @@ backend/.env.*
 backend/src/main/resources/application-secret.properties
 backend/src/main/resources/application-prod.properties
 **/.DS_Store
+
+# Artefatos de release (gerados por scripts/build-release.sh)
+dist-release/
