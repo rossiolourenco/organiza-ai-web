@@ -1,0 +1,97 @@
+<main class="admin-content">
+  <div class="page-head">
+    <div>
+      <span class="eyebrow">PLANEJAMENTO</span>
+      <h1 class="page-title">Planejar meu dia</h1>
+      <p class="page-sub">Escolha o que entra hoje. A seleção fica salva neste dispositivo, por conta e por dia.</p>
+    </div>
+    <div class="page-actions">
+      <a class="btn ghost" routerLink="/foco">Focar agora</a>
+      <a class="btn secondary" routerLink="/tarefas">Ver tarefas</a>
+    </div>
+  </div>
+
+  <div class="card" *ngIf="feedback" role="status">{{ feedback }}</div>
+  <div class="card flash danger" *ngIf="erro" role="alert">
+    {{ erro }}
+    <button type="button" class="btn ghost small" (click)="carregar()">Tentar novamente</button>
+  </div>
+
+  <section class="grid cols-3 resumo">
+    <article class="card metric">
+      <span class="metric-label">Selecionadas</span>
+      <strong class="metric-value">{{ selecionadas.size }}</strong>
+      <span class="metric-hint">Tarefas no plano</span>
+    </article>
+    <article class="card metric">
+      <span class="metric-label">Tempo estimado</span>
+      <strong class="metric-value">{{ formatarMinutos(minutosSelecionados) }}</strong>
+      <span class="metric-hint">De {{ formatarMinutos(disponibilidade) }} disponíveis</span>
+    </article>
+    <article class="card metric" [class.metric-warning]="minutosSelecionados > disponibilidade">
+      <span class="metric-label">Plano do dia</span>
+      <strong class="metric-value">{{ plano ? "Ativo" : "Não definido" }}</strong>
+      <span class="metric-hint">{{ plano ? "Salvo neste dispositivo" : "Monte sua seleção" }}</span>
+    </article>
+  </section>
+
+  <section class="card" aria-label="Candidatas">
+    <div class="card-head">
+      <div>
+        <span class="eyebrow">DISPONÍVEIS</span>
+        <h2 class="card-title">Tarefas para os próximos 7 dias</h2>
+      </div>
+      <div class="page-actions">
+        <button type="button" class="btn" (click)="aceitar()" [disabled]="selecionadas.size === 0">
+          Salvar plano
+        </button>
+        <button type="button" class="btn ghost" (click)="limpar()" *ngIf="plano">Limpar</button>
+      </div>
+    </div>
+
+    <div class="loading" *ngIf="carregando">Carregando tarefas…</div>
+    <p class="muted small" *ngIf="!carregando && candidatas.length === 0">
+      Nenhuma tarefa pendente nos próximos 7 dias. Crie uma tarefa para planejar.
+    </p>
+
+    <ul class="plan-list" *ngIf="!carregando && candidatas.length > 0">
+      <li *ngFor="let tarefa of candidatas" [class.selected]="tarefa.id && selecionadas.has(tarefa.id)">
+        <label class="check">
+          <input type="checkbox" [checked]="tarefa.id && selecionadas.has(tarefa.id)"
+            (change)="alternar(tarefa)" [attr.aria-label]="'Incluir ' + tarefa.titulo + ' no plano'" />
+        </label>
+        <div class="plan-info">
+          <strong>{{ tarefa.titulo }}</strong>
+          <span class="small muted">
+            {{ tarefa.dataPrazo || "Sem prazo" }} · {{ formatarMinutos(duracao(tarefa)) }}
+            <ng-container *ngIf="tarefa.categoria"> · {{ tarefa.categoria.nome }}</ng-container>
+          </span>
+        </div>
+        <span class="badge" [class.danger]="tarefa.prioridade === 'ALTA'"
+          [class.warning]="tarefa.prioridade === 'MEDIA'"
+          [class.info]="tarefa.prioridade === 'BAIXA'">{{ tarefa.prioridade }}</span>
+      </li>
+    </ul>
+  </section>
+
+  <section class="card" aria-label="Plano ativo" *ngIf="planoAtivo.length">
+    <div class="card-head">
+      <div>
+        <span class="eyebrow">SEU PLANO DE HOJE</span>
+        <h2 class="card-title">{{ planoAtivo.length }} tarefa(s) · {{ formatarMinutos(plano?.minutos || 0) }}</h2>
+      </div>
+    </div>
+    <ul class="plan-list">
+      <li *ngFor="let tarefa of planoAtivo">
+        <span class="order">{{ tarefa.id }}</span>
+        <div class="plan-info">
+          <strong>{{ tarefa.titulo }}</strong>
+          <span class="small muted">{{ tarefa.status === "CONCLUIDA" ? "Concluída" : "Pendente" }}</span>
+        </div>
+        <button type="button" class="btn small" *ngIf="tarefa.status !== 'CONCLUIDA'"
+          (click)="concluir(tarefa)">Concluir</button>
+        <span class="badge success" *ngIf="tarefa.status === 'CONCLUIDA'">Concluída</span>
+      </li>
+    </ul>
+  </section>
+</main>

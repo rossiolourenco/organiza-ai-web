@@ -21,6 +21,20 @@ export interface Tarefa {
   };
   dataCriacao?: string;
   dataAtualizacao?: string;
+  /** Payload livre usado pelo Mobile: checklist, recorrência, duração e etiquetas. */
+  detalhes?: {
+    subtarefas?: { id: string; titulo: string; concluida: boolean }[];
+    recorrencia?: string;
+    fusoHorario?: string;
+    horario?: string;
+    duracaoEstimada?: number;
+    favorita?: boolean;
+    notas?: string;
+    etiquetas?: string[];
+  } | null;
+  /** Instantes UTC de cada conclusão (histórico). */
+  conclusoes?: string[];
+  proximaGerada?: boolean;
 }
 
 @Injectable({
@@ -124,6 +138,27 @@ export class TarefaService {
       {},
     );
   }
+  listarLixeira(): Observable<Tarefa[]> {
+    const usuarioSalvo = localStorage.getItem("usuario");
+    if (!usuarioSalvo) throw new Error("Usuário não autenticado.");
+    const usuario = JSON.parse(usuarioSalvo);
+    return this.http.get<Tarefa[]>(`${this.apiUrl}/lixeira?usuarioId=${usuario.id}`);
+  }
+
+  restaurar(id: number): Observable<Tarefa> {
+    const usuarioSalvo = localStorage.getItem("usuario");
+    if (!usuarioSalvo) throw new Error("Usuário não autenticado.");
+    const usuario = JSON.parse(usuarioSalvo);
+    return this.http.post<Tarefa>(`${this.apiUrl}/${id}/restaurar?usuarioId=${usuario.id}`, {});
+  }
+
+  excluirDefinitivo(id: number): Observable<void> {
+    const usuarioSalvo = localStorage.getItem("usuario");
+    if (!usuarioSalvo) throw new Error("Usuário não autenticado.");
+    const usuario = JSON.parse(usuarioSalvo);
+    return this.http.delete<void>(`${this.apiUrl}/${id}/definitivo?usuarioId=${usuario.id}`);
+  }
+
   excluir(id: number): Observable<void> {
     const usuarioSalvo = localStorage.getItem("usuario");
 

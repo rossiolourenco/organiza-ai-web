@@ -1,0 +1,81 @@
+<main class="admin-content">
+  <div class="page-head">
+    <div>
+      <span class="eyebrow">FOCO</span>
+      <h1 class="page-title">Foco agora</h1>
+      <p class="page-sub">Blocos de 25 minutos com pausa de 5. As sessões ficam salvas neste dispositivo, por conta e por dia.</p>
+    </div>
+    <div class="page-actions">
+      <a class="btn ghost" routerLink="/planejamento">Planejar o dia</a>
+    </div>
+  </div>
+
+  <section class="grid cols-3 resumo">
+    <article class="card metric">
+      <span class="metric-label">Foco hoje</span>
+      <strong class="metric-value">{{ minutosHoje }} min</strong>
+      <span class="metric-hint">Somatório das sessões</span>
+    </article>
+    <article class="card metric">
+      <span class="metric-label">Sessões</span>
+      <strong class="metric-value">{{ sessoes.length }}</strong>
+      <span class="metric-hint">Concluídas hoje</span>
+    </article>
+    <article class="card metric">
+      <span class="metric-label">Ciclos nesta visita</span>
+      <strong class="metric-value">{{ ciclos }}</strong>
+      <span class="metric-hint">Desde que abriu a página</span>
+    </article>
+  </section>
+
+  <section class="grid cols-2">
+    <article class="card focus-card" aria-label="Cronômetro de foco">
+      <span class="badge" [class.primary]="modo === 'FOCO'" [class.success]="modo === 'PAUSA'">
+        {{ modo === "FOCO" ? "Foco · 25 min" : "Pausa · 5 min" }}
+      </span>
+      <div class="timer" role="timer" [attr.aria-label]="'Tempo restante ' + tempoFormatado">
+        {{ tempoFormatado }}
+      </div>
+      <div class="progress" role="progressbar" [attr.aria-valuenow]="progresso" aria-valuemin="0" aria-valuemax="100">
+        <div class="progress-fill" [style.width.%]="progresso"></div>
+      </div>
+
+      <label class="field tarefa-select">
+        <span>Tarefa em foco (opcional)</span>
+        <select class="select" [(ngModel)]="tarefaSelecionada">
+          <option [ngValue]="null">Sem tarefa específica</option>
+          <option *ngFor="let tarefa of tarefas" [ngValue]="tarefa.id">{{ tarefa.titulo }}</option>
+        </select>
+      </label>
+
+      <div class="controls">
+        <button type="button" class="btn" (click)="iniciar()" [disabled]="rodando">Iniciar</button>
+        <button type="button" class="btn ghost" (click)="pausar()" [disabled]="!rodando">Pausar</button>
+        <button type="button" class="btn secondary" (click)="reiniciar()">Reiniciar</button>
+        <button type="button" class="btn ghost" (click)="alternarModo()">
+          {{ modo === "FOCO" ? "Ir para pausa" : "Voltar ao foco" }}
+        </button>
+      </div>
+    </article>
+
+    <article class="card" aria-label="Sessões de hoje">
+      <div class="card-head">
+        <div>
+          <span class="eyebrow">HISTÓRICO</span>
+          <h2 class="card-title">Sessões de hoje</h2>
+        </div>
+      </div>
+      <p class="small muted" *ngIf="sessoes.length === 0">Nenhuma sessão concluída hoje.</p>
+      <ul class="session-list" *ngIf="sessoes.length > 0">
+        <li *ngFor="let sessao of sessoes">
+          <span class="session-dot"></span>
+          <span>{{ sessao.inicio | date: "HH:mm" }}</span>
+          <strong>{{ sessao.minutos }} min</strong>
+        </li>
+      </ul>
+      <p class="small muted" *ngIf="tarefaAtual">
+        Em foco: <strong>{{ tarefaAtual.titulo }}</strong>
+      </p>
+    </article>
+  </section>
+</main>

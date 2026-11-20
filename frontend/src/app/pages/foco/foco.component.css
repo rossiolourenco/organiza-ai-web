@@ -1,0 +1,91 @@
+:host {
+  display: block;
+}
+
+.resumo {
+  margin-bottom: 16px;
+}
+
+.focus-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+}
+
+.timer {
+  font-size: clamp(44px, 9vw, 64px);
+  font-weight: 800;
+  letter-spacing: -2px;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  margin: 6px 0;
+}
+
+.progress {
+  width: 100%;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--primary);
+  transition: width 0.4s ease;
+}
+
+.tarefa-select {
+  width: 100%;
+  text-align: left;
+  margin-top: 4px;
+}
+
+.controls {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 6px;
+}
+
+.session-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.session-list li {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+
+.session-list li:last-child {
+  border-bottom: 0;
+}
+
+.session-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--success);
+}
+
+@media (max-width: 860px) {
+  .grid.cols-3 {
+    grid-template-columns: 1fr;
+  }
+
+  .grid.cols-2 {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,73 @@
+<main class="admin-content">
+  <div class="page-head">
+    <div>
+      <span class="eyebrow">CATEGORIAS</span>
+      <h1 class="page-title">Categorias</h1>
+      <p class="page-sub">Organize as tarefas por área. Excluir uma categoria mantém as tarefas, apenas sem vínculo.</p>
+    </div>
+    <div class="page-actions">
+      <button type="button" class="btn ghost" (click)="carregar()" [disabled]="carregando">Atualizar</button>
+    </div>
+  </div>
+
+  <div class="card flash" *ngIf="feedback" role="status">{{ feedback }}</div>
+  <div class="card flash danger" *ngIf="erro" role="alert">{{ erro }}</div>
+
+  <section class="grid cols-2">
+    <article class="card" aria-label="Nova categoria">
+      <div class="card-head">
+        <div>
+          <span class="eyebrow">{{ editandoId ? "EDITAR" : "NOVA" }}</span>
+          <h2 class="card-title">{{ editandoId ? "Editar categoria" : "Criar categoria" }}</h2>
+        </div>
+      </div>
+      <form (ngSubmit)="salvar()" class="form-grid">
+        <label class="field full">
+          <span>Nome</span>
+          <input class="input" name="nome" [(ngModel)]="nome" maxlength="100" placeholder="Ex.: Trabalho" required />
+        </label>
+        <label class="field">
+          <span>Cor</span>
+          <input class="input" type="color" name="cor" [(ngModel)]="cor" />
+        </label>
+        <div class="field acoes">
+          <button type="submit" class="btn" [disabled]="salvando">
+            {{ salvando ? "Salvando…" : editandoId ? "Salvar" : "Criar" }}
+          </button>
+          <button type="button" class="btn ghost" *ngIf="editandoId" (click)="cancelar()">Cancelar</button>
+        </div>
+      </form>
+    </article>
+
+    <article class="card" aria-label="Categorias cadastradas">
+      <div class="card-head">
+        <div>
+          <span class="eyebrow">SUAS ÁREAS</span>
+          <h2 class="card-title">{{ categorias.length }} categoria(s)</h2>
+        </div>
+      </div>
+
+      <div class="loading" *ngIf="carregando">Carregando categorias…</div>
+      <p class="small muted" *ngIf="!carregando && categorias.length === 0">
+        Nenhuma categoria ainda. Crie a primeira ao lado.
+      </p>
+
+      <ul class="categoria-list" *ngIf="!carregando">
+        <li *ngFor="let categoria of categorias">
+          <span class="swatch" [style.background]="categoria.cor || '#4F46E5'" aria-hidden="true"></span>
+          <strong>{{ categoria.nome }}</strong>
+          <div class="categoria-actions">
+            <button type="button" class="btn ghost small" (click)="editar(categoria)">Editar</button>
+            <ng-container *ngIf="confirmandoExclusao !== categoria.id; else confirmar">
+              <button type="button" class="btn ghost small" (click)="pedirExclusao(categoria)">Excluir</button>
+            </ng-container>
+            <ng-template #confirmar>
+              <button type="button" class="btn danger small" (click)="excluir(categoria)">Confirmar</button>
+              <button type="button" class="btn ghost small" (click)="cancelarExclusao()">Cancelar</button>
+            </ng-template>
+          </div>
+        </li>
+      </ul>
+    </article>
+  </section>
+</main>
