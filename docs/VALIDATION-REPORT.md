@@ -91,3 +91,29 @@ estava regredido.
 A integração do dev-standards está funcional e carregada nos dois repositórios. Web/Admin e Mobile
 3.2 foram executados pelos caminhos oficiais, com testes e gates verdes. A divergência visual não é
 uma regressão de código: é proveniente de cópia/cache antigos. A integração foi consolidada no GitHub via PR; nenhuma publicação em produção foi feita.
+
+---
+
+## 7. Release Candidate 3.3 (`3.3.0-rc.1`)
+
+Execução de 2026-11-20, branch `release/3.3-rc`.
+
+| Verificação | Resultado |
+|---|---|
+| Angular build (produção) | Sucesso |
+| Angular testes | **19/19** |
+| Admin/RBAC (`adminGuard.spec.ts`) | **4/4** |
+| Backend H2 | **34/34** |
+| Backend PostgreSQL 17 (Testcontainers) | **4/4** (0 ignorados) |
+| Backend total | **38/38** |
+| Gate Web `--release` | Sucesso |
+| Mobile Jest | **50/50** |
+| Mobile typecheck/lint | Sucesso |
+| Expo Doctor | **18/18** |
+| Expo export Web/iOS/Android | Sucesso |
+| Homologação em navegador (build de produção) | Cadastro, login, tarefa, perfil, senha, logout, RBAC e Admin — 0 erros de console |
+
+> A contagem anterior de backend (35/35) incluía relatório residual de uma execução antiga.
+> A contagem atual vem de `mvn clean test` (34 H2) somada aos 4 testes de PostgreSQL real.
+
+Detalhes em `docs/RELEASE-3.3-RC.md`, `docs/FUNCTIONAL-ACCEPTANCE.md` e `docs/SECURITY-REVIEW.md`.

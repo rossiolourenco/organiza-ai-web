@@ -1,6 +1,7 @@
 # Roadmap 3.3 — Web/Admin
 
-Status: planejamento. Nada deste roadmap é implementado nesta entrega de CI.
+Status: **execução parcial no RC 3.3**. Itens de segurança de release, DTOs e PostgreSQL real
+foram concluídos; os demais seguem planejados para 3.3/3.4.
 Base: 3.2 em produção; dev-standards integrado; CI em `.github/workflows/ci.yml`.
 
 ## Guardrails
@@ -9,6 +10,21 @@ Base: 3.2 em produção; dev-standards integrado; CI em `.github/workflows/ci.ym
 - Toda mudança em branch + PR; `main` protegida com checks.
 - Testes e documentação junto com o código.
 - Não remover funcionalidades; não trocar stack sem ADR.
+
+## Status de execução (RC 3.3)
+
+**Concluído neste RC:**
+
+- DTOs na borda do `UsuarioController` (`PerfilResponse`), sem entidade JPA na resposta.
+- `PostgresIntegrationTests` com Testcontainers + PostgreSQL 17 e `ddl-auto=validate`.
+- Job obrigatório `web-postgres` no CI.
+- `spring.jpa.show-sql=false` em produção e `Content-Security-Policy` nas respostas da API.
+- Versão única (`VERSION`), artefatos com checksum e 10 documentos de release.
+
+**Pendente (ordem recomendada):** scanner de dependências no CI (P0), migração Angular 20+ e
+Expo SDK (P0/P1 de plataforma), refresh token/MFA/recuperação (P1), limite de tentativas em
+cadastro/troca de senha (P1), Spotless/ESLint/Prettier (P2), OpenAPI/`/v1` e envelope de erro
+(P2), lixeira/check-list no Web e acessibilidade (P3).
 
 ## P0 — Segurança crítica
 
@@ -32,8 +48,8 @@ Base: 3.2 em produção; dev-standards integrado; CI em `.github/workflows/ci.ym
 
 | Item | Justificativa | Impacto / risco | Dependências | Testes / aceite | Ordem |
 |---|---|---|---|---|---|
-| Testcontainers PostgreSQL | H2 esconde divergências SQL | Médio; CI mais lento | Docker no CI | Testes de integração contra PostgreSQL | 1 |
-| DTOs no `UsuarioController` | Não expor entidade JPA | Médio; contrato mais seguro | Mapeador/testes de contrato | Respostas sem campos internos; testes atualizados | 2 |
+| ~~Testcontainers PostgreSQL~~ **feito no RC** | H2 esconde divergências SQL | Médio; CI mais lento | Docker no CI | Testes de integração contra PostgreSQL | 1 |
+| ~~DTOs no `UsuarioController`~~ **feito no RC** | Não expor entidade JPA | Médio; contrato mais seguro | Mapeador/testes de contrato | Respostas sem campos internos; testes atualizados | 2 |
 | Spotless/Checkstyle | Padronizar Java | Baixo/médio; reformatação grande | Configuração e baseline | `mvn verify` com formatação/lint | 3 |
 | ESLint/Prettier Angular | Padronizar TS/HTML | Baixo; mudanças massivas | Config e baseline | CI com lint/format sem erros | 4 |
 | OpenAPI + versionamento `/v1` | Contrato documentado e evolutivo | Médio; impacto em clients | Decisão de versão e compatibilidade | OpenAPI gerado; clients ajustados; smoke tests | 5 |
