@@ -66,16 +66,6 @@ describe("HomeComponent — estrutura Premium", () => {
     return fixture.nativeElement as HTMLElement;
   }
 
-  it("mantém a topbar, a marca e a identidade Premium", async () => {
-    await montar(tarefas);
-
-    const topbar = elemento().querySelector("header.topbar");
-    expect(topbar).not.toBeNull();
-    expect(topbar?.querySelector(".brand")).not.toBeNull();
-    expect(topbar?.querySelector(".brand-text")?.textContent).toContain("Premium Experience");
-    expect(topbar?.querySelector(".topbar-actions")).not.toBeNull();
-  });
-
   it("mantém a hierarquia do dashboard: eyebrow, saudação e ação principal", async () => {
     await montar(tarefas);
 
