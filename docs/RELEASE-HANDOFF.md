@@ -12,13 +12,15 @@
 | Repositório | `rossiolourenco/organiza-ai-web` |
 | PR | https://github.com/rossiolourenco/organiza-ai-web/pull/2 |
 | Base | `main` `b1f00ee` |
-| **Commit final da branch** | **`b0f89b5ddf0de8041f2b04296ea498e3ab79dc48`** |
+| Commit do código do RC | `b0f89b5ddf0de8041f2b04296ea498e3ab79dc48` |
+| HEAD da branch (docs) | `cd332c757b703c159f03513bbb738d1907540f1c` |
 | Commits do RC | `dbfd88f`, `03bb55b`, `a36e89d`, `933e9c1`, `b0f89b5` |
 | Mobile | `rossiolourenco/organiza-ai` · https://github.com/rossiolourenco/organiza-ai/pull/2 · `8fd49e4` |
 
-> O commit `b0f89b5` contém o código do RC. Um commit posterior apenas de documentação
-> (checksums/handoff) pode existir na branch; nesse caso, o deploy deve usar o **HEAD da branch
-> `release/3.3-rc` após o merge** e o HEAD registrado no relatório final desta rodada.
+> O commit `b0f89b5` contém o código do RC. Os commits seguintes (`0a9eef2`, `cd332c7`) alteram
+> apenas documentação (handoff/checksums). O deploy deve usar o **HEAD de `main` após o squash
+> merge do PR #2**, cujo conteúdo equivale a `cd332c7`. Qualquer commit novo de documentação
+> posterior é irrelevante para o artefato.
 
 ## 2. Checks obrigatórios
 
@@ -31,8 +33,8 @@ A `main` exige PR, os quatro checks do Web (incluindo `web-postgres`, já inclu�
 
 CI do RC (verdes):
 
-- Web: https://github.com/rossiolourenco/organiza-ai-web/actions/runs/44764549186
-- Mobile: https://github.com/rossiolourenco/organiza-ai/actions/runs/44764548796
+- Web: https://github.com/rossiolourenco/organiza-ai-web/actions/runs/44764926545
+- Mobile: https://github.com/rossiolourenco/organiza-ai/actions/runs/44764926912
 
 ## 3. Artefatos e checksums
 

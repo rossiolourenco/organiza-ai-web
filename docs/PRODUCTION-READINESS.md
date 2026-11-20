@@ -9,7 +9,7 @@ verificação correspondente.
 |---|---|---|---|
 | 1 | Sem vulnerabilidade crítica/alta explorável sem mitigação | `SECURITY-REVIEW.md` (1 correção média, 1 log, 1 header; altas de dependência mitigadas por arquitetura) | ✅ |
 | 2 | Fluxos essenciais homologados | `FUNCTIONAL-ACCEPTANCE.md` — Web, Admin e API em PostgreSQL real | ✅ |
-| 3 | CI aprovado | `web-angular`, `web-backend`, `web-postgres`, `web-admin`; `mobile-quality`, `mobile-bundle` — runs 44764549186 e 44764548796 | ✅ |
+| 3 | CI aprovado | `web-angular`, `web-backend`, `web-postgres`, `web-admin`; `mobile-quality`, `mobile-bundle` — runs 44764926545 e 44764926912 | ✅ |
 | 4 | Banco validado em PostgreSQL real | `PostgresIntegrationTests` 4/4 com `ddl-auto=validate` | ✅ |
 | 5 | Migrations seguras e reproduzíveis | Aditivas, sem migration nova no 3.3; teste com schema + V002–V004 | ✅ |
 | 6 | Artefatos reproduzíveis com checksum | `scripts/build-release.sh` + `SHA256SUMS` | ✅ |
