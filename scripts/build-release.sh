@@ -21,8 +21,9 @@ echo "== Frontend (build de produção) =="
 tar -czf "$OUT/organiza-ai-web-$VERSION.tar.gz" -C frontend/dist/frontend/browser .
 
 echo "== Backend (jar) =="
-(cd backend && ./mvnw -B -q -DskipTests package)
+(cd backend && ./mvnw -B -q -DskipTests clean package)
 JAR="$(ls backend/target/backend-*.jar | grep -v '\.original$' | head -1)"
+[ "$(ls backend/target/backend-*.jar | grep -vc '\.original$')" -eq 1 ] || { echo "mais de um jar no target; limpe o target" >&2; exit 1; }
 [ -n "$JAR" ] || { echo "jar do backend ausente" >&2; exit 1; }
 cp "$JAR" "$OUT/organiza-ai-backend-$VERSION.jar"
 

@@ -57,7 +57,17 @@ Ver `FUNCTIONAL-PARITY-3.3.1.md`: 30 recursos `PARITY_OK`, 0 `WEB_MISSING`, 0 `M
 ## 6. Artefatos
 
 Gerados por `scripts/build-release.sh` em `dist-release/3.3.1-rc.1/` (fora do Git):
-web, backend (`3.3.1-RC1`), database e `SHA256SUMS`. Checksums conferidos no servidor antes do deploy.
+
+| Artefato | SHA-256 |
+|---|---|
+| `organiza-ai-web-3.3.1-rc.1.tar.gz` | `7a2adf58d6606e7769fc4fda977f66b35448d190726944a91bded2158ac3e96f` |
+| `organiza-ai-backend-3.3.1-rc.1.jar` | `668af2b4ca02c524b708d9a0c38487f1756884611b5a1245b02431cac33d9e86` |
+| `organiza-ai-database-3.3.1-rc.1.tar.gz` | `1490268df662a0051c9b146ca5e768ef9ceb906d5641622565a49fc9937734eb` |
+
+Mobile: `organiza-ai-mobile-3.3.1-rc.1.tar.gz` =
+`c2d89437cc4f866db5eba7240b64237214ff7593b0c5ca08bdaee6de133cb9a6`.
+
+O JAR é construído com `mvn clean package` e validado por `Implementation-Version: 3.3.1-RC1`.
 
 ## 7. Publicação
 
