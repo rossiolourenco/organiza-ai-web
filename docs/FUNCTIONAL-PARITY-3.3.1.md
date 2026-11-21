@@ -93,3 +93,16 @@ Legenda: **PARITY_OK** · **WEB_MISSING** · **MOBILE_MISSING** · **PARTIAL** �
 Planejamento e histórico de foco agora são **dados de negócio centralizados** (níveis 2 e 3 de paridade).
 
 Nenhuma funcionalidade de negócio destinada ao usuário ficou ausente em uma das plataformas.
+
+## 8. Exclusão de conta (exigência das lojas)
+
+| Item | Backend | Web | Mobile |
+|---|---|---|---|
+| `DELETE /api/usuarios/conta` (senha atual) | ✅ | ✅ | ✅ |
+| Confirmação por senha + digitar `EXCLUIR` | — | ✅ | ✅ |
+| Página pública `/excluir-conta` | — | ✅ | — |
+| Remoção em cascata + revogação de sessões | ✅ | — | — |
+| Auditoria anonimizada | ✅ | — | — |
+
+Cobertura: `ContaApiTests` (H2), `PostgresIntegrationTests` (cascata em PostgreSQL 17) e
+validação manual no navegador.

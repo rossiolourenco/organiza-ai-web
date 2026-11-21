@@ -67,4 +67,36 @@ describe('PerfilComponent', () => {
     expect(limpar).toHaveBeenCalled();
     expect(navegar).toHaveBeenCalledWith(['/login'], { queryParams: { senha: 'alterada' } });
   });
+
+  it('exige EXCLUIR e a senha antes de excluir a conta', () => {
+    component.abrirExclusao();
+    component.confirmarExclusao();
+    expect(component.erroExclusao).toContain('senha');
+
+    component.senhaExclusao = 'Senha-atual-2026';
+    component.confirmacaoExclusao = 'excluir agora';
+    component.confirmarExclusao();
+    expect(component.erroExclusao).toContain('EXCLUIR');
+    http.expectNone(r => r.url.endsWith('/api/usuarios/conta'));
+  });
+
+  it('exclui a conta, limpa a sessão e volta ao login', () => {
+    const session = TestBed.inject(SessionService);
+    const router = TestBed.inject(Router);
+    const limpar = spyOn(session, 'limpar');
+    const navegar = spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+
+    component.abrirExclusao();
+    component.senhaExclusao = 'Senha-atual-2026';
+    component.confirmacaoExclusao = 'EXCLUIR';
+    component.confirmarExclusao();
+
+    const req = http.expectOne(r => r.url.endsWith('/api/usuarios/conta'));
+    expect(req.request.method).toBe('DELETE');
+    expect(req.request.body).toEqual({ senha: 'Senha-atual-2026' });
+    req.flush(null, { status: 204, statusText: 'No Content' });
+
+    expect(limpar).toHaveBeenCalled();
+    expect(navegar).toHaveBeenCalledWith(['/login'], { queryParams: { conta: 'excluida' } });
+  });
 });

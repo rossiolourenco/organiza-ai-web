@@ -157,6 +157,49 @@ export class PerfilComponent implements OnInit, OnDestroy {
     }));
   }
 
+  modalExclusao = false;
+  senhaExclusao = "";
+  confirmacaoExclusao = "";
+  excluindo = false;
+  erroExclusao: string | null = null;
+
+  abrirExclusao(): void {
+    this.modalExclusao = true;
+    this.senhaExclusao = "";
+    this.confirmacaoExclusao = "";
+    this.erroExclusao = null;
+  }
+
+  fecharExclusao(): void {
+    if (!this.excluindo) this.modalExclusao = false;
+  }
+
+  confirmarExclusao(): void {
+    if (this.excluindo) return;
+    if (!this.senhaExclusao) {
+      this.erroExclusao = "Informe sua senha.";
+      return;
+    }
+    if (this.confirmacaoExclusao.trim().toUpperCase() !== "EXCLUIR") {
+      this.erroExclusao = "Digite EXCLUIR para confirmar.";
+      return;
+    }
+    this.excluindo = true;
+    this.erroExclusao = null;
+    this.sub.add(this.usuarioService.excluirConta(this.senhaExclusao).subscribe({
+      next: () => {
+        this.excluindo = false;
+        this.modalExclusao = false;
+        this.session.limpar();
+        void this.router.navigate(["/login"], { queryParams: { conta: "excluida" } });
+      },
+      error: erro => {
+        this.excluindo = false;
+        this.erroExclusao = erro.error?.message || "Não foi possível excluir a conta.";
+      },
+    }));
+  }
+
   sair(): void {
     this.session.limpar();
     void this.router.navigate(["/login"]);

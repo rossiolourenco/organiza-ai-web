@@ -313,6 +313,38 @@ class PostgresIntegrationTests {
         assertEquals(400, idor.status);
     }
 
+    @Test
+    void exclusaoDeContaRemoveDadosEmCascata() throws Exception {
+        var a = conta("Senha-teste-2026");
+        var categoria = call("POST", "/categorias?usuarioId=" + a.id,
+            Map.of("nome", "Cascata", "cor", "#4F46E5"), a.token);
+        long categoriaId = categoria.body.get("id").asLong();
+        var tarefa = call("POST", "/tarefas?usuarioId=" + a.id,
+            Map.of("titulo", "Cascata", "prioridade", "MEDIA", "status", "PENDENTE",
+                "categoria", Map.of("id", categoriaId)), a.token);
+        long tarefaId = tarefa.body.get("id").asLong();
+        assertEquals(200, call("POST", "/habitos?usuarioId=" + a.id,
+            Map.of("nome", "Cascata", "frequencia", "DIARIA", "metaSemanal", 7), a.token).status);
+        assertEquals(200, call("PUT", "/produtividade/planejamento", Map.of(
+            "data", "2026-11-20",
+            "itens", List.of(Map.of("tarefaId", tarefaId, "ordem", 0, "minutosEstimados", 30)),
+            "versao", 0), a.token).status);
+        assertEquals(200, call("POST", "/produtividade/foco",
+            Map.of("minutos", 25, "tarefaId", tarefaId, "data", "2026-11-20"), a.token).status);
+
+        assertEquals(204, call("DELETE", "/usuarios/conta",
+            Map.of("senha", "Senha-teste-2026"), a.token).status);
+
+        assertEquals(0, jdbc.queryForObject(
+            "select count(*) from usuarios where id = ?", Integer.class, a.id));
+        for (String tabela : List.of("tarefas", "categorias", "habitos", "planejamentos",
+            "sessoes_foco", "sessoes")) {
+            assertEquals(0, jdbc.queryForObject(
+                "select count(*) from " + tabela + " where usuario_id = ?", Integer.class, a.id),
+                "dados remanescentes em " + tabela);
+        }
+    }
+
     private static MountableFile script(String relative) {
         return MountableFile.forHostPath(DATABASE.resolve(relative).toAbsolutePath());
     }
