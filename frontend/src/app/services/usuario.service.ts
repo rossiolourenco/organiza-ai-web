@@ -49,4 +49,9 @@ export class UsuarioService {
   alterarSenha(senhaAtual: string, novaSenha: string): Observable<void> {
     return this.http.put<void>(`${this.apiUrl}/senha`, { senhaAtual, novaSenha });
   }
+
+  /** Exclusão da própria conta; exige a senha atual e apaga os dados associados. */
+  excluirConta(senha: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/conta`, { body: { senha } });
+  }
 }

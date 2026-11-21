@@ -34,6 +34,8 @@ export class LoginComponent implements OnInit {
       this.aviso = "Área administrativa: entre com uma conta ADMIN ou SUPER_ADMIN.";
     } else if (this.router.url.includes("cadastro=1")) {
       this.aviso = "Conta criada com sucesso. Entre com suas credenciais.";
+    } else if (this.router.url.includes("conta=excluida")) {
+      this.aviso = "Sua conta foi excluída e os dados associados foram removidos.";
     }
   }
 

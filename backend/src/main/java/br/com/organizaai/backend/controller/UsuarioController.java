@@ -2,6 +2,7 @@ package br.com.organizaai.backend.controller;
 
 import br.com.organizaai.backend.dto.AlterarSenhaRequest;
 import br.com.organizaai.backend.dto.CadastroRequest;
+import br.com.organizaai.backend.dto.ExcluirContaRequest;
 import br.com.organizaai.backend.dto.LoginRequest;
 import br.com.organizaai.backend.dto.PerfilRequest;
 import br.com.organizaai.backend.dto.PerfilResponse;
@@ -13,6 +14,7 @@ import br.com.organizaai.backend.security.AuditoriaService;
 import br.com.organizaai.backend.security.AutenticacaoService;
 import br.com.organizaai.backend.security.PoliticaService;
 import br.com.organizaai.backend.security.UsuarioAtual;
+import br.com.organizaai.backend.service.ContaService;
 import br.com.organizaai.backend.service.SessaoService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -34,10 +36,12 @@ public class UsuarioController {
     private final PoliticaService politica;
     private final UsuarioAtual atual;
     private final AuditoriaService auditoria;
+    private final ContaService conta;
 
     public UsuarioController(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder,
                              SessaoService sessoes, AutenticacaoService autenticacao,
-                             PoliticaService politica, UsuarioAtual atual, AuditoriaService auditoria) {
+                             PoliticaService politica, UsuarioAtual atual, AuditoriaService auditoria,
+                             ContaService conta) {
         this.usuarioRepository = usuarioRepository;
         this.passwordEncoder = passwordEncoder;
         this.sessoes = sessoes;
@@ -45,6 +49,7 @@ public class UsuarioController {
         this.politica = politica;
         this.atual = atual;
         this.auditoria = auditoria;
+        this.conta = conta;
     }
 
     /** Lista apenas o próprio usuário autenticado; entidade JPA nunca é serializada na borda. */
@@ -111,6 +116,13 @@ public class UsuarioController {
     @PutMapping("/senha")
     public ResponseEntity<Void> alterarSenha(@RequestBody AlterarSenhaRequest request) {
         autenticacao.alterarSenha(atual.usuario(), request.senhaAtual(), request.novaSenha());
+        return ResponseEntity.noContent().build();
+    }
+
+    /** Exclusão da própria conta (direito de eliminação). Exige a senha atual. */
+    @DeleteMapping("/conta")
+    public ResponseEntity<Void> excluirConta(@Valid @RequestBody ExcluirContaRequest request) {
+        conta.excluir(atual.id(), request.senha());
         return ResponseEntity.noContent().build();
     }
 }

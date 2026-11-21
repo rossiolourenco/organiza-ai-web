@@ -4,6 +4,7 @@ import br.com.organizaai.backend.model.AuditoriaEvento;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -23,6 +24,10 @@ public interface AuditoriaRepository extends JpaRepository<AuditoriaEvento, Long
 
     List<AuditoriaEvento> findTop10ByOrderByCriadoEmDesc();
     List<AuditoriaEvento> findTop10ByRecursoAndRecursoIdOrderByCriadoEmDesc(String recurso, String recursoId);
+    @Modifying
+    @Query("update AuditoriaEvento a set a.atorId = null, a.atorEmail = null where a.atorId = :id")
+    int anonimizarAtor(@Param("id") Long id);
+
     long countByCriadoEmAfter(Instant desde);
     long countByResultadoAndCriadoEmAfter(String resultado, Instant desde);
 }

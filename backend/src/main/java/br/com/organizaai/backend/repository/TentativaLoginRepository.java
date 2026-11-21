@@ -14,6 +14,8 @@ public interface TentativaLoginRepository extends JpaRepository<TentativaLogin, 
     long countBySucessoTrueAndCriadoEmAfter(Instant inicio);
     long countByEmailIgnoreCaseAndSucessoFalseAndCriadoEmAfter(String email, Instant inicio);
 
+    long deleteByEmailIgnoreCase(String email);
+
     @Query("""
         select t from TentativaLogin t
         where (:emailLike is null or lower(t.email) like :emailLike)

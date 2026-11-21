@@ -134,4 +134,25 @@ class ContaApiTests {
         assertEquals(401, call("PUT", "/usuarios/senha",
             Map.of("senhaAtual", "x", "novaSenha", "Nova-senha-2026"), null).status);
     }
+
+    @Test
+    void excluirContaExigeSenhaERemoveAcesso() throws Exception {
+        var a = conta("Senha-atual-2026");
+        assertEquals(400, call("DELETE", "/usuarios/conta", Map.of("senha", "errada"), a.token).status);
+        assertEquals(204, call("DELETE", "/usuarios/conta", Map.of("senha", "Senha-atual-2026"), a.token).status);
+        assertEquals(401, call("GET", "/usuarios/perfil", null, a.token).status);
+        assertEquals(401, call("POST", "/usuarios/login",
+            Map.of("email", a.email, "senha", "Senha-atual-2026"), null).status);
+        assertEquals(401, call("DELETE", "/usuarios/conta", Map.of("senha", "x"), a.token).status);
+    }
+
+    @Test
+    void excluirContaNaoAfetaOutroUsuario() throws Exception {
+        var a = conta("Senha-atual-2026");
+        var b = conta("Senha-atual-2026");
+        assertEquals(204, call("DELETE", "/usuarios/conta", Map.of("senha", "Senha-atual-2026"), b.token).status);
+        assertEquals(200, call("GET", "/usuarios/perfil", null, a.token).status);
+        assertEquals(200, call("POST", "/usuarios/login",
+            Map.of("email", a.email, "senha", "Senha-atual-2026"), null).status);
+    }
 }

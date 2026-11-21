@@ -15,6 +15,7 @@
 | POST | `/api/usuarios/login` | Usuario | `LoginRequest` | sessão/token | pública | ✅ | ✅ |
 | POST | `/api/usuarios/logout` | Usuario | — | 204 | Bearer | ✅ | ✅ |
 | PUT | `/api/usuarios/senha` | Usuario | `AlterarSenhaRequest` | 204 | Bearer | ✅ | ✅ |
+| DELETE | `/api/usuarios/conta` | Usuario | `ExcluirContaRequest` | 204 | Bearer | ✅ | ✅ |
 
 ## 2. Tarefas (11)
 

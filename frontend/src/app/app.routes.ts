@@ -2,6 +2,7 @@ import { Routes } from "@angular/router";
 
 import { LoginComponent } from "./pages/login/login.component";
 import { CadastroComponent } from "./pages/cadastro/cadastro.component";
+import { ExcluirContaComponent } from "./pages/excluir-conta/excluir-conta.component";
 import { HomeComponent } from "./pages/home/home.component";
 import { TarefaFormComponent } from "./pages/tarefa-form/tarefa-form.component";
 import { PerfilComponent } from "./pages/perfil/perfil.component";
@@ -34,6 +35,10 @@ export const routes: Routes = [
   {
     path: "cadastro",
     component: CadastroComponent,
+  },
+  {
+    path: "excluir-conta",
+    component: ExcluirContaComponent,
   },
   {
     path: "admin",
