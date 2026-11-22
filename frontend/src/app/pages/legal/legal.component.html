@@ -1,0 +1,210 @@
+<main class="publico">
+  <a class="marca" routerLink="/login" aria-label="Organiza Aí">
+    <span class="logo" aria-hidden="true">✓</span>
+    <span><strong>Organiza Aí</strong><small>Premium Experience</small></span>
+  </a>
+
+  <article class="cartao" *ngIf="tipo === 'privacidade'">
+    <span class="eyebrow">LEGAL</span>
+    <h1>Política de Privacidade</h1>
+    <p class="sub">Como o Organiza Aí trata seus dados pessoais, em conformidade com a LGPD.</p>
+    <p class="nota">Última atualização: {{ atualizado }}</p>
+
+    <h2>1. Controlador</h2>
+    <p>
+      O controlador dos dados pessoais tratados pelo aplicativo <strong>Organiza Aí</strong> é
+      <strong>{{ empresa }}</strong>, CNPJ {{ cnpj }}, com endereço em {{ endereco }}.
+    </p>
+    <p>
+      Contato para assuntos de privacidade e proteção de dados:
+      <a href="mailto:{{ contato }}">{{ contato }}</a>.
+    </p>
+
+    <h2>2. Dados tratados</h2>
+    <ul>
+      <li><strong>Conta:</strong> nome, e-mail e senha (armazenada apenas como hash BCrypt).</li>
+      <li><strong>Conteúdo:</strong> tarefas, descrições, notas, etiquetas, categorias, hábitos e registros,
+        planejamento diário e sessões de foco.</li>
+      <li><strong>Sessão e segurança:</strong> token de sessão (armazenado como hash SHA-256 no servidor),
+        endereço IP e user-agent, para autenticação, prevenção a fraude e auditoria.</li>
+      <li><strong>Preferências locais:</strong> tema, metas e preferências de foco mantidas no dispositivo.</li>
+    </ul>
+
+    <h2>3. Finalidades</h2>
+    <ul>
+      <li>Autenticar o usuário e manter a sessão.</li>
+      <li>Entregar as funcionalidades do app (tarefas, planejamento, foco, hábitos e revisão).</li>
+      <li>Sincronizar os dados entre Web e Mobile usando a mesma conta.</li>
+      <li>Prevenir fraude e abuso (limite de tentativas, bloqueio temporário e auditoria).</li>
+      <li>Atender obrigações legais e solicitações do titular.</li>
+    </ul>
+
+    <h2>4. Bases legais</h2>
+    <ul>
+      <li><strong>Execução de contrato</strong> (art. 7º, V, da LGPD): conta e conteúdo necessário ao serviço.</li>
+      <li><strong>Legítimo interesse</strong> (art. 7º, IX): segurança, prevenção a fraude e registros de acesso.</li>
+      <li><strong>Consentimento</strong> (art. 7º, I): notificações locais, quando o usuário as ativa.</li>
+    </ul>
+
+    <h2>5. Compartilhamento</h2>
+    <p>
+      Não vendemos dados pessoais e não os compartilhamos para publicidade. O provedor de infraestrutura
+      atua como operador, processando os dados exclusivamente para hospedar e operar o serviço, no Brasil.
+    </p>
+
+    <h2>6. Retenção</h2>
+    <ul>
+      <li>Conta e conteúdo: enquanto a conta existir.</li>
+      <li>Exclusão da conta: remoção imediata dos dados; backups por até <strong>30 dias</strong>.</li>
+      <li>Logs de segurança e tentativas de login: <strong>6 meses</strong>.</li>
+      <li>Sessões: até expirarem ou serem revogadas.</li>
+    </ul>
+
+    <h2>7. Transferência internacional</h2>
+    <p>Os dados são armazenados e processados no Brasil, sem transferência internacional.</p>
+
+    <h2>8. Segurança</h2>
+    <ul>
+      <li>HTTPS/TLS em todo o tráfego.</li>
+      <li>Senha com BCrypt e token de sessão armazenado apenas como hash.</li>
+      <li>Controle de acesso por usuário e registro de auditoria.</li>
+    </ul>
+
+    <h2>9. Direitos do titular</h2>
+    <p>
+      Você pode solicitar confirmação de tratamento, acesso, correção, anonimização, portabilidade,
+      eliminação, informação sobre compartilhamentos e revogação de consentimento. O prazo de resposta é de
+      até <strong>15 dias</strong>, pelo canal <a href="mailto:{{ contato }}">{{ contato }}</a>.
+    </p>
+
+    <h2>10. Exclusão da conta</h2>
+    <p>
+      A exclusão pode ser feita no app, em <strong>Perfil → Segurança → Excluir minha conta</strong>, ou pela
+      página <a routerLink="/excluir-conta">/excluir-conta</a>. A remoção é permanente, apaga os dados
+      associados e revoga as sessões ativas.
+    </p>
+
+    <h2>11. Crianças e adolescentes</h2>
+    <p>
+      O app é destinado a maiores de <strong>13 anos</strong>. Menores de 18 anos devem usar a conta com
+      ciência e consentimento do responsável legal. Não coletamos intencionalmente dados de crianças.
+    </p>
+
+    <h2>12. Cookies e tecnologias</h2>
+    <p>
+      Na versão Web usamos apenas armazenamento essencial para manter a sessão. Não há cookies de
+      publicidade nem ferramentas de analytics de terceiros.
+    </p>
+
+    <h2>13. Alterações</h2>
+    <p>
+      Esta política pode ser atualizada. A data de revisão é exibida no topo e mudanças relevantes serão
+      comunicadas no app ou por e-mail.
+    </p>
+
+    <h2>14. Contato</h2>
+    <p>
+      {{ empresa }} · CNPJ {{ cnpj }}<br />
+      {{ endereco }}<br />
+      <a href="mailto:{{ contato }}">{{ contato }}</a>
+    </p>
+
+    <a class="voltar" routerLink="/termos">Ver Termos de Uso →</a>
+  </article>
+
+  <article class="cartao" *ngIf="tipo === 'termos'">
+    <span class="eyebrow">LEGAL</span>
+    <h1>Termos de Uso</h1>
+    <p class="sub">Regras para uso do Organiza Aí.</p>
+    <p class="nota">Última atualização: {{ atualizado }}</p>
+
+    <h2>1. Aceitação</h2>
+    <p>
+      Ao criar uma conta ou usar o Organiza Aí, você concorda com estes Termos e com a
+      <a routerLink="/privacidade">Política de Privacidade</a>. Se não concordar, não utilize o serviço.
+    </p>
+
+    <h2>2. Serviço</h2>
+    <p>
+      O Organiza Aí é um aplicativo de produtividade pessoal com tarefas, planejamento diário, sessões de
+      foco, hábitos e revisão semanal, com sincronização entre Web e Mobile. O serviço é fornecido por
+      {{ empresa }}, CNPJ {{ cnpj }}.
+    </p>
+
+    <h2>3. Conta</h2>
+    <ul>
+      <li>É necessário criar uma conta com informações verdadeiras e mantê-las atualizadas.</li>
+      <li>Você é responsável por manter a senha em segredo e pelas atividades na sua conta.</li>
+      <li>É proibido compartilhar a conta ou criar contas para terceiros sem autorização.</li>
+      <li>A idade mínima é de <strong>13 anos</strong>; menores de 18 precisam de consentimento do responsável.</li>
+    </ul>
+
+    <h2>4. Uso aceitável</h2>
+    <p>Você concorda em não:</p>
+    <ul>
+      <li>usar o app para fins ilícitos ou que violem direitos de terceiros;</li>
+      <li>tentar acessar contas ou dados de outros usuários;</li>
+      <li>realizar engenharia reversa, sobrecarga, automação abusiva ou tentativas de burlar a segurança;</li>
+      <li>enviar conteúdo malicioso, ofensivo ou que infrinja direitos autorais.</li>
+    </ul>
+
+    <h2>5. Seu conteúdo</h2>
+    <p>
+      O conteúdo que você cria (tarefas, notas, hábitos etc.) é seu. Você concede apenas a licença
+      necessária para armazenar, sincronizar e exibir esse conteúdo com a finalidade de prestar o serviço.
+      Não usamos seu conteúdo para publicidade.
+    </p>
+
+    <h2>6. Disponibilidade e mudanças</h2>
+    <p>
+      Buscamos manter o serviço disponível, mas ele pode passar por manutenções, atualizações e
+      interrupções. Funcionalidades podem ser alteradas ou descontinuadas, com aviso quando possível.
+    </p>
+
+    <h2>7. Gratuidade e recursos pagos</h2>
+    <p>
+      O uso atual é gratuito. Eventuais recursos pagos, se existirem, serão informados previamente no app
+      ou nas lojas.
+    </p>
+
+    <h2>8. Encerramento</h2>
+    <p>
+      Você pode excluir sua conta a qualquer momento em <strong>Perfil → Segurança</strong> ou pela página
+      <a routerLink="/excluir-conta">/excluir-conta</a>. Podemos suspender contas que violem estes Termos,
+      com aviso quando cabível.
+    </p>
+
+    <h2>9. Limitação de responsabilidade</h2>
+    <p>
+      O app é fornecido “como está”. Na máxima extensão permitida pela lei, não nos responsabilizamos por
+      perdas indiretas decorrentes de indisponibilidade, uso indevido ou perda de dados causada por fatores
+      fora do nosso controle. Nada aqui limita direitos do consumidor previstos em lei.
+    </p>
+
+    <h2>10. Privacidade</h2>
+    <p>
+      O tratamento de dados segue a <a routerLink="/privacidade">Política de Privacidade</a> e a LGPD.
+    </p>
+
+    <h2>11. Alterações dos Termos</h2>
+    <p>
+      Estes Termos podem ser atualizados. A data de revisão é exibida no topo e mudanças relevantes serão
+      comunicadas no app ou por e-mail.
+    </p>
+
+    <h2>12. Lei e foro</h2>
+    <p>
+      Aplica-se a lei brasileira. Fica eleito o foro da comarca de Belém/PA, ressalvadas as regras de
+      competência do consumidor.
+    </p>
+
+    <h2>13. Contato</h2>
+    <p>
+      {{ empresa }} · CNPJ {{ cnpj }}<br />
+      {{ endereco }}<br />
+      <a href="mailto:{{ contato }}">{{ contato }}</a>
+    </p>
+
+    <a class="voltar" routerLink="/privacidade">Ver Política de Privacidade →</a>
+  </article>
+</main>
