@@ -10,5 +10,5 @@ import { RouterLink } from "@angular/router";
   styleUrl: "./excluir-conta.component.css",
 })
 export class ExcluirContaComponent {
-  readonly contato = "[PREENCHIMENTO OBRIGATÓRIO PELO RESPONSÁVEL]";
+  readonly contato = "contato@evox.net.br";
 }
