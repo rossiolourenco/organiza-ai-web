@@ -26,7 +26,7 @@ export class AppShellComponent implements OnInit {
   readonly menu: MenuItem[] = [
     { path: "/home", label: "Início", icon: "M3 10.5 12 3l9 7.5V21H3z", mobile: true },
     { path: "/tarefas", label: "Tarefas", icon: "M4 6h16M4 12h16M4 18h10", mobile: true },
-    { path: "/planejamento", label: "Planejamento", icon: "M4 5h16v16H4zM8 3v4M16 3v4M4 10h16", mobile: true },
+    { path: "/planejamento", label: "Planejar", icon: "M4 5h16v16H4zM8 3v4M16 3v4M4 10h16", mobile: true },
     { path: "/foco", label: "Foco", icon: "M12 7v5l3 3M21 12a9 9 0 1 1-9-9 9 9 0 0 1 9 9z", mobile: true },
     { path: "/habitos", label: "Hábitos", icon: "M4 12l4 4L20 4M4 20h16" },
     { path: "/revisao", label: "Revisão", icon: "M4 19V5M4 19h16M8 15l3-4 3 2 4-6" },

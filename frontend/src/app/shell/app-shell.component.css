@@ -133,3 +133,104 @@
     background: var(--primary-soft);
   }
 }
+
+/* ---------- Shell do usuário: mesma linguagem do Mobile (claro) ---------- */
+
+.user-shell .user-sidebar {
+  width: 236px;
+  flex-basis: 236px;
+  background: var(--surface);
+  color: var(--text-muted);
+  border-right: 1px solid var(--border);
+  box-shadow: none;
+}
+
+.user-shell.collapsed .user-sidebar {
+  width: 76px;
+  flex-basis: 76px;
+}
+
+.user-shell .admin-brand .brand-text strong { color: var(--text); }
+.user-shell .admin-brand .brand-text span { color: var(--text-muted); letter-spacing: .5px; }
+
+.user-shell .admin-nav a {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.user-shell .admin-nav a:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.user-shell .admin-nav a.active {
+  background: var(--primary-soft);
+  color: var(--primary);
+  box-shadow: none;
+}
+
+.user-shell .sidebar-toggle {
+  border-color: var(--border);
+  color: var(--text-muted);
+}
+
+.user-shell .sidebar-toggle:hover {
+  color: var(--primary);
+  border-color: var(--primary);
+}
+
+.user-shell .admin-sidebar-footer { border-top: 1px solid var(--border); }
+
+.user-shell .footer-action {
+  border-color: var(--border);
+  color: var(--text-muted);
+}
+
+.user-shell .footer-action:hover {
+  color: var(--primary);
+  border-color: var(--primary);
+}
+
+.user-main > *:not(router-outlet) { min-width: 0; }
+
+.user-shell .nav-sep {
+  height: 1px;
+  background: var(--border);
+  margin: 10px 6px;
+}
+
+.user-shell .side-links {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 2px;
+  padding: 10px 0 0;
+}
+
+.user-shell .side-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border-radius: 10px;
+  border: 0;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  text-align: left;
+}
+
+.user-shell .side-link:hover { background: var(--surface-2); color: var(--text); }
+
+.user-shell .side-link svg {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
