@@ -89,3 +89,18 @@
     grid-template-columns: 1fr;
   }
 }
+
+
+/* Indicadores com ícone (padrão do Dashboard) */
+.metric { position: relative; padding-right: 62px; }
+.metric-icon {
+  position: absolute; top: 16px; right: 16px; width: 34px; height: 34px; border-radius: 10px;
+  display: grid; place-items: center; background: var(--primary-soft); color: var(--primary);
+}
+.metric-icon.success { background: var(--success-soft); color: var(--success); }
+.metric-icon.danger { background: var(--danger-soft); color: var(--danger); }
+.metric-icon.warning { background: var(--warning-soft); color: var(--warning); }
+.metric-icon svg {
+  width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.9;
+  stroke-linecap: round; stroke-linejoin: round;
+}

@@ -12,16 +12,19 @@
 
   <section class="grid cols-3 resumo">
     <article class="card metric">
+      <span class="metric-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/></svg></span>
       <span class="metric-label">Foco hoje</span>
       <strong class="metric-value">{{ minutosHoje }} min</strong>
       <span class="metric-hint">Soma das sessões sincronizadas</span>
     </article>
     <article class="card metric">
+      <span class="metric-icon success" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
       <span class="metric-label">Sessões</span>
       <strong class="metric-value">{{ sessoes.length }}</strong>
       <span class="metric-hint">Concluídas hoje</span>
     </article>
     <article class="card metric">
+      <span class="metric-icon warning" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m17 2 4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg></span>
       <span class="metric-label">Ciclos nesta visita</span>
       <strong class="metric-value">{{ ciclos }}</strong>
       <span class="metric-hint">Desde que abriu a página</span>

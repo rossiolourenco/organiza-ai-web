@@ -15,16 +15,19 @@
 
   <section class="grid cols-3 resumo" aria-label="Resumo de hábitos">
     <article class="card metric">
+      <span class="metric-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m17 2 4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg></span>
       <span class="metric-label">Hábitos ativos</span>
       <strong class="metric-value">{{ ativos }}</strong>
       <span class="metric-hint">Em acompanhamento</span>
     </article>
     <article class="card metric">
+      <span class="metric-icon success" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg></span>
       <span class="metric-label">Feitos hoje</span>
       <strong class="metric-value">{{ feitosHoje }}</strong>
       <span class="metric-hint">De {{ habitos.length }} hábito(s)</span>
     </article>
     <article class="card metric">
+      <span class="metric-icon warning" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="16" rx="3"/><path d="M8 3v4M16 3v4M4 11h16"/></svg></span>
       <span class="metric-label">Hoje</span>
       <strong class="metric-value">{{ hoje | date: "dd/MM" }}</strong>
       <span class="metric-hint">Data civil local</span>
