@@ -157,6 +157,7 @@
       <p class="erro-periodo" *ngIf="erroPeriodo" role="alert">{{ erroPeriodo }}</p>
     </section>
 
+    <div class="tasks-layout">
     <section class="list-section" aria-labelledby="titulo-tarefas">
       <div class="list-head">
         <div>
@@ -286,6 +287,32 @@
         </article>
       </div>
     </section>
+
+    <aside class="tasks-rail" aria-label="Resumo das tarefas">
+      <article class="rail-card">
+        <span class="eyebrow">RESUMO</span>
+        <h3>Visão rápida</h3>
+        <div class="rail-row"><span>Total</span><b>{{ totalTarefas }}</b></div>
+        <div class="rail-row"><span>Pendentes</span><b>{{ totalPendentes }}</b></div>
+        <div class="rail-row"><span>Em andamento</span><b>{{ totalEmAndamento }}</b></div>
+        <div class="rail-row"><span>Concluídas</span><b>{{ totalConcluidas }}</b></div>
+        <div class="rail-progress" aria-hidden="true">
+          <i [style.width.%]="totalTarefas ? (totalConcluidas / totalTarefas) * 100 : 0"></i>
+        </div>
+        <p class="rail-hint">
+          {{ totalTarefas ? ((totalConcluidas / totalTarefas) * 100 | number: "1.0-0") : 0 }}% concluídas
+        </p>
+        <a class="rail-action" routerLink="/tarefas/nova">+ Nova tarefa</a>
+      </article>
+
+      <article class="rail-card rail-soft">
+        <span class="eyebrow">FOCO</span>
+        <h3>Uma coisa de cada vez</h3>
+        <p class="rail-hint">Abra o modo foco e proteja um bloco de atenção para a tarefa mais importante.</p>
+        <a class="rail-action ghost" routerLink="/foco">Abrir foco →</a>
+      </article>
+    </aside>
+    </div>
   </main>
 </div>
 
