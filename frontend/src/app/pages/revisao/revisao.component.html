@@ -15,21 +15,25 @@
 
   <section class="grid cols-4 resumo" aria-label="Indicadores da semana">
     <article class="card metric">
+      <span class="metric-icon success" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg></span>
       <span class="metric-label">Concluídas</span>
       <strong class="metric-value">{{ totalSemana }}</strong>
       <span class="metric-hint">Nesta semana</span>
     </article>
     <article class="card metric">
+      <span class="metric-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg></span>
       <span class="metric-label">Taxa de conclusão</span>
       <strong class="metric-value">{{ taxa }}%</strong>
       <span class="metric-hint">De todas as tarefas ativas</span>
     </article>
     <article class="card metric" [class.metric-danger]="atrasadas.length > 0">
+      <span class="metric-icon danger" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
       <span class="metric-label">Atrasadas</span>
       <strong class="metric-value">{{ atrasadas.length }}</strong>
       <span class="metric-hint">Ajuste ou conclua</span>
     </article>
     <article class="card metric">
+      <span class="metric-icon warning" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/><path d="M17 7h4v4"/></svg></span>
       <span class="metric-label">Sequência</span>
       <strong class="metric-value">{{ sequencia }} dia(s)</strong>
       <span class="metric-hint">Com pelo menos uma conclusão</span>

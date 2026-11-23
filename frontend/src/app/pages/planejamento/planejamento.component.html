@@ -19,16 +19,19 @@
 
   <section class="grid cols-3 resumo">
     <article class="card metric">
+      <span class="metric-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/></svg></span>
       <span class="metric-label">Selecionadas</span>
       <strong class="metric-value">{{ selecionadas.size }}</strong>
       <span class="metric-hint">Tarefas no plano</span>
     </article>
     <article class="card metric">
+      <span class="metric-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
       <span class="metric-label">Tempo estimado</span>
       <strong class="metric-value">{{ formatarMinutos(minutosSelecionados) }}</strong>
       <span class="metric-hint">De {{ formatarMinutos(disponibilidade) }} disponíveis</span>
     </article>
     <article class="card metric" [class.metric-warning]="minutosSelecionados > disponibilidade">
+      <span class="metric-icon success" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="16" rx="3"/><path d="M8 3v4M16 3v4M4 11h16"/></svg></span>
       <span class="metric-label">Plano do dia</span>
       <strong class="metric-value">{{ plano ? "Ativo" : "Não definido" }}</strong>
       <span class="metric-hint">{{ plano ? "Sincronizado na conta" : "Monte sua seleção" }}</span>
