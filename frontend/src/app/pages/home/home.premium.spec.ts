@@ -66,12 +66,12 @@ describe("HomeComponent — estrutura Premium", () => {
     return fixture.nativeElement as HTMLElement;
   }
 
-  it("mantém a hierarquia do dashboard: eyebrow, saudação e ação principal", async () => {
+  it("mantém a hierarquia da tela de tarefas: eyebrow, saudação e ação principal", async () => {
     await montar(tarefas);
 
-    expect(elemento().querySelector(".eyebrow")?.textContent?.trim()).toBe("PAINEL PESSOAL");
-    expect(elemento().querySelector(".welcome h1")?.textContent).toContain("Olá, Ana.");
-    expect(elemento().querySelector(".welcome .welcome-sub")?.textContent).toContain("Que bom ter você");
+    expect(elemento().querySelector(".eyebrow")?.textContent?.trim()).toBe("TAREFAS");
+    expect(elemento().querySelector(".welcome h1")?.textContent).toContain("Suas tarefas");
+    expect(elemento().querySelector(".welcome .welcome-sub")?.textContent).toContain("Menos ruído");
     expect(elemento().querySelector(".primary-action")?.textContent).toContain("Nova tarefa");
   });
 
