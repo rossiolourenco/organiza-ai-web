@@ -37,21 +37,25 @@
 
   <section class="grid cols-4 metrics" aria-label="Indicadores">
     <article class="card metric">
+      <span class="metric-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="m8 12 3 3 5-6"/></svg></span>
       <span class="metric-label">Em aberto</span>
       <strong class="metric-value">{{ abertas }}</strong>
       <span class="metric-hint">Tarefas para concluir</span>
     </article>
     <article class="card metric">
+      <span class="metric-icon success" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg></span>
       <span class="metric-label">Concluídas</span>
       <strong class="metric-value">{{ concluidas }}</strong>
       <span class="metric-hint">Total já finalizado</span>
     </article>
     <article class="card metric" [class.metric-danger]="atrasadas > 0">
+      <span class="metric-icon danger" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
       <span class="metric-label">Atrasadas</span>
       <strong class="metric-value">{{ atrasadas }}</strong>
       <span class="metric-hint">Precisam de atenção</span>
     </article>
     <article class="card metric">
+      <span class="metric-icon warning" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/></svg></span>
       <span class="metric-label">Foco hoje</span>
       <strong class="metric-value">{{ focoHoje }} min</strong>
       <span class="metric-hint">Sincronizado na conta</span>
