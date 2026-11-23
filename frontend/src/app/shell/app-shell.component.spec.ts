@@ -46,7 +46,7 @@ describe("AppShellComponent", () => {
     expect(elemento().querySelector(".brand-text")?.textContent).toContain("Premium Experience");
     const links = Array.from(elemento().querySelectorAll(".admin-nav a")) as HTMLAnchorElement[];
     expect(links.map((a) => a.textContent?.trim())).toEqual([
-      "Início", "Tarefas", "Planejar", "Foco", "Hábitos", "Revisão", "Categorias", "Lixeira", "Perfil",
+      "Início", "Tarefas", "Planejar", "Foco", "Hábitos", "Revisão", "Categorias", "Lixeira",
     ]);
   });
 
